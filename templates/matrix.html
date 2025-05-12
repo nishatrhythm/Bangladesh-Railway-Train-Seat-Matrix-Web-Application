@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix | Segmented Seat Matrix</title>
+    <meta name="description" content="Visual seat availability and fare matrix for Bangladesh Railway">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="icon"
+        href="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-and-Fare-List-with-Route-Map/main/images/bangladesh-railway.png">
+</head>
+
+<body>
+    <div class="matrix-container">
+        <h1><i class="fas fa-th-list"></i> Seat Matrix for {{ train_name }})</h1>
+
+        <div class="train-header">
+            <h2><i class="fas fa-calendar-alt"></i> Journey Date: {{ date }}</h2>
+            <p><i class="fas fa-circle-info"></i> Showing only seat types with available seats.</p>
+        </div>
+
+        {% for seat_type in seat_types %}
+        {% if has_data_map[seat_type] %}
+        {% set matrix = fare_matrices[seat_type] %}
+        <div class="train-card">
+            <h3><i class="fas fa-chair"></i> {{ seat_type }}</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>From\To</th>
+                            {% for col in stations %}<th>{{ col }}</th>{% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for from_station in stations %}
+                        <tr>
+                            <td><strong>{{ from_station }}</strong></td>
+                            {% for to_station in stations %}
+                            {% if stations.index(from_station) >= stations.index(to_station) %}
+                            <td class="disabled-cell">—</td>
+                            {% else %}
+                            {% set cell = matrix[from_station].get(to_station) %}
+                            {% if cell and (cell.online + cell.offline) > 0 %}
+                            <td title="Online: {{ cell.online }}, Offline: {{ cell.offline }}, Fare: {{ cell.fare }}">
+                                {{ cell.online + cell.offline }}
+                            </td>
+                            {% else %}
+                            <td>-</td>
+                            {% endif %}
+                            {% endif %}
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+
+        <a href="/" class="btn-clear">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tables = document.querySelectorAll('.table-responsive');
+            tables.forEach(table => {
+                table.addEventListener('scroll', () => {
+                    const scrollTop = table.scrollTop;
+                    const scrollHeight = table.scrollHeight;
+                    const clientHeight = table.clientHeight;
+                    table.classList.toggle('scroll-top', scrollTop > 0);
+                    table.classList.toggle('scroll-bottom', scrollTop < scrollHeight - clientHeight - 1);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

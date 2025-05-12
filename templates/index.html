@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home | Train Seat Matrix</title>
+    <meta name="description" content="Train seat matrix with segmentation for Bangladesh Railway">
+    <meta property="og:title" content="Bangladesh Railway Seat Matrix" />
+    <meta property="og:description" content="Check segmented seat availability and fare matrix for Bangladesh Railway trains." />
+    <meta property="og:image" content="/images/link_share_image.png" />
+    <meta property="og:url" content="https://yourwebsite.com" />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script id="app-config" type="application/json">
+        {{ CONFIG | tojson | safe }}
+    </script>
+</head>
+<body>
+    <div class="container main-content">
+        <h1 class="animated-fade-in"><i class="fas fa-subway"></i> Train Seat Matrix</h1>
+        {% if error %}
+        <div class="error shake">
+            <i class="fas fa-exclamation-circle error-icon"></i> {{ error }}
+        </div>
+        {% endif %}
+        <form action="/matrix" method="POST" id="matrixForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="train_model">Train Name</label>
+                    <div class="input-with-icon custom-dropdown" id="train-model-dropdown">
+                        <i class="fas fa-train input-icon"></i>
+                        <input type="text" id="train-model-input" placeholder="Enter train name" autocomplete="off"
+                            value="{{ form_values.train_model if form_values else '' }}">
+                        <input type="hidden" id="train_model" name="train_model" value="{{ form_values.train_model if form_values else '' }}">
+                        <div class="dropdown-menu" id="train-model-menu" style="display: none;">
+                            <div class="dropdown-options" id="train-model-options">
+                                {% for train in trains %}
+                                <div class="dropdown-option" data-value="{{ train }}">{{ train }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <span class="error-message" id="train_model-error">Train model is required</span>
+                </div>
+                <div class="form-group">
+                    <label for="date">Date of Journey</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-calendar-alt input-icon"></i>
+                        <input type="text" id="date" name="date" readonly placeholder="Select a date"
+                            value="{{ form_values.date if form_values else '' }}" data-min-date="{{ min_date }}" data-max-date="{{ max_date }}" />
+                        <div class="calendar-dialog" id="materialCalendar" style="display: none;">
+                            <div class="calendar-header">
+                                <button type="button" class="calendar-nav prev" id="prevMonthBtn">❮</button>
+                                <div class="calendar-month-year" id="calendarTitle"></div>
+                                <button type="button" class="calendar-nav next" id="nextMonthBtn">❯</button>
+                            </div>
+                            <div class="calendar-grid">
+                                <div class="calendar-weekdays">
+                                    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                                </div>
+                                <div class="calendar-days" id="calendarDays"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="error-message" id="date-error">Date of journey is required</span>
+                </div>
+            </div>
+            <div class="form-group submit-btn">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-calculator"></i> Generate Matrix
+                </button>
+            </div>
+        </form>
+        <footer class="new-footer">
+            <p>This project is open source. Check it out on <a href="https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Availability-Web-Application-2" target="_blank">GitHub</a>.</p>
+        </footer>
+    </div>
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
