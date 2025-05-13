@@ -77,7 +77,7 @@ def matrix():
             return redirect(url_for('home'))
         return render_template('matrix.html', **result)
     except Exception as e:
-        session['error'] = f"Error: {str(e)}"
+        session['error'] = f"{str(e)}"
         return redirect(url_for('home'))
 
 @app.errorhandler(404)
