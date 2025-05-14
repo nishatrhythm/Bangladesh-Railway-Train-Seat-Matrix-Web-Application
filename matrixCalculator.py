@@ -93,7 +93,8 @@ def compute_matrix(train_model: str, journey_date_str: str, api_date_format: str
                         if seat_info[seat_type]["online"] + seat_info[seat_type]["offline"] > 0:
                             seat_type_has_data[seat_type] = True
 
-        
+    if not any(seat_type_has_data.values()):
+        raise Exception("No seats available for the selected train and date. Please try a different date or train.")
 
     return {
         "train_model": train_model,

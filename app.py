@@ -87,6 +87,12 @@ def matrix():
         train_model = train_model_full.split('(')[0].strip()
 
     try:
+        session['form_values'] = {
+            'train_model': train_model_full,
+            'date': journey_date_str
+        }
+        session['form_submitted'] = True
+
         result = compute_matrix(train_model, journey_date_str, api_date_format)
         if not result or 'stations' not in result:
             session['error'] = "No data received. Please try a different train or date."

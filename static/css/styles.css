@@ -84,11 +84,13 @@ label {
 .form-group.submit-btn {
     flex: 1;
     display: flex;
+    margin-top: -20px;
     align-items: flex-end;
     justify-content: flex-end;
     height: 100%;
     padding-top: 20px;
     background-color: transparent;
+    animation: fadeInUp 0.8s ease-in-out;
 }
 
 input,
@@ -535,6 +537,11 @@ button:hover {
 }
 
 .error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.6;
+    gap: 10px;
     color: #e74c3c;
     background-color: #fdecea;
     padding: 15px;
@@ -567,7 +574,7 @@ button:hover {
 .error-icon {
     color: #e74c3c;
     font-size: 18px;
-    margin-right: 8px;
+    margin-right: 4px;
     vertical-align: middle;
 }
 
