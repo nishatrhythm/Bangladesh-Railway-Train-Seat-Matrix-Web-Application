@@ -1,11 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from datetime import datetime, timedelta
-import json, pytz, os, re
-
+import json, pytz, os, re, uuid
 from matrixCalculator import compute_matrix
 
 app = Flask(__name__)
 app.secret_key = "super_secret_key"
+
+RESULT_CACHE = {}
 
 with open('trains_en.json', 'r') as f:
     trains_data = json.load(f)
@@ -95,7 +96,9 @@ def matrix():
             'date': journey_date_str
         }
         session['form_submitted'] = True
-        session['matrix_result'] = result
+        result_id = str(uuid.uuid4())
+        RESULT_CACHE[result_id] = result
+        session['result_id'] = result_id
         return redirect(url_for('matrix_result'))
     except Exception as e:
         session['error'] = f"{str(e)}"
@@ -103,7 +106,8 @@ def matrix():
 
 @app.route('/matrix_result')
 def matrix_result():
-    result = session.pop('matrix_result', None)
+    result_id = session.pop('result_id', None)
+    result = RESULT_CACHE.pop(result_id, None) if result_id else None
     form_values = session.get('form_values', None)
 
     if not result:
