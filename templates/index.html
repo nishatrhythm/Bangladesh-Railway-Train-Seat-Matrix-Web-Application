@@ -1,22 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home | Train Seat Matrix</title>
-    <meta name="description" content="Train seat matrix with segmentation for Bangladesh Railway">
-    <meta property="og:title" content="Bangladesh Railway Seat Matrix" />
-    <meta property="og:description" content="Check segmented seat availability and fare matrix for Bangladesh Railway trains." />
-    <meta property="og:image" content="/images/link_share_image.png" />
-    <meta property="og:url" content="https://yourwebsite.com" />
-    <meta property="og:type" content="website" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="View segmented seat availability and fare matrix for Bangladesh Railway trains. Quickly check available seats by route and class.">
+    <meta name="keywords"
+        content="Bangladesh Railway, train seat availability, segmented seat matrix, travel, transportation, railway schedule, Bangladesh travel">
+    <meta name="author" content="Nishat Mahmud">
+    <meta name="publish_date" content="2025-05-13" scheme="YYYY-MM-DD">
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Train seat matrix with segmentation for Bangladesh Railway">
+    <meta property="og:description"
+        content="Easily check segmented seat availability and fare matrix for Bangladesh Railway trains.">
+    <meta property="og:image"
+        content="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Availability-Web-Application/main/images/link_share_image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://seat.onrender.com">
+    <meta property="og:type" content="website">
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/styles.css">
     <script id="app-config" type="application/json">
         {{ CONFIG | tojson | safe }}
     </script>
 </head>
+
 <body>
     <div class="container main-content">
         <h1 class="animated-fade-in"><i class="fas fa-subway"></i> Train Seat Matrix</h1>
@@ -33,7 +47,8 @@
                         <i class="fas fa-train input-icon"></i>
                         <input type="text" id="train-model-input" placeholder="Enter train name" autocomplete="off"
                             value="{{ form_values.train_model if form_values else '' }}">
-                        <input type="hidden" id="train_model" name="train_model" value="{{ form_values.train_model if form_values else '' }}">
+                        <input type="hidden" id="train_model" name="train_model"
+                            value="{{ form_values.train_model if form_values else '' }}">
                         <div class="dropdown-menu" id="train-model-menu" style="display: none;">
                             <div class="dropdown-options" id="train-model-options">
                                 {% for train in trains %}
@@ -49,7 +64,8 @@
                     <div class="input-with-icon">
                         <i class="fas fa-calendar-alt input-icon"></i>
                         <input type="text" id="date" name="date" readonly placeholder="Select a date"
-                            value="{{ form_values.date if form_values else '' }}" data-min-date="{{ min_date }}" data-max-date="{{ max_date }}" />
+                            value="{{ form_values.date if form_values else '' }}" data-min-date="{{ min_date }}"
+                            data-max-date="{{ max_date }}" />
                         <div class="calendar-dialog" id="materialCalendar" style="display: none;">
                             <div class="calendar-header">
                                 <button type="button" class="calendar-nav prev" id="prevMonthBtn">❮</button>
@@ -74,9 +90,12 @@
             </div>
         </form>
         <footer class="new-footer">
-            <p>This project is open source. Check it out on <a href="https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Availability-Web-Application-2" target="_blank">GitHub</a>.</p>
+            <p>This project is open source. Check it out on <a
+                    href="https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Availability-Web-Application-2"
+                    target="_blank">GitHub</a>.</p>
         </footer>
     </div>
     <script src="/static/js/script.js"></script>
 </body>
+
 </html>

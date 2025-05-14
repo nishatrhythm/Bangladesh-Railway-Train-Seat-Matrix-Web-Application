@@ -1,9 +1,11 @@
 document.documentElement.classList.add('js-enabled');
 
 let focusDueToValidation = false;
+let suppressEvents = false;
 
 function validateForm(event) {
-    document.getElementById('train_model').value = document.getElementById('train-model-input').value.trim();
+    const text = document.getElementById('train-model-input').value.trim();
+    document.getElementById('train_model').value = text;
 
     let isValid = true;
     let firstEmptyField = null;
@@ -21,21 +23,13 @@ function validateForm(event) {
             errorField.style.display = "block";
             errorField.classList.remove('hide');
             errorField.classList.add('show');
-            if (textInput) {
-                textInput.classList.add('error-input');
-            } else {
-                inputField.classList.add('error-input');
-            }
+            (textInput || inputField).classList.add('error-input');
             if (!firstEmptyField) firstEmptyField = textInput || inputField;
             isValid = false;
         } else if (inputField && errorField) {
             errorField.classList.remove('show');
             errorField.classList.add('hide');
-            if (textInput) {
-                textInput.classList.remove('error-input');
-            } else {
-                inputField.classList.remove('error-input');
-            }
+            (textInput || inputField).classList.remove('error-input');
         }
     });
 
@@ -51,6 +45,41 @@ function validateForm(event) {
     }
 
     if (!isValid) event.preventDefault();
+}
+
+function focusNextUnfilledField(currentField) {
+    const fields = [
+        document.getElementById('train-model-input'),
+        document.getElementById('date')
+    ];
+
+    const currentIndex = fields.indexOf(currentField);
+    if (currentIndex === -1) return;
+
+    for (let i = currentIndex + 1; i < fields.length; i++) {
+        const nextField = fields[i];
+        if (nextField && nextField.value.trim() === "") {
+            suppressEvents = true;
+            nextField.focus();
+            if (nextField.id === 'date') openMaterialCalendar();
+            setTimeout(() => suppressEvents = false, 300);
+            break;
+        }
+    }
+
+    if (currentIndex === 1) {
+        const prevField = fields[0];
+        if (prevField && prevField.value.trim() === "") {
+            suppressEvents = true;
+            prevField.focus();
+            const dropdownMenu = document.getElementById('train-model-menu');
+            if (dropdownMenu) {
+                dropdownMenu.style.display = 'block';
+                filterOptions(prevField.value);
+            }
+            setTimeout(() => suppressEvents = false, 300);
+        }
+    }
 }
 
 function setupTrainDropdown() {
@@ -96,21 +125,18 @@ function setupTrainDropdown() {
     function selectOption(option) {
         const value = option.dataset.value;
         textInput.value = value;
-
-        const modelMatch = value.match(/\((\d+)\)$/);
-        const modelNumber = modelMatch ? modelMatch[1] : "";
-
-        hiddenInput.value = modelNumber;
-
+        hiddenInput.value = value;
         allOptions.forEach(opt => opt.classList.remove('selected'));
         option.classList.add('selected');
         closeDropdown();
 
-        if (errorField && errorField.classList.contains('show')) {
+        if (errorField.classList.contains('show')) {
             errorField.classList.remove('show');
             errorField.classList.add('hide');
             textInput.classList.remove('error-input');
         }
+
+        focusNextUnfilledField(textInput);
     }
 
     function updateFocusedOption() {
@@ -124,14 +150,17 @@ function setupTrainDropdown() {
 
     textInput.addEventListener('input', () => {
         hiddenInput.value = textInput.value;
+        if (textInput.value.trim() === "") {
+            hiddenInput.value = "";
+            closeDropdown();
+            return;
+        }
         openDropdown();
     });
 
     textInput.addEventListener('focus', () => {
-        if (!focusDueToValidation) {
-            openDropdown();
-        }
-        focusDueToValidation = false; // reset after use
+        if (!focusDueToValidation) openDropdown();
+        focusDueToValidation = false;
     });
 
     textInput.addEventListener('keydown', (e) => {
@@ -164,17 +193,13 @@ function setupTrainDropdown() {
     });
 
     document.addEventListener('click', (e) => {
-        if (!dropdown.contains(e.target)) {
-            closeDropdown();
-        }
+        if (!dropdown.contains(e.target)) closeDropdown();
     });
 
     if (hiddenInput.value) {
         textInput.value = hiddenInput.value;
         const selectedOption = allOptions.find(opt => opt.dataset.value === hiddenInput.value);
-        if (selectedOption) {
-            selectedOption.classList.add('selected');
-        }
+        if (selectedOption) selectedOption.classList.add('selected');
     }
 }
 
@@ -217,11 +242,9 @@ function parseDate(dateStr) {
 }
 
 function isSameDate(d1, d2) {
-    return (
-        d1.getDate() === d2.getDate() &&
+    return d1.getDate() === d2.getDate() &&
         d1.getMonth() === d2.getMonth() &&
-        d1.getFullYear() === d2.getFullYear()
-    );
+        d1.getFullYear() === d2.getFullYear();
 }
 
 function addDays(date, days) {
@@ -236,8 +259,7 @@ function generateMaterialCalendar() {
     if (!calendarDays || !calendarTitle) return;
 
     calendarDays.innerHTML = "";
-    const options = { month: "long", year: "numeric" };
-    calendarTitle.textContent = calendarCurrentMonth.toLocaleDateString("en-US", options);
+    calendarTitle.textContent = calendarCurrentMonth.toLocaleDateString("en-US", { month: "long", year: "numeric" });
 
     const prevBtn = document.getElementById("prevMonthBtn");
     const nextBtn = document.getElementById("nextMonthBtn");
@@ -251,8 +273,8 @@ function generateMaterialCalendar() {
 
     const monthStart = new Date(calendarCurrentMonth.getFullYear(), calendarCurrentMonth.getMonth(), 1);
     const monthEnd = new Date(calendarCurrentMonth.getFullYear(), calendarCurrentMonth.getMonth() + 1, 0);
-
     const startWeekday = monthStart.getDay();
+
     for (let i = 0; i < startWeekday; i++) {
         const spacer = document.createElement("div");
         spacer.className = "calendar-day-spacer";
@@ -271,16 +293,16 @@ function generateMaterialCalendar() {
         const inRange = currentClone >= calendarMinDate && currentClone <= calendarMaxDate;
 
         if (!inRange) {
-            dayBtn.className += " disabled";
+            dayBtn.classList.add("disabled");
             dayBtn.disabled = true;
         }
 
         if (selectedDate && isSameDate(currentClone, selectedDate)) {
-            dayBtn.className += " selected";
+            dayBtn.classList.add("selected");
         }
 
         if (isSameDate(currentClone, calendarMinDate)) {
-            dayBtn.className += " today";
+            dayBtn.classList.add("today");
         }
 
         dayBtn.addEventListener("click", (e) => {
@@ -289,13 +311,13 @@ function generateMaterialCalendar() {
             if (inRange) {
                 input.value = formatDate(currentClone);
                 closeMaterialCalendar();
-
                 const dateError = document.getElementById('date-error');
-                if (dateError && dateError.classList.contains('show')) {
+                if (dateError.classList.contains('show')) {
                     dateError.classList.remove('show');
                     dateError.classList.add('hide');
                     input.classList.remove('error-input');
                 }
+                focusNextUnfilledField(input);
             }
         });
 
@@ -304,15 +326,19 @@ function generateMaterialCalendar() {
     }
 }
 
+let calendarJustOpened = false;
+
 function openMaterialCalendar() {
     const calendar = document.getElementById("materialCalendar");
     if (!calendar) return;
+    updateCalendarDates();
     calendar.style.display = "block";
     generateMaterialCalendar();
 
-    calendar.addEventListener("click", (e) => {
-        e.stopPropagation();
-    });
+    calendarJustOpened = true;
+    setTimeout(() => calendarJustOpened = false, 200);
+
+    calendar.addEventListener("click", (e) => e.stopPropagation());
 }
 
 function closeMaterialCalendar() {
@@ -331,7 +357,6 @@ function updateCalendarDates() {
     calendarMinDate = new Date(todayBST);
     calendarMaxDate = addDays(todayBST, DATE_LIMIT_DAYS - 1);
     calendarCurrentMonth = new Date(calendarMinDate.getFullYear(), calendarMinDate.getMonth(), 1);
-
     const calendar = document.getElementById("materialCalendar");
     if (calendar && calendar.style.display === "block") {
         generateMaterialCalendar();
@@ -343,9 +368,7 @@ function initMaterialCalendar() {
     updateCalendarDates();
 
     input.addEventListener("focus", () => {
-        if (!focusDueToValidation && input.value.trim() !== '') {
-            openMaterialCalendar();
-        }
+        if (!focusDueToValidation) openMaterialCalendar();
         focusDueToValidation = false;
     });
 
@@ -353,6 +376,7 @@ function initMaterialCalendar() {
 
     const prevBtn = document.getElementById("prevMonthBtn");
     const nextBtn = document.getElementById("nextMonthBtn");
+
     if (prevBtn) {
         prevBtn.addEventListener("click", () => {
             const prevMonth = new Date(calendarCurrentMonth.getFullYear(), calendarCurrentMonth.getMonth() - 1, 1);
@@ -362,6 +386,7 @@ function initMaterialCalendar() {
             }
         });
     }
+
     if (nextBtn) {
         nextBtn.addEventListener("click", () => {
             const nextMonth = new Date(calendarCurrentMonth.getFullYear(), calendarCurrentMonth.getMonth() + 1, 1);
@@ -380,29 +405,36 @@ function initMaterialCalendar() {
     }, 60000);
 }
 
-document.addEventListener("mousedown", (e) => {
+function setupCalendarBlurClose() {
     const calendar = document.getElementById("materialCalendar");
     const dateInput = document.getElementById("date");
 
-    if (!calendar.contains(e.target) && e.target !== dateInput && !dateInput.contains(e.target)) {
-        closeMaterialCalendar();
-    }
-});
+    if (!calendar || !dateInput) return;
 
-document.addEventListener("click", (e) => {
-    const calendar = document.getElementById("materialCalendar");
-    const dateInput = document.getElementById("date");
-
-    if (!calendar.contains(e.target) && e.target !== dateInput && !dateInput.contains(e.target)) {
-        closeMaterialCalendar();
+    function handleFocusOut(e) {
+        setTimeout(() => {
+            if (!calendar.contains(document.activeElement) && document.activeElement !== dateInput) {
+                closeMaterialCalendar();
+            }
+        }, 100);
     }
-});
+
+    dateInput.addEventListener("blur", handleFocusOut);
+    calendar.addEventListener("blur", handleFocusOut, true);
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     initMaterialCalendar();
+    setupCalendarBlurClose();
     setupTrainDropdown();
     const matrixForm = document.getElementById("matrixForm");
-    if (matrixForm) matrixForm.addEventListener("submit", validateForm);
+    if (matrixForm) matrixForm.addEventListener("submit", function (event) {
+        validateForm(event);
+        if (!event.defaultPrevented) {
+            showLoaderAndSubmit(event);
+        }
+    });
+
 
     const fields = [
         { id: 'train_model', errorId: 'train_model-error' },
@@ -414,23 +446,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const errorField = document.getElementById(field.errorId);
         const textInput = field.id === 'train_model' ? document.getElementById('train-model-input') : null;
         if (inputField && errorField) {
-            if (textInput) {
-                textInput.addEventListener('input', function () {
-                    if (errorField.classList.contains('show')) {
-                        errorField.classList.remove('show');
-                        errorField.classList.add('hide');
-                        textInput.classList.remove('error-input');
-                    }
-                });
-            } else {
-                inputField.addEventListener('input', function () {
-                    if (errorField.classList.contains('show')) {
-                        errorField.classList.remove('show');
-                        errorField.classList.add('hide');
-                        inputField.classList.remove('error-input');
-                    }
-                });
-            }
+            const fieldElement = textInput || inputField;
+            fieldElement.addEventListener('input', function () {
+                if (errorField.classList.contains('show')) {
+                    errorField.classList.remove('show');
+                    errorField.classList.add('hide');
+                    fieldElement.classList.remove('error-input');
+                }
+            });
             errorField.addEventListener('animationend', function (event) {
                 if (event.animationName === 'fadeOutScale') {
                     errorField.style.display = 'none';
@@ -438,14 +461,29 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
-
-    if (matrixForm) {
-        matrixForm.addEventListener("submit", () => {
-            const text = document.getElementById('train-model-input').value.trim();
-            const modelMatch = text.match(/\((\d+)\)$/);
-            const modelNumber = modelMatch ? modelMatch[1] : "";
-            document.getElementById('train_model').value = modelNumber;
-        });
-    }
-
 });
+
+function showLoaderAndSubmit(event) {
+    event.preventDefault();
+    const form = event.target;
+    const submitButton = form.querySelector('.btn-primary');
+    const searchIcon = submitButton.querySelector('.fa-calculator');
+
+    submitButton.disabled = true;
+    submitButton.style.opacity = '0.6';
+    submitButton.style.cursor = 'not-allowed';
+
+    if (searchIcon) {
+        searchIcon.remove();
+        const loader = document.createElement('span');
+        loader.className = 'button-loader';
+        for (let i = 0; i < 8; i++) {
+            const segment = document.createElement('span');
+            segment.className = 'loader-segment';
+            loader.appendChild(segment);
+        }
+        submitButton.prepend(loader);
+    }
+    
+    setTimeout(() => form.submit(), 50);
+}
