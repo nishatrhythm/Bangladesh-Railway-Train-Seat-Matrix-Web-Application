@@ -540,7 +540,7 @@ button:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    line-height: 1.6;
+    line-height: 1.5;
     gap: 10px;
     color: #e74c3c;
     background-color: #fdecea;
@@ -692,6 +692,104 @@ button:hover {
     text-decoration: underline;
 }
 
+.matrix-container {
+    font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
+    background-color: #f9fafb;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    width: 95%;
+    max-width: 1100px;
+    box-sizing: border-box;
+    text-align: center;
+    margin: 24px auto;
+    animation: fadeInUp 0.8s ease-in-out;
+}
+
+.date-header {
+    text-align: center;
+    background: linear-gradient(to bottom, #f2f6fa, #ffffff);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px 8px 0 0;
+    border-top: 3px solid #006747;
+    box-shadow: 0 2px 6px rgba(0, 103, 71, 0.1);
+    transition: box-shadow 0.3s;
+}
+
+.date-header:hover {
+    box-shadow: 0 4px 10px rgba(0, 103, 71, 0.15);
+}
+
+.date-header h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: #006747;
+    font-weight: 700;
+    display: inline-block;
+    padding: 4px 10px;
+    background-color: rgba(0, 103, 71, 0.1);
+    border-radius: 4px;
+}
+
+.date-header h2 i {
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.date-header p {
+    margin: 8px 0;
+    font-size: 16px;
+    color: #444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.date-header p i {
+    margin-right: 5px;
+    color: #006747;
+}
+
+.matrix-card {
+    background-color: #ffffff;
+    margin-bottom: 25px;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #006747;
+    animation: fadeInUp 0.8s ease-in-out;
+    transition: box-shadow 0.3s;
+}
+
+.matrix-card:hover {
+    box-shadow: 0 6px 16px rgba(0, 103, 71, 0.2);
+}
+
+.matrix-card h3 {
+    background-color: #f1f8f3;
+    color: #006747;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #006747;
+    font-weight: 700;
+    margin: 15px 0 10px;
+    display: inline-block;
+    box-shadow: 0 2px 4px rgba(0, 103, 71, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.matrix-card h3:hover {
+    background-color: #eaf4eb;
+    box-shadow: 0 4px 8px rgba(0, 103, 71, 0.2);
+}
+
+.matrix-card h3 i {
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
 ::selection {
     background-color: #aad2c1;
     color: #003a2c;
@@ -733,104 +831,7 @@ button:hover {
 }
 
 /* ------------------------------------ */
-/* Matrix Page Styles */
-.matrix-container {
-    font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
-    background-color: #f9fafb;
-    padding: 32px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    width: 95%;
-    max-width: 1100px;
-    box-sizing: border-box;
-    text-align: center;
-    margin: 24px auto;
-    animation: fadeInUp 0.8s ease-in-out;
-}
-
-.train-header {
-    text-align: center;
-    background: linear-gradient(to bottom, #f2f6fa, #ffffff);
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 8px 8px 0 0;
-    border-top: 3px solid #006747;
-    box-shadow: 0 2px 6px rgba(0, 103, 71, 0.1);
-    transition: box-shadow 0.3s;
-}
-
-.train-header:hover {
-    box-shadow: 0 4px 10px rgba(0, 103, 71, 0.15);
-}
-
-.train-header h2 {
-    font-size: 22px;
-    margin-bottom: 15px;
-    color: #006747;
-    font-weight: 700;
-    display: inline-block;
-    padding: 4px 10px;
-    background-color: rgba(0, 103, 71, 0.1);
-    border-radius: 4px;
-}
-
-.train-header h2 i {
-    margin-right: 8px;
-    vertical-align: middle;
-}
-
-.train-header p {
-    margin: 8px 0;
-    font-size: 16px;
-    color: #444;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-}
-
-.train-header p i {
-    margin-right: 5px;
-    color: #006747;
-}
-
-.train-card {
-    background-color: #ffffff;
-    margin-bottom: 25px;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    border: 1px solid #006747;
-    animation: fadeInUp 0.8s ease-in-out;
-    transition: box-shadow 0.3s;
-}
-
-.train-card:hover {
-    box-shadow: 0 6px 16px rgba(0, 103, 71, 0.2);
-}
-
-.train-card h3 {
-    background-color: #f1f8f3;
-    color: #006747;
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid #006747;
-    font-weight: 700;
-    margin: 15px 0 10px;
-    display: inline-block;
-    box-shadow: 0 2px 4px rgba(0, 103, 71, 0.1);
-    transition: background-color 0.3s, box-shadow 0.3s;
-}
-
-.train-card h3:hover {
-    background-color: #eaf4eb;
-    box-shadow: 0 4px 8px rgba(0, 103, 71, 0.2);
-}
-
-.train-card h3 i {
-    margin-right: 8px;
-    vertical-align: middle;
-}
+/* Table Design */
 
 .table-responsive {
     overflow-x: auto;
@@ -979,32 +980,6 @@ td.has-tooltip:hover .tooltip {
 }
 
 @media (max-width: 768px) {
-    .matrix-container {
-        padding: 20px;
-    }
-
-    .train-header {
-        padding: 16px;
-    }
-
-    .train-header h2 {
-        font-size: 20px;
-        padding: 4px 10px;
-    }
-
-    .train-header p {
-        font-size: 14px;
-    }
-
-    .train-card {
-        padding: 16px;
-    }
-
-    .train-card h3 {
-        font-size: 15px;
-        padding: 6px 12px;
-    }
-
     table {
         font-size: 13px;
     }
@@ -1031,30 +1006,6 @@ td.has-tooltip:hover .tooltip {
 }
 
 @media (max-width: 480px) {
-    .matrix-container {
-        padding: 16px;
-    }
-
-    .train-header {
-        padding: 12px;
-    }
-
-    .train-header h2 {
-        font-size: 18px;
-    }
-
-    .train-header p {
-        font-size: 13px;
-    }
-
-    .train-card {
-        padding: 12px;
-    }
-
-    .train-card h3 {
-        font-size: 14px;
-    }
-
     table {
         font-size: 12px;
     }
@@ -1174,6 +1125,32 @@ td.has-tooltip:hover .tooltip {
         font-size: 12px;
         padding: 8px 12px;
     }
+
+    .matrix-container {
+        padding: 20px;
+    }
+
+    .date-header {
+        padding: 16px;
+    }
+
+    .date-header h2 {
+        font-size: 20px;
+        padding: 4px 10px;
+    }
+
+    .date-header p {
+        font-size: 14px;
+    }
+
+    .matrix-card {
+        padding: 16px;
+    }
+
+    .matrix-card h3 {
+        font-size: 15px;
+        padding: 6px 12px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1235,5 +1212,29 @@ td.has-tooltip:hover .tooltip {
 
     .dropdown-option {
         padding: 6px 45px;
+    }
+
+    .matrix-container {
+        padding: 16px;
+    }
+
+    .date-header {
+        padding: 12px;
+    }
+
+    .date-header h2 {
+        font-size: 18px;
+    }
+
+    .date-header p {
+        font-size: 13px;
+    }
+
+    .matrix-card {
+        padding: 12px;
+    }
+
+    .matrix-card h3 {
+        font-size: 14px;
     }
 }

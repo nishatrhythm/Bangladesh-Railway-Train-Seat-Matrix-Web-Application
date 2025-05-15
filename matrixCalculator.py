@@ -55,25 +55,24 @@ def get_seat_availability(train_model: str, journey_date: str, from_city: str, t
 
 def compute_matrix(train_model: str, journey_date_str: str, api_date_format: str) -> dict:
     train_data = fetch_train_data(train_model, api_date_format)
-    if not train_data:
-        raise Exception("No train data found.")
+    if not train_data or not train_data.get("train_name") or not train_data.get("routes"):
+        raise Exception("No information found for this train. Please try another train or date.")
 
     stations = [r['city'] for r in train_data['routes']]
     days = train_data['days']
     train_name = train_data['train_name']
 
-    weekday = datetime.strptime(journey_date_str, "%d-%b-%Y").strftime("%a")
-    if weekday not in days:
-        raise Exception(f"The train '{train_name}' does not run on {weekday}.")
+    weekday_short = datetime.strptime(journey_date_str, "%d-%b-%Y").strftime("%a")
+    weekday_full = datetime.strptime(journey_date_str, "%d-%b-%Y").strftime("%A")
+    if weekday_short not in days:
+        raise Exception(f"{train_name} does not run on {weekday_full}.")
 
-    # Initialize matrix
     fare_matrices = {
         seat_type: {from_city: {} for from_city in stations} for seat_type in SEAT_TYPES
     }
 
     seat_type_has_data = {seat_type: False for seat_type in SEAT_TYPES}
 
-    # Multithreaded fetching
     with ThreadPoolExecutor(max_workers=10) as executor:
         futures = [
             executor.submit(get_seat_availability, train_model, journey_date_str, from_city, to_city)
