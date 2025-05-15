@@ -29,7 +29,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>From\To</th>
+                            <th>From → To</th>
                             {% for col in stations %}<th>{{ col }}</th>{% endfor %}
                         </tr>
                     </thead>
@@ -39,17 +39,22 @@
                             <td><strong>{{ from_station }}</strong></td>
                             {% for to_station in stations %}
                             {% if stations.index(from_station) >= stations.index(to_station) %}
-                            <td class="disabled-cell">—</td>
+                            <td class="disabled-cell"></td>
                             {% else %}
                             {% set cell = matrix[from_station].get(to_station) %}
                             {% if cell and (cell.online + cell.offline) > 0 %}
-                            <td class="available has-tooltip">
-                                {{ cell.online + cell.offline }}
-                                <span class="tooltip">Online: {{ cell.online }}, Offline: {{ cell.offline }}, Fare: {{
-                                    cell.fare }}</span>
+                            <td class="available">
+                                <div class="cell-content">
+                                    <span class="seat-count">{{ cell.online + cell.offline }}</span>
+                                    <span class="fare"><span class="taka-icon">৳</span><span class="fare-value">{{ (cell.fare + cell.vat_amount) | int }}</span></span>
+                                    <a href="https://eticket.railway.gov.bd/booking/train/search?fromcity={{ from_station }}&tocity={{ to_station }}&doj={{ date }}&class={{ seat_type }}"
+                                        class="buy-link" target="_blank">
+                                        <i class="fas fa-external-link-alt"></i> Buy
+                                    </a>
+                                </div>
                             </td>
                             {% else %}
-                            <td>-</td>
+                            <td class="disabled-cell"></td>
                             {% endif %}
                             {% endif %}
                             {% endfor %}
