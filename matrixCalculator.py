@@ -40,11 +40,15 @@ def get_seat_availability(train_model: str, journey_date: str, from_city: str, t
                 for seat in train.get("seat_types", []):
                     stype = seat["type"]
                     if stype in seat_info:
+                        fare = float(seat["fare"])
+                        vat_amount = float(seat["vat_amount"])
+                        if stype in ["AC_B", "F_BERTH"]:
+                            fare += 50
                         seat_info[stype] = {
                             "online": seat["seat_counts"]["online"],
                             "offline": seat["seat_counts"]["offline"],
-                            "fare": float(seat["fare"]),
-                            "vat_amount": float(seat["vat_amount"])
+                            "fare": fare,
+                            "vat_amount": vat_amount
                         }
                 return (from_city, to_city, seat_info)
 
