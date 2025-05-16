@@ -976,8 +976,8 @@ button:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
-    padding: 6px 0;
+    gap: 4px;
+    padding: 4px 0;
 }
 
 .matrix-card td.available .seat-count {
@@ -1137,7 +1137,7 @@ button:hover {
     }
 
     .matrix-container {
-        padding: 20px;
+        padding: 15px;
     }
 
     .date-header {
@@ -1173,6 +1173,34 @@ button:hover {
 
     .matrix-card tbody td {
         padding: 8px 6px;
+        font-size: 12px;
+    }
+
+    .matrix-card td.available .seat-count {
+        font-size: 16px;
+        padding: 3px 6px;
+    }
+
+    .matrix-card td.available {
+        padding: 6px 6px;
+    }
+
+    .matrix-card td.available .buy-link {
+        font-size: 11px;
+        padding: 3px 6px;
+        gap: 3px;
+    }
+
+    .matrix-card td.available .fare {
+        font-size: 11px;
+        padding: 2px 5px;
+    }
+
+    .matrix-card td.available .fare-value {
+        font-size: 11px;
+    }
+
+    .matrix-card td.available .taka-icon {
         font-size: 12px;
     }
 }
@@ -1244,10 +1272,12 @@ button:hover {
 
     .new-footer {
         font-size: 12px;
-    };
+    }
 
     .matrix-container {
-        padding: 16px;
+        padding: 10px;
+        margin: 0;
+        width: 100%;
     }
 
     .date-header {
@@ -1268,5 +1298,54 @@ button:hover {
 
     .matrix-card h3 {
         font-size: 14px;
+    }
+
+    .matrix-card td.available .seat-count {
+        font-size: 14px;
+        padding: 2px 5px;
+    }
+
+    .matrix-card td.available {
+        padding: 4px 4px;
+    }
+
+    .matrix-card td.available .buy-link {
+        font-size: 10px;
+        padding: 2px 5px;
+        gap: 2px;
+    }
+
+    .matrix-card td.available .fare {
+        font-size: 10px;
+        padding: 1px 4px;
+    }
+
+    .matrix-card td.available .fare-value {
+        font-size: 10px;
+    }
+
+    .matrix-card td.available .taka-icon {
+        font-size: 11px;
+    }
+
+    .matrix-card thead th:first-child,
+    .matrix-card tbody td:first-child {
+        white-space: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .matrix-card thead th:first-child {
+        font-size: 11px;
+        padding: 6px 4px;
+        min-width: 80px;
+        max-width: 80px;
+    }
+
+    .matrix-card tbody td:first-child {
+        font-size: 11px;
+        padding: 6px 4px;
+        min-width: 80px;
+        max-width: 80px;
     }
 }
