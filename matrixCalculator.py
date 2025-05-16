@@ -4,8 +4,7 @@ from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 SEAT_TYPES = [
-    "AC_B", "AC_S", "SNIGDHA", "F_BERTH", "F_SEAT", "F_CHAIR",
-    "S_CHAIR", "SHOVAN", "SHULOV", "AC_CHAIR"
+    "S_CHAIR", "SHOVAN", "SNIGDHA", "F_SEAT", "F_CHAIR", "AC_S", "F_BERTH", "AC_B", "SHULOV", "AC_CHAIR"
 ]
 
 def fetch_train_data(model: str, api_date: str) -> dict:
