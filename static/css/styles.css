@@ -31,6 +31,7 @@ h1 {
     font-family: 'Plus Jakarta Sans', sans-serif;
     color: rgb(0, 103, 71);
     font-weight: 800;
+    line-height: 1.5;
     margin: 30px 0px 40px;
     animation: fadeInTranslate 0.8s ease-out;
 }
@@ -273,7 +274,7 @@ input[readonly].error-input {
 .dropdown-option {
     padding: 10px 45px;
     font-size: 16px;
-    color: #333;
+    color: #006747;;
     cursor: pointer;
     text-align: left;
     transition: background-color 0.2s ease;
@@ -575,7 +576,7 @@ button:hover {
 .error-icon {
     color: #e74c3c;
     font-size: 18px;
-    margin-right: 4px;
+    margin-right: 6px;
     vertical-align: middle;
 }
 
@@ -818,6 +819,7 @@ button:hover {
     border-radius: 6px;
     border: 1px solid #006747;
     font-weight: 700;
+    font-size: 18px;
     margin: 15px 0 10px;
     display: inline-block;
     box-shadow: 0 2px 4px rgba(0, 103, 71, 0.1);
@@ -887,7 +889,6 @@ button:hover {
 
 .matrix-card table {
     width: 100%;
-    min-width: 1300px;
     table-layout: auto;
     position: relative;
     background-color: #fff;
@@ -937,8 +938,8 @@ button:hover {
     border: 1px solid #ffffff;
     border-right-width: 2px;
     z-index: 4;
-    min-width: 120px;
     box-sizing: border-box;
+    white-space: nowrap;
 }
 
 .matrix-card tbody td {
@@ -1130,11 +1131,6 @@ button:hover {
         width: 100%;
     }
 
-    .dropdown-option {
-        font-size: 14px;
-        padding: 8px 45px;
-    }
-
     .btn-primary {
         font-size: 12px;
         padding: 8px 12px;
@@ -1162,12 +1158,11 @@ button:hover {
     }
 
     .matrix-card h3 {
-        font-size: 15px;
+        font-size: 14px;
         padding: 6px 12px;
     }
 
     .matrix-card table {
-        min-width: 1000px;
         font-size: 12px;
     }
 
@@ -1240,8 +1235,16 @@ button:hover {
     }
 
     .dropdown-option {
-        padding: 6px 45px;
+        font-size: 14px;
     }
+
+    .error {
+        font-size: 14px;
+    }
+
+    .new-footer {
+        font-size: 12px;
+    };
 
     .matrix-container {
         padding: 16px;
