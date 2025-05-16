@@ -974,15 +974,10 @@ button:hover {
 }
 
 .matrix-card td.available {
-    background-color: #edf7ee !important;
     font-weight: 700;
     color: #006747;
     position: relative;
-    transition: background-color 0.3s ease;
-}
-
-.matrix-card td.available:hover {
-    background-color: #e1f0e3 !important;
+    padding: 8px;
 }
 
 .matrix-card td.available .cell-content {
@@ -991,6 +986,16 @@ button:hover {
     align-items: center;
     gap: 4px;
     padding: 4px 0;
+    background-color: #edf7ee;
+    border: 1px solid rgba(0, 103, 71, 0.2);
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 103, 71, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.matrix-card td.available .cell-content:hover {
+    background-color: #e1f0e3;
+    box-shadow: 0 2px 6px rgba(0, 103, 71, 0.15);
 }
 
 .matrix-card td.available .seat-count {
