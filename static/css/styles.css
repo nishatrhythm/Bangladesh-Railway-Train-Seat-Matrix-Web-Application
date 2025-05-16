@@ -978,6 +978,7 @@ button:hover {
     color: #006747;
     position: relative;
     padding: 8px;
+    background-color: #f4f6f7;
 }
 
 .matrix-card td.available .cell-content {
