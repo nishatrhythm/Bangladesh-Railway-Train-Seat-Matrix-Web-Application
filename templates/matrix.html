@@ -46,7 +46,8 @@
                             <td class="available">
                                 <div class="cell-content">
                                     <span class="seat-count">{{ cell.online + cell.offline }}</span>
-                                    <span class="fare"><span class="taka-icon">৳</span><span class="fare-value">{{ (cell.fare + cell.vat_amount) | int }}</span></span>
+                                    <span class="fare"><span class="taka-icon">৳</span><span class="fare-value">{{
+                                            (cell.fare + cell.vat_amount) | int }}</span></span>
                                     <a href="https://eticket.railway.gov.bd/booking/train/search?fromcity={{ from_station }}&tocity={{ to_station }}&doj={{ date }}&class={{ seat_type }}"
                                         class="buy-link" target="_blank">
                                         <i class="fas fa-external-link-alt"></i> Buy
@@ -72,6 +73,50 @@
         </a>
     </div>
     <script src="/static/js/script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const tables = document.querySelectorAll(".table-responsive");
+
+            tables.forEach(table => {
+                let isDown = false;
+                let startX;
+                let startY;
+                let scrollLeft;
+                let scrollTop;
+
+                table.addEventListener("mousedown", (e) => {
+                    isDown = true;
+                    table.classList.add("dragging");
+                    startX = e.pageX - table.offsetLeft;
+                    startY = e.pageY - table.offsetTop;
+                    scrollLeft = table.scrollLeft;
+                    scrollTop = table.scrollTop;
+                    e.preventDefault();
+                });
+
+                table.addEventListener("mouseleave", () => {
+                    isDown = false;
+                    table.classList.remove("dragging");
+                });
+
+                table.addEventListener("mouseup", () => {
+                    isDown = false;
+                    table.classList.remove("dragging");
+                });
+
+                table.addEventListener("mousemove", (e) => {
+                    if (!isDown) return;
+                    e.preventDefault();
+                    const x = e.pageX - table.offsetLeft;
+                    const y = e.pageY - table.offsetTop;
+                    const walkX = (x - startX);
+                    const walkY = (y - startY);
+                    table.scrollLeft = scrollLeft - walkX;
+                    table.scrollTop = scrollTop - walkY;
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
