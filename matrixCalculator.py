@@ -1,5 +1,5 @@
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -64,6 +64,31 @@ def compute_matrix(train_model: str, journey_date_str: str, api_date_format: str
     stations = [r['city'] for r in train_data['routes']]
     days = train_data['days']
     train_name = train_data['train_name']
+    routes = train_data['routes']
+    base_date = datetime.strptime(journey_date_str, "%d-%b-%Y")
+    current_date = base_date
+    previous_time = None
+    previous_day = current_date.day
+
+    for i, stop in enumerate(routes):
+        stop["display_date"] = None
+        time_str = stop.get("departure_time") or stop.get("arrival_time")
+
+        if time_str and "BST" in time_str:
+            time_clean = time_str.replace(" BST", "").strip()
+            try:
+                current_time = datetime.strptime(time_clean, "%I:%M %p")
+
+                if previous_time and current_time < previous_time:
+                    routes[i - 1]["display_date"] = current_date.strftime("%d %b")
+                    current_date += timedelta(days=1)
+                    stop["display_date"] = current_date.strftime("%d %b")
+
+                previous_time = current_time
+
+            except ValueError:
+                continue
+    total_duration = train_data.get('total_duration', 'N/A')
 
     weekday_short = datetime.strptime(journey_date_str, "%d-%b-%Y").strftime("%a")
     weekday_full = datetime.strptime(journey_date_str, "%d-%b-%Y").strftime("%A")
@@ -105,5 +130,8 @@ def compute_matrix(train_model: str, journey_date_str: str, api_date_format: str
         "stations": stations,
         "seat_types": SEAT_TYPES,
         "fare_matrices": fare_matrices,
-        "has_data_map": seat_type_has_data
+        "has_data_map": seat_type_has_data,
+        "routes": routes,
+        "days": days,
+        "total_duration": total_duration
     }

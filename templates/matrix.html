@@ -20,6 +20,125 @@
             <p><i class="fas fa-circle-info"></i> Showing only seat types with available seats.</p>
         </div>
 
+        <div class="matrix-card route-visualization-card">
+            <details class="route-collapse">
+                <summary class="route-toggle-btn">
+                    <span><i class="fas fa-route"></i> Train Route Overview</span>
+                    <i class="fas fa-chevron-down toggle-arrow"></i>
+                </summary>
+
+                <div class="route-body">
+                    <div class="route-train-header">
+                        <h3>{{ train_name }}</h3>
+                        <div class="run-days-list">
+                            <span class="run-days-title">Runs on:</span>
+                            {% for day in ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'] %}
+                            <span class="run-day {% if day not in days %}off{% endif %}">
+                                {{ day }}{% if day not in days %}<sup>(off)</sup>{% endif %}
+                            </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="station-timeline">
+                        {% for stop in routes %}
+                        <div class="station-item {% if loop.first %}start{% elif loop.last %}end{% endif %}">
+                            <div class="station-node">
+                                <div class="station-icon-circle">
+                                    <i class="fas fa-location-dot"></i>
+                                </div>
+                                {% if not loop.last %}
+                                <div class="station-line"></div>
+                                {% endif %}
+                            </div>
+                            <div class="station-info">
+                                <div class="station-header">
+                                    <div class="station-name">
+                                        {{ stop.city }}
+                                        {% if stop.display_date %}
+                                        <span class="station-date">{{ stop.display_date }}</span>
+                                        {% endif %}
+                                    </div>
+                                    {% if loop.first %}
+                                    <span class="station-type-label start">Start</span>
+                                    {% elif loop.last %}
+                                    <span class="station-type-label end">End</span>
+                                    {% endif %}
+                                </div>
+                                <div class="station-meta-row">
+                                    <div class="meta-item">
+                                        <strong>Arr:</strong>
+                                        {% if stop.arrival_time %}
+                                        {{ stop.arrival_time.replace(' BST', '') }}
+                                        {% else %}
+                                        ———
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="meta-item">
+                                        <strong>Dep:</strong>
+                                        {% if stop.departure_time %}
+                                        {{ stop.departure_time.replace(' BST', '') }}
+                                        {% else %}
+                                        ———
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="meta-item">
+                                        <strong>Halt:</strong>
+                                        {% if stop.halt and stop.halt != '---' %}
+                                        {{ stop.halt|int }} min
+                                        {% else %}
+                                        ———
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="meta-item">
+                                        <strong>Duration:</strong>
+                                        {% if stop.duration and stop.duration != '---' %}
+                                        {% set hours, minutes = stop.duration.split(':') %}
+                                        {% set h = hours|int %}
+                                        {% set m = minutes|int %}
+                                        {% if h > 0 and m > 0 %}
+                                        {{ h }} h {{ m }} min
+                                        {% elif h > 0 %}
+                                        {{ h }} h
+                                        {% elif m > 0 %}
+                                        {{ m }} min
+                                        {% else %}
+                                        ———
+                                        {% endif %}
+                                        {% else %}
+                                        ———
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="total-journey-time">
+                        <i class="fas fa-clock"></i> Total Duration:
+                        {% if total_duration %}
+                        {% set hours, minutes = total_duration.split(':') %}
+                        {% set h = hours|int %}
+                        {% set m = minutes|int %}
+                        {% if h > 0 and m > 0 %}
+                        {{ h }} h {{ m }} min
+                        {% elif h > 0 %}
+                        {{ h }} h
+                        {% else %}
+                        {{ m }} min
+                        {% endif %}
+                        {% else %}
+                        ———
+                        {% endif %}
+                    </div>
+                </div>
+            </details>
+        </div>
+
         {% for seat_type in seat_types %}
         {% if has_data_map[seat_type] %}
         {% set matrix = fare_matrices[seat_type] %}
@@ -113,6 +232,20 @@
                     const walkY = (y - startY);
                     table.scrollLeft = scrollLeft - walkX;
                     table.scrollTop = scrollTop - walkY;
+                });
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const toggleButtons = document.querySelectorAll('.route-toggle');
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const isExpanded = button.getAttribute('aria-expanded') === 'true';
+                    button.setAttribute('aria-expanded', !isExpanded);
+                    const content = button.nextElementSibling;
+                    content.style.display = isExpanded ? 'none' : 'block';
+                    button.querySelector('span').textContent = isExpanded ? 'Route Details' : 'Hide Details';
                 });
             });
         });
