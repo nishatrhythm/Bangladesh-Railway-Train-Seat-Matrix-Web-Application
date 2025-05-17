@@ -257,6 +257,63 @@
             details.addEventListener("toggle", updateText);
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const detailsElements = document.querySelectorAll('.route-visualization-card details');
+
+            detailsElements.forEach(details => {
+                const toggleBtn = details.querySelector('.route-toggle-btn');
+                const routeBody = details.querySelector('.route-body');
+
+                const updateContentHeight = () => {
+                    routeBody.style.height = 'auto';
+                    const height = routeBody.scrollHeight;
+                    routeBody.style.height = details.open ? `${height}px` : '0';
+                    return height;
+                };
+
+                requestAnimationFrame(() => {
+                    if (details.open) {
+                        routeBody.style.height = `${updateContentHeight()}px`;
+                        routeBody.style.opacity = '1';
+                    }
+                });
+
+                toggleBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+
+                    if (details.hasAttribute('open')) {
+                        routeBody.style.height = `${routeBody.scrollHeight}px`;
+                        requestAnimationFrame(() => {
+                            routeBody.style.height = '0';
+                            routeBody.style.opacity = '0';
+                        });
+                        setTimeout(() => {
+                            details.removeAttribute('open');
+                        }, 400);
+                    } else {
+                        details.setAttribute('open', '');
+                        routeBody.style.height = '0';
+                        routeBody.style.opacity = '0';
+                        requestAnimationFrame(() => {
+                            const height = routeBody.scrollHeight;
+                            routeBody.style.height = `${height}px`;
+                            routeBody.style.opacity = '1';
+                        });
+                        setTimeout(() => {
+                            routeBody.style.height = 'auto';
+                        }, 400);
+                    }
+                });
+                window.addEventListener('resize', () => {
+                    if (details.open) {
+                        routeBody.style.height = 'auto';
+                        routeBody.style.height = `${routeBody.scrollHeight}px`;
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

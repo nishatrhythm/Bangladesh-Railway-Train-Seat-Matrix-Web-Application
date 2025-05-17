@@ -809,6 +809,8 @@ button:hover {
     border: 1px solid #006747;
     animation: fadeInUp 0.8s ease-in-out;
     transition: box-shadow 0.3s;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-drag: none;
 }
 
 .route-card:hover {
@@ -883,6 +885,15 @@ details[open] .toggle-arrow {
     border-top: none;
     border-radius: 0 0 12px 12px;
     box-shadow: inset 0 2px 8px rgba(0, 103, 71, 0.04);
+    overflow: hidden;
+    height: 0;
+    opacity: 0;
+    transition: height 0.4s ease-in-out, opacity 0.4s ease-in-out;
+    will-change: height, opacity;
+}
+
+details[open] .route-body {
+    opacity: 1;
 }
 
 .run-days-list {
