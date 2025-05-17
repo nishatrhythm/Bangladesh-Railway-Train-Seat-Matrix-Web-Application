@@ -70,6 +70,8 @@ def compute_matrix(train_model: str, journey_date_str: str, api_date_format: str
     previous_time = None
     previous_day = current_date.day
 
+    MAX_REASONABLE_GAP_HOURS = 12
+
     for i, stop in enumerate(routes):
         stop["display_date"] = None
         time_str = stop.get("departure_time") or stop.get("arrival_time")
@@ -79,13 +81,19 @@ def compute_matrix(train_model: str, journey_date_str: str, api_date_format: str
             try:
                 current_time = datetime.strptime(time_clean, "%I:%M %p")
 
-                if previous_time and current_time < previous_time:
-                    routes[i - 1]["display_date"] = current_date.strftime("%d %b")
-                    current_date += timedelta(days=1)
-                    stop["display_date"] = current_date.strftime("%d %b")
+                if previous_time is not None:
+                    time_diff = (current_time - previous_time).total_seconds() / 3600
+                    if current_time < previous_time:
+                        time_diff = ((current_time + timedelta(days=1)) - previous_time).total_seconds() / 3600
+                        if time_diff < MAX_REASONABLE_GAP_HOURS:
+                            routes[i - 1]["display_date"] = current_date.strftime("%d %b")
+                            current_date += timedelta(days=1)
+                            stop["display_date"] = current_date.strftime("%d %b")
+                        else:
+                            hours = int(time_diff)
+                            minutes = int((time_diff - hours) * 60)
 
                 previous_time = current_time
-
             except ValueError:
                 continue
     total_duration = train_data.get('total_duration', 'N/A')
