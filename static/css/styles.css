@@ -785,19 +785,77 @@ button:hover {
     margin-right: 8px;
 }
 
-.date-header p {
-    margin: 8px 0;
-    font-size: 16px;
-    color: #444;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
+.travel-alert {
+    background: #ffede7;
+    border: 1px solid #ff8a65;
+    border-radius: 8px;
+    margin: 10px 0;
+    padding: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+    animation: fadeIn 0.5s ease-in-out;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.date-header p i {
-    margin-right: 5px;
-    color: #006747;
+.alert-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.alert-header i {
+    font-size: 18px;
+    color: #d84315;
+    margin-right: 8px;
+}
+
+.alert-header h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #d84315;
+    margin: 0;
+    letter-spacing: 0.02em;
+}
+
+.travel-alert p {
+    font-size: 14px;
+    color: #333333;
+    margin: 0 0 12px 0;
+    line-height: 1.5;
+    font-weight: 500;
+    text-align: justify;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.alert-tip {
+    display: flex;
+    align-items: center;
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    border-radius: 6px;
+    padding: 10px 14px;
+    transition: background-color 0.3s ease;
+}
+
+.alert-tip:hover {
+    background: #ffebb3;
+}
+
+.alert-tip i {
+    font-size: 16px;
+    color: #ff9800;
+    margin-right: 10px;
+}
+
+.alert-tip p {
+    font-size: 14px;
+    color: #333333;
+    margin: 0;
+    line-height: 1.5;
+    font-weight: 600;
+    text-align: justify;
+    font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .route-card {
@@ -1512,8 +1570,32 @@ details[open] .route-body {
         padding: 4px 10px;
     }
 
-    .date-header p {
+    .travel-alert {
+        padding: 12px;
+    }
+
+    .alert-header h3 {
+        font-size: 15px;
+    }
+
+    .alert-header i {
+        font-size: 16px;
+    }
+
+    .travel-alert p {
+        font-size: 13px;
+    }
+
+    .alert-tip {
+        padding: 8px 12px;
+    }
+
+    .alert-tip i {
         font-size: 14px;
+    }
+
+    .alert-tip p {
+        font-size: 13px;
     }
 
     .route-train-header h3 {
@@ -1767,8 +1849,24 @@ details[open] .route-body {
         font-size: 18px;
     }
 
-    .date-header p {
-        font-size: 13px;
+    .travel-alert {
+        padding: 10px;
+    }
+
+    .alert-header h3 {
+        font-size: 14px;
+    }
+
+    .alert-header i {
+        font-size: 15px;
+    }
+
+    .travel-alert p {
+        font-size: 12px;
+    }
+
+    .alert-tip p {
+        font-size: 12px;
     }
 
     .route-card h3 {

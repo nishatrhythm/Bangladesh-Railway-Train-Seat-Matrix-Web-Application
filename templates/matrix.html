@@ -17,7 +17,22 @@
 
         <div class="date-header">
             <h2><i class="fas fa-calendar-alt"></i> Journey Date: {{ date }}</h2>
-            <p><i class="fas fa-circle-info"></i> Showing only seat types with available seats.</p>
+            {% if has_segmented_dates %}
+            <div class="travel-alert">
+                <div class="alert-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Notice about Journey Date</h3>
+                </div>
+                <p>This train departs from the starting station on {{ date }}, but reaches some stations after midnight
+                    on {{ next_day_str }}. As a result, ticket availability for those segments may appear under the next
+                    day's date ({{ next_day_str }}).</p>
+                <div class="alert-tip">
+                    <i class="fas fa-lightbulb"></i>
+                    <p>Tip: To see early morning arrivals on {{ date }}, try searching with {{ prev_day_str }} as your
+                        journey date.</p>
+                </div>
+            </div>
+            {% endif %}
         </div>
 
         <div class="route-card route-visualization-card">
@@ -162,12 +177,14 @@
                             {% else %}
                             {% set cell = matrix[from_station].get(to_station) %}
                             {% if cell and (cell.online + cell.offline) > 0 %}
+                            {# Convert station_dates[from_station] (YYYY-MM-DD) to DD-MMM-YYYY #}
+                            {% set doj = station_dates_formatted.get(from_station, date) %}
                             <td class="available">
                                 <div class="cell-content">
                                     <span class="seat-count">{{ cell.online + cell.offline }}</span>
                                     <span class="fare"><span class="taka-icon">৳</span><span class="fare-value">{{
                                             (cell.fare + cell.vat_amount) | int }}</span></span>
-                                    <a href="https://eticket.railway.gov.bd/booking/train/search?fromcity={{ from_station }}&tocity={{ to_station }}&doj={{ date }}&class={{ seat_type }}"
+                                    <a href="https://eticket.railway.gov.bd/booking/train/search?fromcity={{ from_station }}&tocity={{ to_station }}&doj={{ doj }}&class={{ seat_type }}"
                                         class="buy-link" target="_blank">
                                         <i class="fas fa-external-link-alt"></i> Buy
                                     </a>

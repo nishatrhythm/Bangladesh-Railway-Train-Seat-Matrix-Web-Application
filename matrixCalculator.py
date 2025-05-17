@@ -68,10 +68,10 @@ def compute_matrix(train_model: str, journey_date_str: str, api_date_format: str
     base_date = datetime.strptime(journey_date_str, "%d-%b-%Y")
     current_date = base_date
     previous_time = None
-    previous_day = current_date.day
 
     MAX_REASONABLE_GAP_HOURS = 12
 
+    station_dates = {}
     for i, stop in enumerate(routes):
         stop["display_date"] = None
         time_str = stop.get("departure_time") or stop.get("arrival_time")
@@ -79,7 +79,16 @@ def compute_matrix(train_model: str, journey_date_str: str, api_date_format: str
         if time_str and "BST" in time_str:
             time_clean = time_str.replace(" BST", "").strip()
             try:
-                current_time = datetime.strptime(time_clean, "%I:%M %p")
+                hour_min, am_pm = time_clean.split(' ')
+                hour, minute = map(int, hour_min.split(':'))
+                am_pm = am_pm.lower()
+
+                if am_pm == "pm" and hour != 12:
+                    hour += 12
+                elif am_pm == "am" and hour == 12:
+                    hour = 0
+
+                current_time = timedelta(hours=hour, minutes=minute)
 
                 if previous_time is not None:
                     time_diff = (current_time - previous_time).total_seconds() / 3600
@@ -94,8 +103,11 @@ def compute_matrix(train_model: str, journey_date_str: str, api_date_format: str
                             minutes = int((time_diff - hours) * 60)
 
                 previous_time = current_time
-            except ValueError:
+            except Exception:
                 continue
+
+        station_dates[stop['city']] = current_date.strftime("%Y-%m-%d")
+
     total_duration = train_data.get('total_duration', 'N/A')
 
     weekday_short = datetime.strptime(journey_date_str, "%d-%b-%Y").strftime("%a")
@@ -111,7 +123,13 @@ def compute_matrix(train_model: str, journey_date_str: str, api_date_format: str
 
     with ThreadPoolExecutor(max_workers=10) as executor:
         futures = [
-            executor.submit(get_seat_availability, train_model, journey_date_str, from_city, to_city)
+            executor.submit(
+                get_seat_availability,
+                train_model,
+                datetime.strptime(station_dates[from_city], "%Y-%m-%d").strftime("%d-%b-%Y"),
+                from_city,
+                to_city
+            )
             for i, from_city in enumerate(stations)
             for j, to_city in enumerate(stations)
             if i < j
@@ -130,6 +148,22 @@ def compute_matrix(train_model: str, journey_date_str: str, api_date_format: str
 
     if not any(seat_type_has_data.values()):
         raise Exception("No seats available for the selected train and date. Please try a different date or train.")
+    
+    station_dates_formatted = {
+        station: datetime.strptime(date_str, "%Y-%m-%d").strftime("%d-%b-%Y")
+        for station, date_str in station_dates.items()
+    }
+
+    unique_dates = set(station_dates.values())
+    has_segmented_dates = len(unique_dates) > 1
+    next_day_str = ""
+    prev_day_str = ""
+    if has_segmented_dates:
+        date_obj = datetime.strptime(journey_date_str, "%d-%b-%Y")
+        next_day_obj = date_obj + timedelta(days=1)
+        prev_day_obj = date_obj - timedelta(days=1)
+        next_day_str = next_day_obj.strftime("%d-%b-%Y")
+        prev_day_str = prev_day_obj.strftime("%d-%b-%Y")
 
     return {
         "train_model": train_model,
@@ -141,5 +175,10 @@ def compute_matrix(train_model: str, journey_date_str: str, api_date_format: str
         "has_data_map": seat_type_has_data,
         "routes": routes,
         "days": days,
-        "total_duration": total_duration
+        "total_duration": total_duration,
+        "station_dates": station_dates,
+        "station_dates_formatted": station_dates_formatted,
+        "has_segmented_dates": has_segmented_dates,
+        "next_day_str": next_day_str,
+        "prev_day_str": prev_day_str,
     }
