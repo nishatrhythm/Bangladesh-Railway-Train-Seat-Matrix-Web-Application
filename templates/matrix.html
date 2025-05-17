@@ -23,13 +23,13 @@
         <div class="route-card route-visualization-card">
             <details class="route-collapse">
                 <summary class="route-toggle-btn">
-                    <span><i class="fas fa-route"></i> Train Route Overview</span>
+                    <span class="route-toggle-text"><i class="fas fa-route"></i> Expand to view Train Route</span>
                     <i class="fas fa-chevron-down toggle-arrow"></i>
                 </summary>
 
                 <div class="route-body">
                     <div class="route-train-header">
-                        <h3>{{ train_name }}</h3>
+                        <h3><i class="fas fa-subway"></i> {{ train_name }}</h3>
                         <div class="run-days-list">
                             <span class="run-days-title">Runs on:</span>
                             {% for day in ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'] %}
@@ -67,7 +67,7 @@
                                 </div>
                                 <div class="station-meta-row">
                                     <div class="meta-item">
-                                        <strong>Arr:</strong>
+                                        <strong>Arrival:</strong>
                                         {% if stop.arrival_time %}
                                         {{ stop.arrival_time.replace(' BST', '') }}
                                         {% else %}
@@ -76,7 +76,7 @@
                                     </div>
 
                                     <div class="meta-item">
-                                        <strong>Dep:</strong>
+                                        <strong>Departure:</strong>
                                         {% if stop.departure_time %}
                                         {{ stop.departure_time.replace(' BST', '') }}
                                         {% else %}
@@ -238,16 +238,23 @@
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const toggleButtons = document.querySelectorAll('.route-toggle');
-            toggleButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const isExpanded = button.getAttribute('aria-expanded') === 'true';
-                    button.setAttribute('aria-expanded', !isExpanded);
-                    const content = button.nextElementSibling;
-                    content.style.display = isExpanded ? 'none' : 'block';
-                    button.querySelector('span').textContent = isExpanded ? 'Route Details' : 'Hide Details';
-                });
-            });
+            const details = document.querySelector(".route-collapse");
+            const textSpan = details.querySelector(".route-toggle-text");
+            const icon = details.querySelector(".toggle-arrow");
+
+            const updateText = () => {
+                if (details.open) {
+                    textSpan.innerHTML = '<i class="fas fa-route"></i> Collapse to hide Train Route';
+                    icon.style.transform = "rotate(180deg)";
+                } else {
+                    textSpan.innerHTML = '<i class="fas fa-route"></i> Expand to view Train Route';
+                    icon.style.transform = "rotate(0deg)";
+                }
+            };
+
+            updateText();
+
+            details.addEventListener("toggle", updateText);
         });
     </script>
 </body>

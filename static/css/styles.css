@@ -543,7 +543,7 @@ button:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    line-height: 1;
+    line-height: 1.5;
     gap: 10px;
     color: #e74c3c;
     background-color: #fdecea;
@@ -578,7 +578,6 @@ button:hover {
     color: #e74c3c;
     font-size: 18px;
     margin-right: 6px;
-    vertical-align: middle;
 }
 
 .animated-fade-in {
@@ -752,6 +751,10 @@ button:hover {
     animation: fadeInUp 0.8s ease-in-out;
 }
 
+.matrix-container h1 {
+    line-height: 1.5;
+}
+
 .date-header {
     text-align: center;
     background: linear-gradient(to bottom, #f2f6fa, #ffffff);
@@ -780,7 +783,6 @@ button:hover {
 
 .date-header h2 i {
     margin-right: 8px;
-    vertical-align: middle;
 }
 
 .date-header p {
@@ -795,6 +797,327 @@ button:hover {
 
 .date-header p i {
     margin-right: 5px;
+    color: #006747;
+}
+
+.route-card {
+    background-color: #ffffff;
+    margin-bottom: 25px;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #006747;
+    animation: fadeInUp 0.8s ease-in-out;
+    transition: box-shadow 0.3s;
+}
+
+.route-card:hover {
+    box-shadow: 0 6px 16px rgba(0, 103, 71, 0.2);
+}
+
+.route-train-header h3 {
+    background-color: #f1f8f3;
+    color: #006747;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #006747;
+    font-weight: 700;
+    font-size: 18px;
+    margin: 15px 0 10px;
+    display: inline-block;
+    box-shadow: 0 2px 4px rgba(0, 103, 71, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.route-train-header h3:hover {
+    background-color: #eaf4eb;
+    box-shadow: 0 4px 8px rgba(0, 103, 71, 0.2);
+}
+
+.route-train-header h3 i {
+    margin-right: 8px;
+}
+
+.route-visualization-card {
+    margin-bottom: 32px;
+    padding: 0;
+    background: transparent;
+}
+
+.route-toggle-btn {
+    font-size: 16px;
+    font-weight: 700;
+    color: #006747;
+    cursor: pointer;
+    padding: 18px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f1f8f3;
+    border-radius: 10px;
+    border: 1px solid #d9e8e0;
+    transition: background-color 0.3s;
+}
+
+.route-toggle-btn:hover {
+    background-color: #e6f0ea;
+}
+
+.route-toggle-text i {
+    margin-right: 6px;
+}
+
+.toggle-arrow {
+    font-size: 18px;
+    transition: transform 0.3s ease;
+}
+
+details[open] .toggle-arrow {
+    transform: rotate(180deg);
+}
+
+.route-body {
+    background-color: #ffffff;
+    padding: 24px;
+    border: 1px solid #e8ecef;
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    box-shadow: inset 0 2px 8px rgba(0, 103, 71, 0.04);
+}
+
+.run-days-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    margin: 16px 0 24px 0;
+}
+
+.run-days-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #006747;
+    margin-bottom: 4px;
+    letter-spacing: 0.3px;
+    text-align: center;
+    display: block;
+}
+
+.run-day {
+    padding: 6px 12px;
+    background-color: #eaf4eb;
+    border-radius: 20px;
+    font-weight: 600;
+    color: #006747;
+    transition: background-color 0.3s ease;
+}
+
+.run-day.off {
+    background-color: #fef1f0;
+    color: #c0392b;
+}
+
+.run-day sup {
+    font-size: 10px;
+    vertical-align: super;
+    opacity: 0.9;
+}
+
+.station-timeline {
+    position: relative;
+    padding: 0 40px;
+}
+
+.station-timeline::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    margin-top: 25px;
+    height: calc(100% - 100px);
+    bottom: 0;
+    left: 56px;
+    width: 1px;
+    background: linear-gradient(to bottom,
+            #006747 50%,
+            transparent 50%);
+    background-size: 2px 8px;
+    background-repeat: repeat-y;
+    z-index: 1;
+}
+
+.station-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 32px;
+    position: relative;
+}
+
+.station-node {
+    position: relative;
+    margin-top: 12px;
+    z-index: 2;
+    width: 32px;
+    height: 32px;
+    margin-right: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.station-icon-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: 2px solid #006747;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #006747;
+    z-index: 3;
+    box-sizing: border-box;
+    box-shadow: 0 0 0 4px #ffffff,  Ascendant;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    overflow: hidden;
+    padding: 0;
+}
+
+.station-icon-circle i {
+    font-size: 14px;
+    line-height: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+.station-item.start .station-icon-circle {
+    background-color: #006747;
+    margin-right: -2px;
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 0 0 4px #ffffff, 0 4px 12px rgba(0, 103, 71, 0.3);
+}
+
+.station-item.end .station-icon-circle {
+    background-color: #c0392b;
+    margin-right: -2px;
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 0 0 4px #ffffff, 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.station-info {
+    background: #f9fafb;
+    padding: 16px 20px;
+    border-radius: 10px;
+    width: 100%;
+    border: 1px solid #e8ecef;
+    transition: background-color 0.3s ease;
+}
+
+.station-info:hover {
+    background: #f4f6f8;
+}
+
+.station-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.station-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #006747;
+}
+
+.station-date {
+    font-size: 12px;
+    font-weight: 600;
+    color: #006747;
+    background-color: #eaf4eb;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-left: 8px;
+    display: inline-block;
+    border: 1px solid #c5ded5;
+}
+
+.station-type-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #006747;
+    padding: 4px 10px;
+    border-radius: 12px;
+}
+
+.station-type-label.end {
+    background-color: #c0392b;
+}
+
+.station-meta-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px 16px;
+    font-size: 14px;
+    color: #333333;
+}
+
+.meta-item {
+    background: #ffffff;
+    border: 1px solid #e8ecef;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 500;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.3s ease;
+}
+
+.meta-item strong {
+    color: #006747;
+}
+
+.meta-item:hover {
+    background: #f1f8f3;
+}
+
+.total-journey-time {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin: 24px auto 0;
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #006747;
+    background-color: #f1f8f3;
+    border: 1px solid #e8ecef;
+    border-radius: 12px;
+    width: fit-content;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.3s ease;
+}
+
+.total-journey-time:hover {
+    background-color: #eaf4eb;
+}
+
+.total-journey-time i {
+    font-size: 16px;
     color: #006747;
 }
 
@@ -834,7 +1157,6 @@ button:hover {
 
 .matrix-card h3 i {
     margin-right: 8px;
-    vertical-align: middle;
 }
 
 ::selection {
@@ -1068,331 +1390,6 @@ button:hover {
     border: 1px solid rgba(0, 103, 71, 0.15);
 }
 
-/* --------------------------------- */
-/* route visualization */
-
-.route-card {
-    background-color: #ffffff;
-    margin-bottom: 25px;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    border: 1px solid #006747;
-    animation: fadeInUp 0.8s ease-in-out;
-    transition: box-shadow 0.3s;
-}
-
-.route-card:hover {
-    box-shadow: 0 6px 16px rgba(0, 103, 71, 0.2);
-}
-
-.route-card h3 {
-    background-color: #f1f8f3;
-    color: #006747;
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid #006747;
-    font-weight: 700;
-    font-size: 18px;
-    margin: 15px 0 10px;
-    display: inline-block;
-    box-shadow: 0 2px 4px rgba(0, 103, 71, 0.1);
-    transition: background-color 0.3s, box-shadow 0.3s;
-}
-
-.route-card h3:hover {
-    background-color: #eaf4eb;
-    box-shadow: 0 4px 8px rgba(0, 103, 71, 0.2);
-}
-
-.route-card h3 i {
-    margin-right: 8px;
-    vertical-align: middle;
-}
-
-.route-visualization-card {
-    margin-bottom: 32px;
-    padding: 0;
-    background: transparent;
-}
-
-.route-toggle-btn {
-    font-size: 16px;
-    font-weight: 700;
-    color: #006747;
-    cursor: pointer;
-    padding: 18px 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #f1f8f3;
-    border-radius: 10px;
-    border: 1px solid #d9e8e0;
-    transition: background-color 0.3s;
-}
-
-.route-toggle-btn:hover {
-    background-color: #e6f0ea;
-}
-
-.toggle-arrow {
-    font-size: 18px;
-    transition: transform 0.3s ease;
-}
-
-details[open] .toggle-arrow {
-    transform: rotate(180deg);
-}
-
-.route-body {
-    background-color: #ffffff;
-    padding: 24px;
-    border: 1px solid #e8ecef;
-    border-top: none;
-    border-radius: 0 0 12px 12px;
-    box-shadow: inset 0 2px 8px rgba(0, 103, 71, 0.04);
-}
-
-.route-train-header h3 {
-    font-size: 20px;
-    font-weight: 800;
-    color: #006747;
-    margin-bottom: 12px;
-    letter-spacing: 0.5px;
-}
-
-.run-days-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-    font-size: 14px;
-    margin: 16px 0 24px 0;
-}
-
-.run-days-title {
-    font-weight: 600;
-    color: #333333;
-    font-size: 14px;
-}
-
-.run-day {
-    padding: 6px 12px;
-    background-color: #eaf4eb;
-    border-radius: 20px;
-    font-weight: 600;
-    color: #006747;
-    transition: background-color 0.3s ease;
-}
-
-.run-day.off {
-    background-color: #fef1f0;
-    color: #c0392b;
-}
-
-.run-day sup {
-    font-size: 10px;
-    vertical-align: super;
-    opacity: 0.9;
-}
-
-.station-timeline {
-    position: relative;
-    padding: 0 40px;
-}
-
-.station-timeline::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    margin-top: 25px;
-    height: calc(100% - 100px);
-    bottom: 0;
-    left: 56px;
-    width: 1px;
-    background: linear-gradient(to bottom,
-            #006747 50%,
-            transparent 50%);
-    background-size: 2px 8px;
-    background-repeat: repeat-y;
-    z-index: 1;
-}
-
-.station-item {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 32px;
-    position: relative;
-}
-
-.station-node {
-    position: relative;
-    margin-top: 12px;
-    z-index: 2;
-    width: 32px;
-    height: 32px;
-    margin-right: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.station-icon-circle {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background-color: #ffffff;
-    border: 2px solid #006747;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #006747;
-    z-index: 3;
-    box-sizing: border-box;
-    box-shadow: 0 0 0 4px #ffffff, 0 2px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-    flex-shrink: 0;
-    overflow: hidden;
-    padding: 0;
-}
-
-.station-icon-circle i {
-    font-size: 14px;
-    line-height: 1;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-}
-
-.station-item.start .station-icon-circle {
-    background-color: #006747;
-    margin-right: -2px;
-    color: #ffffff;
-    border: none;
-    box-shadow: 0 0 0 4px #ffffff, 0 4px 12px rgba(0, 103, 71, 0.3);
-}
-
-.station-item.end .station-icon-circle {
-    background-color: #c0392b;
-    margin-right: -2px;
-    color: #ffffff;
-    border: none;
-    box-shadow: 0 0 0 4px #ffffff, 0 4px 12px rgba(231, 76, 60, 0.3);
-}
-
-.station-info {
-    background: #f9fafb;
-    padding: 16px 20px;
-    border-radius: 10px;
-    width: 100%;
-    border: 1px solid #e8ecef;
-    transition: background-color 0.3s ease;
-}
-
-.station-info:hover {
-    background: #f4f6f8;
-}
-
-.station-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.station-name {
-    font-size: 16px;
-    font-weight: 700;
-    color: #006747;
-}
-
-.station-date {
-    font-size: 12px;
-    font-weight: 600;
-    color: #006747;
-    background-color: #eaf4eb;
-    padding: 4px 10px;
-    border-radius: 20px;
-    margin-left: 8px;
-    display: inline-block;
-    border: 1px solid #c5ded5;
-}
-
-.station-type-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: #ffffff;
-    background-color: #006747;
-    padding: 4px 10px;
-    border-radius: 12px;
-}
-
-.station-type-label.end {
-    background-color: #c0392b;
-}
-
-.station-meta-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 12px 16px;
-    font-size: 14px;
-    color: #333333;
-}
-
-.meta-item {
-    background: #ffffff;
-    border: 1px solid #e8ecef;
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-weight: 500;
-    display: flex;
-    gap: 6px;
-    align-items: center;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    transition: background-color 0.3s ease;
-}
-
-.meta-item strong {
-    color: #006747;
-}
-
-.meta-item:hover {
-    background: #f1f8f3;
-}
-
-.total-journey-time {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    margin: 24px auto 0;
-    padding: 12px 24px;
-    font-size: 15px;
-    font-weight: 700;
-    color: #006747;
-    background-color: #f1f8f3;
-    border: 1px solid #e8ecef;
-    border-radius: 12px;
-    width: fit-content;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    transition: background-color 0.3s ease;
-}
-
-.total-journey-time:hover {
-    background-color: #eaf4eb;
-}
-
-.total-journey-time i {
-    font-size: 16px;
-    color: #006747;
-}
-
 @media (max-width: 1100px) {
     .station-meta-row {
         grid-template-columns: repeat(2, minmax(140px, 1fr));
@@ -1402,32 +1399,6 @@ details[open] .toggle-arrow {
         height: calc(100% - 140px);
     }
 }
-
-@media (max-width: 768px) {
-    .station-meta-row {
-        grid-template-columns: 1fr;
-    }
-
-    .station-timeline::before {
-        height: calc(100% - 240px);
-    }
-}
-
-@media (max-width: 480px) {
-    .route-body {
-        padding: 15px;
-    }
-
-    .station-timeline {
-        padding: 0 5px;
-    }
-
-    .station-timeline::before {
-        left: 21px;
-    }
-}
-
-/* --------------------------------- */
 
 @media (max-width: 768px) {
     .container {
@@ -1531,6 +1502,122 @@ details[open] .toggle-arrow {
     }
 
     .date-header p {
+        font-size: 14px;
+    }
+
+    .route-train-header h3 {
+        font-size: 14px;
+        padding: 6px 10px;
+        margin: 12px 0 8px;
+    }
+
+    .route-visualization-card {
+        margin-bottom: 24px;
+    }
+
+    .route-toggle-btn {
+        font-size: 14px;
+        padding: 12px 16px;
+    }
+
+    .toggle-arrow {
+        font-size: 16px;
+    }
+
+    .route-body {
+        padding: 16px;
+    }
+
+    .run-days-list {
+        gap: 8px;
+        font-size: 12px;
+        margin: 12px 0 16px;
+    }
+
+    .run-days-title {
+        font-size: 12px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .run-day {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+
+    .run-day sup {
+        font-size: 8px;
+    }
+
+    .station-item {
+        margin-bottom: 24px;
+    }
+
+    .station-node {
+        margin-top: 8px;
+        width: 28px;
+        height: 28px;
+        margin-right: 12px;
+    }
+
+    .station-icon-circle {
+        width: 28px;
+        height: 28px;
+    }
+
+    .station-icon-circle i {
+        font-size: 12px;
+    }
+
+    .station-info {
+        padding: 12px 16px;
+    }
+
+    .station-header {
+        margin-bottom: 8px;
+    }
+
+    .station-name {
+        font-size: 16px;
+    }
+
+    .station-date {
+        font-size: 12px;
+        padding: 3px 8px;
+        margin-left: 6px;
+    }
+
+    .station-type-label {
+        font-size: 10px;
+        padding: 3px 8px;
+    }
+
+    .station-meta-row {
+        grid-template-columns: 1fr;
+        gap: 8px 12px;
+        font-size: 14px;
+    }
+
+    .station-timeline::before {
+        height: calc(100% - 200px);
+    }
+
+    .station-timeline::before {
+        left: 54px;
+    }
+
+    .meta-item {
+        padding: 6px 10px;
+    }
+
+    .total-journey-time {
+        margin: 16px auto 0;
+        padding: 8px 16px;
+        font-size: 13px;
+        gap: 6px;
+    }
+
+    .total-journey-time i {
         font-size: 14px;
     }
 
@@ -1671,6 +1758,131 @@ details[open] .toggle-arrow {
 
     .date-header p {
         font-size: 13px;
+    }
+
+    .route-card h3 {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+
+    .route-visualization-card {
+        margin-bottom: 20px;
+    }
+
+    .route-toggle-btn {
+        font-size: 13px;
+        padding: 10px 12px;
+    }
+
+    .toggle-arrow {
+        font-size: 14px;
+    }
+
+    .route-body {
+        padding: 15px;
+    }
+
+    .route-train-header h3 {
+        font-size: 14px;
+    }
+
+    .run-days-list {
+        gap: 6px;
+        font-size: 11px;
+        margin: 8px 0 12px;
+    }
+
+    .run-days-title {
+        font-size: 11px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .run-day {
+        padding: 3px 6px;
+        font-size: 11px;
+    }
+
+    .run-day sup {
+        font-size: 7px;
+    }
+
+    .station-item {
+        margin-bottom: 20px;
+    }
+
+    .station-node {
+        margin-top: 6px;
+        width: 24px;
+        height: 24px;
+        margin-right: 10px;
+    }
+
+    .station-icon-circle {
+        width: 24px;
+        height: 24px;
+    }
+
+    .station-icon-circle i {
+        font-size: 10px;
+    }
+
+    .station-info {
+        padding: 10px 12px;
+    }
+
+    .station-header {
+        margin-bottom: 6px;
+    }
+
+    .station-name {
+        font-size: 14px;
+    }
+
+    .station-date {
+        font-size: 11px;
+        padding: 2px 6px;
+        margin-left: 4px;
+    }
+
+    .station-type-label {
+        font-size: 9px;
+        padding: 2px 6px;
+    }
+
+    .station-meta-row {
+        gap: 6px 8px;
+        font-size: 12px;
+    }
+
+    .meta-item {
+        padding: 4px 8px;
+    }
+
+    .total-journey-time {
+        padding: 6px 12px;
+        font-size: 12px;
+        gap: 4px;
+    }
+
+    .total-journey-time i {
+        font-size: 12px;
+    }
+
+    .station-timeline {
+        padding: 0 5px;
+    }
+
+    .station-timeline::before {
+        left: 17px;
+    }
+
+    .station-timeline::before {
+        height: calc(100% - 170px);
+    }
+
+    .station-node {
+        margin-top: 8px;
     }
 
     .matrix-card {
