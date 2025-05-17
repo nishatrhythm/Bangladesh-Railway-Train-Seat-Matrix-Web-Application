@@ -31,7 +31,7 @@ h1 {
     font-family: 'Plus Jakarta Sans', sans-serif;
     color: rgb(0, 103, 71);
     font-weight: 800;
-    line-height: 1.5;
+    line-height: 1;
     margin: 30px 0px 40px;
     animation: fadeInTranslate 0.8s ease-out;
 }
@@ -274,7 +274,8 @@ input[readonly].error-input {
 .dropdown-option {
     padding: 10px 45px;
     font-size: 16px;
-    color: #006747;;
+    color: #006747;
+    ;
     cursor: pointer;
     text-align: left;
     transition: background-color 0.2s ease;
@@ -542,7 +543,7 @@ button:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    line-height: 1.5;
+    line-height: 1;
     gap: 10px;
     color: #e74c3c;
     background-color: #fdecea;
@@ -1069,8 +1070,48 @@ button:hover {
 
 /* --------------------------------- */
 /* route visualization */
+
+.route-card {
+    background-color: #ffffff;
+    margin-bottom: 25px;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #006747;
+    animation: fadeInUp 0.8s ease-in-out;
+    transition: box-shadow 0.3s;
+}
+
+.route-card:hover {
+    box-shadow: 0 6px 16px rgba(0, 103, 71, 0.2);
+}
+
+.route-card h3 {
+    background-color: #f1f8f3;
+    color: #006747;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #006747;
+    font-weight: 700;
+    font-size: 18px;
+    margin: 15px 0 10px;
+    display: inline-block;
+    box-shadow: 0 2px 4px rgba(0, 103, 71, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.route-card h3:hover {
+    background-color: #eaf4eb;
+    box-shadow: 0 4px 8px rgba(0, 103, 71, 0.2);
+}
+
+.route-card h3 i {
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
 .route-visualization-card {
-    margin-bottom: 30px;
+    margin-bottom: 32px;
     padding: 0;
     background: transparent;
 }
@@ -1106,17 +1147,18 @@ details[open] .toggle-arrow {
 .route-body {
     background-color: #ffffff;
     padding: 24px;
-    border: 1px solid #d9e8e0;
+    border: 1px solid #e8ecef;
     border-top: none;
-    border-radius: 0 0 10px 10px;
-    box-shadow: inset 0 2px 8px rgba(0, 103, 71, 0.05);
+    border-radius: 0 0 12px 12px;
+    box-shadow: inset 0 2px 8px rgba(0, 103, 71, 0.04);
 }
 
 .route-train-header h3 {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 800;
     color: #006747;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
 }
 
 .run-days-list {
@@ -1124,60 +1166,63 @@ details[open] .toggle-arrow {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     font-size: 14px;
     margin: 16px 0 24px 0;
 }
 
 .run-days-title {
     font-weight: 600;
-    color: #006747;
+    color: #333333;
     font-size: 14px;
 }
 
 .run-day {
-    padding: 4px 10px;
+    padding: 6px 12px;
     background-color: #eaf4eb;
     border-radius: 20px;
     font-weight: 600;
     color: #006747;
+    transition: background-color 0.3s ease;
 }
 
 .run-day.off {
-    background-color: #fdecea;
+    background-color: #fef1f0;
     color: #c0392b;
+}
+
+.run-day sup {
+    font-size: 10px;
+    vertical-align: super;
+    opacity: 0.9;
 }
 
 .station-timeline {
     position: relative;
-    padding-left: 30px;
-    padding-right: 30px;
+    padding: 0 40px;
 }
 
 .station-timeline::before {
     content: "";
     position: absolute;
     top: 0;
-    height: calc(100% - 60px);
+    margin-top: 25px;
+    height: calc(100% - 100px);
     bottom: 0;
-    margin-top: 12px;
-    left: 43px;
-    width: 1.5px;
-    background-image: repeating-linear-gradient(
-        to bottom,
-        #c5ded5,
-        #c5ded5 4px,
-        transparent 4px,
-        transparent 8px
-    );
+    left: 56px;
+    width: 1px;
+    background: linear-gradient(to bottom,
+            #006747 50%,
+            transparent 50%);
+    background-size: 2px 8px;
     background-repeat: repeat-y;
-    z-index: 0;
+    z-index: 1;
 }
 
 .station-item {
     display: flex;
     align-items: flex-start;
-    margin-bottom: 40px;
+    margin-bottom: 32px;
     position: relative;
 }
 
@@ -1185,18 +1230,17 @@ details[open] .toggle-arrow {
     position: relative;
     margin-top: 12px;
     z-index: 2;
-    width: 30px;
-    height: 30px;
-    margin-right: 14px;
+    width: 32px;
+    height: 32px;
+    margin-right: 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 .station-icon-circle {
-    width: 28px;
-    height: 28px;
-    margin-right: 2px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background-color: #ffffff;
     border: 2px solid #006747;
@@ -1204,29 +1248,42 @@ details[open] .toggle-arrow {
     align-items: center;
     justify-content: center;
     color: #006747;
-    font-size: 14px;
     z-index: 3;
-    box-shadow: 0 0 0 3px #ffffff;
+    box-sizing: border-box;
+    box-shadow: 0 0 0 4px #ffffff, 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    overflow: hidden;
+    padding: 0;
+}
+
+.station-icon-circle i {
+    font-size: 14px;
+    line-height: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
 }
 
 .station-item.start .station-icon-circle {
     background-color: #006747;
-    color: white;
+    margin-right: -2px;
+    color: #ffffff;
     border: none;
-    box-shadow:
-        0 0 0 3px #ffffff,
-        0 0 12px rgba(46, 204, 113, 0.4),
-        0 4px 12px rgba(46, 204, 113, 0.3);
+    box-shadow: 0 0 0 4px #ffffff, 0 4px 12px rgba(0, 103, 71, 0.3);
 }
 
 .station-item.end .station-icon-circle {
     background-color: #c0392b;
-    color: white;
+    margin-right: -2px;
+    color: #ffffff;
     border: none;
-    box-shadow:
-        0 0 0 3px #ffffff,
-        0 0 12px rgba(231, 76, 60, 0.4),
-        0 4px 12px rgba(231, 76, 60, 0.3);
+    box-shadow: 0 0 0 4px #ffffff, 0 4px 12px rgba(231, 76, 60, 0.3);
 }
 
 .station-info {
@@ -1234,14 +1291,19 @@ details[open] .toggle-arrow {
     padding: 16px 20px;
     border-radius: 10px;
     width: 100%;
-    box-shadow: 0 2px 6px rgba(0, 103, 71, 0.05);
+    border: 1px solid #e8ecef;
+    transition: background-color 0.3s ease;
+}
+
+.station-info:hover {
+    background: #f4f6f8;
 }
 
 .station-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .station-name {
@@ -1252,24 +1314,23 @@ details[open] .toggle-arrow {
 
 .station-date {
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 600;
     color: #006747;
     background-color: #eaf4eb;
     padding: 4px 10px;
     border-radius: 20px;
     margin-left: 8px;
     display: inline-block;
-    box-shadow: inset 0 0 0 1px #c5ded5;
+    border: 1px solid #c5ded5;
 }
 
 .station-type-label {
     font-size: 12px;
-    font-weight: 700;
-    color: white;
+    font-weight: 600;
+    color: #ffffff;
     background-color: #006747;
-    padding: 2px 8px;
+    padding: 4px 10px;
     border-radius: 12px;
-    margin-left: 10px;
 }
 
 .station-type-label.end {
@@ -1278,22 +1339,31 @@ details[open] .toggle-arrow {
 
 .station-meta-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 10px 16px;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px 16px;
     font-size: 14px;
-    color: #444;
+    color: #333333;
 }
 
 .meta-item {
     background: #ffffff;
-    border: 1px solid #dfeee9;
-    padding: 6px 10px;
+    border: 1px solid #e8ecef;
+    padding: 8px 12px;
     border-radius: 8px;
     font-weight: 500;
     display: flex;
-    gap: 4px;
+    gap: 6px;
     align-items: center;
-    box-shadow: 0 1px 2px rgba(0, 103, 71, 0.05);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.3s ease;
+}
+
+.meta-item strong {
+    color: #006747;
+}
+
+.meta-item:hover {
+    background: #f1f8f3;
 }
 
 .total-journey-time {
@@ -1301,16 +1371,16 @@ details[open] .toggle-arrow {
     justify-content: center;
     align-items: center;
     gap: 8px;
-    margin: 32px auto 0;
-    padding: 12px 20px;
+    margin: 24px auto 0;
+    padding: 12px 24px;
     font-size: 15px;
     font-weight: 700;
     color: #006747;
     background-color: #f1f8f3;
-    border: 1px solid #d9e8e0;
+    border: 1px solid #e8ecef;
     border-radius: 12px;
     width: fit-content;
-    box-shadow: 0 2px 4px rgba(0, 103, 71, 0.06);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     transition: background-color 0.3s ease;
 }
 
@@ -1320,8 +1390,41 @@ details[open] .toggle-arrow {
 
 .total-journey-time i {
     font-size: 16px;
-    margin-right: 4px;
     color: #006747;
+}
+
+@media (max-width: 1100px) {
+    .station-meta-row {
+        grid-template-columns: repeat(2, minmax(140px, 1fr));
+    }
+
+    .station-timeline::before {
+        height: calc(100% - 140px);
+    }
+}
+
+@media (max-width: 768px) {
+    .station-meta-row {
+        grid-template-columns: 1fr;
+    }
+
+    .station-timeline::before {
+        height: calc(100% - 240px);
+    }
+}
+
+@media (max-width: 480px) {
+    .route-body {
+        padding: 15px;
+    }
+
+    .station-timeline {
+        padding: 0 5px;
+    }
+
+    .station-timeline::before {
+        left: 21px;
+    }
 }
 
 /* --------------------------------- */
