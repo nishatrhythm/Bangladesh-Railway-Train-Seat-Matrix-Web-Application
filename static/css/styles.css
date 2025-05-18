@@ -1068,19 +1068,19 @@ details[open] .route-body {
 }
 
 .station-item.start .station-icon-circle {
-    background-color: #006747;
+    background-color: #2196F3;
     margin-right: -2px;
     color: #ffffff;
     border: none;
-    box-shadow: 0 0 0 4px #ffffff, 0 4px 12px rgba(0, 103, 71, 0.3);
+    box-shadow: 0 0 0 4px #ffffff, 0 4px 12px rgba(33, 150, 243, 0.3);
 }
 
 .station-item.end .station-icon-circle {
-    background-color: #c0392b;
+    background-color: #9C27B0;
     margin-right: -2px;
     color: #ffffff;
     border: none;
-    box-shadow: 0 0 0 4px #ffffff, 0 4px 12px rgba(231, 76, 60, 0.3);
+    box-shadow: 0 0 0 4px #ffffff, 0 4px 12px rgba(156, 39, 176, 0.3);
 }
 
 .station-info {
@@ -1112,13 +1112,13 @@ details[open] .route-body {
 .station-date {
     font-size: 12px;
     font-weight: 600;
-    color: #006747;
-    background-color: #eaf4eb;
+    color: #e65100; /* Deep amber text */
+    background-color: #fff4e5; /* Soft amber background */
     padding: 4px 10px;
     border-radius: 20px;
     margin-left: 8px;
     display: inline-block;
-    border: 1px solid #c5ded5;
+    border: 1px solid #ffe0b2; /* Lighter amber border */
 }
 
 .station-type-label {
@@ -1127,11 +1127,17 @@ details[open] .route-body {
     color: #ffffff;
     background-color: #006747;
     padding: 4px 10px;
-    border-radius: 12px;
+    border-radius: 14px;
+}
+
+.station-type-label.start {
+    background-color: #2196F3;
+    border: 2px solid #ffffff;
 }
 
 .station-type-label.end {
-    background-color: #c0392b;
+    background-color: #9C27B0;
+    border: 2px solid #ffffff;
 }
 
 .station-meta-row {
