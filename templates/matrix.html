@@ -21,14 +21,12 @@
             <div class="travel-alert">
                 <div class="alert-header">
                     <i class="fas fa-exclamation-triangle"></i>
-                    <h3>Notice about Journey Date</h3>
+                    <h3>Date Selection for Overnight Journey</h3>
                 </div>
-                <p>This train departs from the starting station on {{ date }}, but reaches some stations after midnight
-                    on {{ next_day_str }}. As a result, ticket availability for those segments may appear under the next
-                    day's date ({{ next_day_str }}).</p>
+                <p>This train departs from its origin station on {{ date }}, but reaches certain stations after midnight — in the early hours of {{ next_day_str }}. Ticket availability for those post-midnight arrivals may appear under {{ next_day_str }}.</p>
                 <div class="alert-tip">
                     <i class="fas fa-lightbulb"></i>
-                    <p>Tip: To see early morning arrivals on {{ date }}, try searching with {{ prev_day_str }} as your
+                    <p>Tip: To find tickets for arrivals early on {{ date }}, try searching with {{ prev_day_str }} as your
                         journey date.</p>
                 </div>
             </div>

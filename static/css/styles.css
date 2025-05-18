@@ -786,8 +786,8 @@ button:hover {
 }
 
 .travel-alert {
-    background: #ffede7;
-    border: 1px solid #ff8a65;
+    background: #fff4e5;
+    border: 1px solid #ff9800;
     border-radius: 8px;
     margin: 10px 0;
     padding: 16px;
@@ -795,7 +795,7 @@ button:hover {
     box-sizing: border-box;
     text-align: left;
     animation: fadeIn 0.5s ease-in-out;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .alert-header {
@@ -806,14 +806,14 @@ button:hover {
 
 .alert-header i {
     font-size: 18px;
-    color: #d84315;
+    color: #e65100;
     margin-right: 8px;
 }
 
 .alert-header h3 {
     font-size: 16px;
     font-weight: 700;
-    color: #d84315;
+    color: #e65100;
     margin: 0;
     letter-spacing: 0.02em;
 }
@@ -831,20 +831,20 @@ button:hover {
 .alert-tip {
     display: flex;
     align-items: center;
-    background: #fff8e1;
-    border: 1px solid #ffe082;
+    background: #fefbe9;
+    border: 1px solid #fce7a2;
     border-radius: 6px;
     padding: 10px 14px;
     transition: background-color 0.3s ease;
 }
 
 .alert-tip:hover {
-    background: #ffebb3;
+    background: #fdf6d5;
 }
 
 .alert-tip i {
     font-size: 16px;
-    color: #ff9800;
+    color: #e0ac00;
     margin-right: 10px;
 }
 
