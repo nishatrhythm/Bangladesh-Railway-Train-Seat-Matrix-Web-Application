@@ -275,7 +275,6 @@ input[readonly].error-input {
     padding: 10px 45px;
     font-size: 16px;
     color: #006747;
-    ;
     cursor: pointer;
     text-align: left;
     transition: background-color 0.2s ease;
@@ -737,6 +736,46 @@ button:hover {
     text-decoration: underline;
 }
 
+.footer-links {
+    width: 100%;
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: #2c3e50;
+    letter-spacing: 0.01em;
+    user-select: none;
+    animation: fadeInUp 1.2s ease-in-out;
+    background: rgba(44, 62, 80, 0.025);
+    border-radius: 0;
+    padding: 14px 0 12px 0;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.03);
+}
+
+.footer-links a {
+    color: rgb(0, 103, 71);
+    text-decoration: none;
+    font-weight: 700;
+    margin: 0 4px;
+    transition: color 0.2s, text-decoration 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-drag: none;
+}
+
+.footer-links a:hover {
+    color: rgb(0, 85, 58);
+    text-decoration: underline;
+}
+
+.footer-links .dot {
+    margin: 0 8px;
+    color: #b1bac4;
+    font-weight: bold;
+    font-size: 15px;
+    pointer-events: none;
+    user-select: none;
+}
+
 .matrix-container {
     font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
     background-color: #f9fafb;
@@ -1047,7 +1086,7 @@ details[open] .route-body {
     color: #006747;
     z-index: 3;
     box-sizing: border-box;
-    box-shadow: 0 0 0 4px #ffffff,  Ascendant;
+    box-shadow: 0 0 0 4px #ffffff, Ascendant;
     transition: transform 0.3s ease;
     flex-shrink: 0;
     overflow: hidden;
@@ -1112,13 +1151,13 @@ details[open] .route-body {
 .station-date {
     font-size: 12px;
     font-weight: 600;
-    color: #e65100; /* Deep amber text */
-    background-color: #fff4e5; /* Soft amber background */
+    color: #e65100;
+    background-color: #fff4e5;
     padding: 4px 10px;
     border-radius: 20px;
     margin-left: 8px;
     display: inline-block;
-    border: 1px solid #ffe0b2; /* Lighter amber border */
+    border: 1px solid #ffe0b2;
 }
 
 .station-type-label {
@@ -1465,6 +1504,582 @@ details[open] .route-body {
     border: 1px solid rgba(0, 103, 71, 0.15);
 }
 
+.ca-check-availability-section {
+    background: linear-gradient(180deg, #ffffff, #f9fafb);
+    padding: 28px;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0, 103, 71, 0.1);
+    border: 1px solid rgba(0, 103, 71, 0.15);
+    margin: 24px 0;
+    animation: fadeInUp 0.8s ease-in-out;
+    transition: box-shadow 0.3s ease;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.ca-check-availability-section:hover {
+    box-shadow: 0 8px 20px rgba(0, 103, 71, 0.15);
+}
+
+.ca-check-availability-section h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #006747;
+    margin-bottom: 24px;
+    padding: 8px 16px;
+    background: rgba(0, 103, 71, 0.08);
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ca-availability-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.ca-form-row {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    animation: fadeInUp 0.8s ease-in-out;
+}
+
+.ca-form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background-color: #f1f8f3;
+    padding: 10px;
+    border-radius: 12px;
+}
+
+.ca-form-group.ca-submit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding-top: 20px;
+    background-color: transparent;
+}
+
+.ca-form-group.ca-submit-btn .ca-btn-primary {
+    background-color: #006747;
+    width: 100%;
+    height: 45px;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    animation: fadeIn 0.6s ease-in-out;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-drag: none;
+}
+
+.ca-form-group.ca-submit-btn .ca-btn-primary:hover {
+    background-color: #004f3a;
+    transform: scale(1.01);
+}
+
+.ca-btn-primary i {
+    margin-right: 5px;
+}
+
+.ca-form-group label {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    color: rgb(0, 103, 71);
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.ca-input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.ca-input-with-icon input {
+    width: 100%;
+    border: 1px solid #bdc3c7;
+    border-radius: 10px;
+    font-size: 16px;
+    background-color: #ecf0f1;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    height: 45px;
+    box-sizing: border-box;
+    padding-left: 45px;
+    padding-right: 12px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: #1a3c34;
+}
+
+.ca-input-with-icon input::placeholder {
+    color: #999;
+    font-size: 16px;
+    text-align: left;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.ca-input-with-icon input:focus {
+    border-color: rgb(0, 103, 71);
+    box-shadow: 0 0 8px rgba(0, 103, 71, 0.3);
+    outline: none;
+}
+
+.ca-input-with-icon input[readonly] {
+    cursor: pointer;
+    background-color: #ecf0f1;
+}
+
+.ca-input-with-icon input.error-input {
+    border-color: #c0392b;
+    box-shadow: 0 0 8px rgba(192, 57, 43, 0.3);
+}
+
+.ca-input-with-icon input.error-input::placeholder {
+    color: #c0392b !important;
+}
+
+.ca-input-with-icon input[readonly].error-input {
+    color: #c0392b;
+}
+
+.ca-input-icon {
+    position: absolute;
+    left: 15px;
+    font-size: 20px;
+    color: #006747;
+    pointer-events: none;
+    line-height: 45px;
+}
+
+.ca-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid rgba(0, 103, 71, 0.15);
+    border-radius: 10px;
+    box-shadow: 0 6px 16px rgba(0, 103, 71, 0.15);
+    max-height: 180px;
+    overflow-y: auto;
+    z-index: 1000;
+    margin-top: 6px;
+    animation: slideIn 0.3s ease-out;
+}
+
+.ca-dropdown-menu.fade-out {
+    animation: slideOut 0.2s ease-in;
+}
+
+.ca-dropdown-option {
+    padding: 10px 45px;
+    font-size: 16px;
+    color: #006747;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.ca-dropdown-option:hover,
+.ca-dropdown-option.selected {
+    background: #f1f8f3;
+}
+
+.ca-error-message {
+    color: #c0392b;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 5px;
+    display: none;
+    text-align: left;
+    animation-duration: 0.5s;
+    animation-fill-mode: both;
+}
+
+.ca-error-message.show {
+    display: block;
+    animation-name: fadeInScale;
+}
+
+.ca-error-message.hide {
+    animation-name: fadeOutScale;
+}
+
+.swap-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(0, 103, 71);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s;
+    margin-top: auto;
+    margin-bottom: auto;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.swap-icon {
+    font-size: 20px;
+    color: #ffffff;
+}
+
+.swap-icon-wrapper.rotate {
+    transform: rotate(180deg) scale(1.1);
+    background-color: rgb(0, 85, 58);
+}
+
+.ca-form-group.ca-submit-btn {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.ca-btn-primary.buy-link {
+    padding: 13px 28px;
+    font-size: 16px;
+    background: #006747;
+    color: #fff !important;
+    border-radius: 8px;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    text-decoration: none !important;
+    box-shadow: 0 2px 8px rgba(22, 163, 74, 0.07);
+    transition: background 0.2s, box-shadow 0.2s;
+    font-weight: 600;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-drag: none;
+}
+
+.ca-btn-primary.buy-link:hover {
+    background: #004f3a;
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.14);
+}
+
+.ca-route-results {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.ca-route-result-card {
+    background: #f9fafb;
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 103, 71, 0.1);
+    margin-bottom: 24px;
+    box-shadow: 0 4px 12px rgba(0, 103, 71, 0.08);
+    transition: box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.ca-route-result-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 103, 71, 0.15);
+}
+
+.ca-route-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 10px 10px 0 0;
+    margin: -24px -24px 20px -24px;
+    line-height: 1.4;
+    position: relative;
+    z-index: 1;
+}
+
+.ca-route-badge::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.1;
+    z-index: -1;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.3), transparent);
+}
+
+.ca-route-badge.direct {
+    background: linear-gradient(135deg, #16a34a, #15803d);
+}
+
+.ca-route-badge.segmented {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+}
+
+.ca-route-badge.mixed {
+    background: linear-gradient(135deg, #a21caf, #7c3aed);
+}
+
+.ca-seat-type-label {
+    font-size: 13px;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.3);
+    padding: 5px 12px;
+    border-radius: 14px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.ca-route-segment {
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 103, 71, 0.06);
+}
+
+.ca-route-segment:not(:last-child)+.ca-route-segment::before {
+    content: '\f063';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    top: -36px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #006747;
+    font-size: 20px;
+    background: #e9f8f2;
+    padding: 12px 14px;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 103, 71, 0.08);
+    z-index: 2;
+    border: 2px solid #fff;
+    transition: background 0.3s, color 0.3s;
+}
+
+.ca-route-segment-header {
+    font-size: 16px;
+    font-weight: 700;
+    color: #006747;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.ca-route-segment-date {
+    font-size: 13px;
+    font-weight: 600;
+    color: #e65100;
+    background: #fff4e5;
+    padding: 5px 12px;
+    border-radius: 14px;
+    line-height: 1.5;
+}
+
+.bdt {
+    font-size: 15px;
+    color: #006747;
+}
+
+.ca-fare-breakdown {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 15px;
+    color: #1a3c34;
+    margin-bottom: 20px;
+    background: #f1f8f3;
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 103, 71, 0.15);
+}
+
+.ca-fare-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    padding: 8px 14px;
+    background: #ffffff;
+    border-radius: 8px;
+    flex: 1;
+    min-width: 140px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.ca-fare-item i {
+    color: #006747;
+    font-size: 16px;
+}
+
+.ca-fare-item strong {
+    color: #006747;
+    font-weight: 600;
+}
+
+.ca-fare-item-total {
+    font-weight: 700;
+}
+
+.ca-ticket-action {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    background: #f1f8f3;
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 103, 71, 0.15);
+    margin-bottom: 20px;
+}
+
+.ca-ticket-availability {
+    font-size: 15px;
+    font-weight: 600;
+    color: #006747;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #ffffff;
+    padding: 10px 16px;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    flex: 1;
+    min-width: 140px;
+}
+
+.ca-ticket-availability i {
+    font-size: 16px;
+}
+
+.ca-ticket-availability span {
+    background: #edf7ee;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.ca-grand-total {
+    font-size: 16px;
+    font-weight: 800;
+    color: #006747;
+    background: #e8f0ec;
+    padding: 12px 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: fit-content;
+    margin: 18px auto 0;
+    box-shadow: none;
+    border: 1px solid #d2d9de;
+    transition: background 0.2s, border 0.2s;
+}
+
+.ca-grand-total:hover {
+    background: #dde7e1;
+    border-color: #c4d4c5;
+}
+
+.ca-grand-total i {
+    font-size: 17px;
+    color: #006747;
+}
+
+.ca-no-route-message,
+.ca-invalid-route-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.5;
+    gap: 10px;
+    color: #e74c3c;
+    background-color: #fdecea;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    animation: shake 0.6s ease-in-out;
+}
+
+.ca-no-route-message i,
+.ca-invalid-route-message i {
+    color: #e74c3c;
+    font-size: 18px;
+    margin-right: 6px;
+}
+
+.ca-info-text {
+    margin-top: 14px;
+    color: #4e5d6c;
+    font-size: 12px;
+    background: #f8fafc;
+    border: 1px solid #e3e8ef;
+    padding: 8px 16px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    line-height: 1.5;
+    font-weight: 400;
+    box-shadow: 0 2px 8px rgba(33,103,71,0.04);
+}
+
+.ca-info-text i {
+    color: #006747;
+    font-size: 12px;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
 @media (max-width: 1100px) {
     .station-meta-row {
         grid-template-columns: repeat(2, minmax(140px, 1fr));
@@ -1521,6 +2136,15 @@ details[open] .route-body {
     .new-footer {
         padding: 15px 0px;
         margin-top: 30px;
+    }
+
+    .footer-links {
+        padding: 12px 0 10px 0;
+    }
+
+    .footer-links a,
+    .footer-links .dot {
+        margin: 0 3px;
     }
 
     .calendar-dialog {
@@ -1770,6 +2394,139 @@ details[open] .route-body {
     .matrix-card td.available .taka-icon {
         font-size: 12px;
     }
+
+    .ca-check-availability-section {
+        padding: 24px;
+        margin: 20px 0;
+    }
+
+    .ca-check-availability-section h2 {
+        font-size: 20px;
+    }
+
+    .ca-form-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .ca-form-group {
+        min-width: 100%;
+    }
+
+    .swap-icon-wrapper {
+        margin: 5px auto;
+        transform: rotate(90deg);
+        transition: transform 0.4s ease;
+    }
+
+    .swap-icon-wrapper.rotate {
+        transform: rotate(270deg);
+    }
+
+    .ca-form-group.ca-submit-btn {
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 0;
+        padding-right: 0;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .ca-form-group.ca-submit-btn .ca-btn-primary {
+        width: 100%;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    .ca-route-results {
+        margin-top: 16px;
+    }
+
+    .ca-route-result-card {
+        padding: 20px 10px;
+    }
+
+    .ca-route-badge {
+        font-size: 15px;
+        padding: 15px 40px;
+    }
+
+    .ca-seat-type-label {
+        font-size: 12px;
+    }
+
+    .ca-route-segment {
+        padding: 16px;
+    }
+
+    .bdt {
+        font-size: 12px;
+    }
+
+    .ca-route-segment-header {
+        font-size: 15px;
+    }
+
+    .ca-route-segment-date {
+        font-size: 12px;
+    }
+
+    .ca-fare-breakdown,
+    .ca-ticket-action {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        gap: 0;
+        padding: 8px;
+    }
+
+    .ca-fare-item,
+    .ca-ticket-availability {
+        width: 100%;
+        min-width: 0;
+        font-size: 12px;
+        margin-bottom: 12px;
+        box-sizing: border-box;
+        flex: none;
+        padding: 8px 16px;
+    }
+
+    .ca-fare-item:last-child,
+    .ca-ticket-availability:last-child {
+        margin-bottom: 0;
+    }
+
+    .ca-ticket-availability span {
+        padding: 3px 7px;
+        font-size: 12px;
+    }
+
+    .ca-btn-primary.buy-link {
+        font-size: 15px;
+        width: 100%;
+        margin-bottom: 0;
+        padding: 10px 0;
+        justify-content: center;
+    }
+
+    .ca-btn-primary.buy-link i {
+        font-size: 15px;
+    }
+
+    .ca-grand-total {
+        font-size: 15px;
+        padding: 8px 16px;
+    }
+
+    .ca-grand-total i {
+        font-size: 15px;
+    }
+
+    .ca-no-route-message,
+    .ca-invalid-route-message {
+        font-size: 14px;
+        padding: 16px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1839,6 +2596,22 @@ details[open] .route-body {
 
     .new-footer {
         font-size: 12px;
+    }
+
+    .footer-links {
+        font-size: 12px;
+        padding: 10px 0 8px 0;
+        word-break: break-word;
+    }
+
+    .footer-links a,
+    .footer-links .dot {
+        display: inline-block;
+        margin: 0 2px;
+    }
+
+    .footer-links .dot {
+        font-size: 13px;
     }
 
     .matrix-container {
@@ -2055,5 +2828,56 @@ details[open] .route-body {
         padding: 6px 4px;
         min-width: 80px;
         max-width: 80px;
+    }
+
+    .ca-check-availability-section {
+        padding: 20px;
+        margin: 16px 0;
+    }
+
+    .ca-check-availability-section h2 {
+        font-size: 18px;
+    }
+
+    .ca-input-with-icon input {
+        font-size: 14px;
+        padding: 12px 14px 12px 40px;
+    }
+
+    .ca-input-icon {
+        font-size: 18px;
+        left: 12px;
+    }
+
+    .ca-dropdown-option {
+        font-size: 14px;
+    }
+
+    .ca-route-results {
+        margin-top: 12px;
+    }
+
+    .ca-seat-type-label {
+        font-size: 11px;
+    }
+
+    .ca-fare-item,
+    .ca-ticket-availability,
+    .ca-btn-primary.buy-link {
+        margin-bottom: 8px;
+    }
+
+    .ca-no-route-message,
+    .ca-invalid-route-message {
+        font-size: 13px;
+        padding: 14px;
+    }
+
+    .ca-info-text {
+        font-size: 10px;
+    }
+
+    .ca-info-text i {
+        font-size: 10px;
     }
 }
