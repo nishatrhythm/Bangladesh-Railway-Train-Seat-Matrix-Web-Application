@@ -738,16 +738,16 @@ button:hover {
 
 .footer-links {
     width: 100%;
-    margin-top: 20px;
+    margin-top: 30px;
     text-align: center;
     font-size: 14px;
     font-weight: 500;
-    color: #2c3e50;
+    color: #006747;
     letter-spacing: 0.01em;
     user-select: none;
-    animation: fadeInUp 1.2s ease-in-out;
-    background: rgba(44, 62, 80, 0.025);
-    border-radius: 0;
+    animation: fadeInUp 1.4s ease-in-out;
+    background: rgba(0, 103, 71, 0.08);
+    border-radius: 8px;
     padding: 14px 0 12px 0;
     box-shadow: 0 2px 8px rgba(44, 62, 80, 0.03);
 }
@@ -769,7 +769,7 @@ button:hover {
 
 .footer-links .dot {
     margin: 0 8px;
-    color: #b1bac4;
+    color: #006747;
     font-weight: bold;
     font-size: 15px;
     pointer-events: none;
