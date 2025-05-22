@@ -81,33 +81,6 @@ h1 i {
     }
 }
 
-.temporary-message {
-    font-family: 'Noto Sans Bengali', sans-serif;
-    text-align: justify;
-    background: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeeba;
-    padding: 1rem 1.5rem;
-    margin: 1.5rem 0;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    animation: temp-message-fade-in 0.6s;
-}
-
-.temporary-message p {
-    margin: 0;
-    padding: 0;
-}
-
-@keyframes temp-message-fade-in {
-    from { opacity: 0; transform: translateY(-12px);}
-    to { opacity: 1; transform: translateY(0);}
-}
-
 /* ========= */
 /* TEMPORARY */
 /* ========= */
