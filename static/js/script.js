@@ -338,7 +338,13 @@ function openMaterialCalendar() {
     calendarJustOpened = true;
     setTimeout(() => calendarJustOpened = false, 200);
 
-    calendar.addEventListener("click", (e) => e.stopPropagation());
+    calendar.addEventListener("click", (e) => {
+        e.stopPropagation();
+    });
+    
+    calendar.addEventListener("mousedown", (e) => {
+        e.stopPropagation();
+    });
 }
 
 function closeMaterialCalendar() {
@@ -375,25 +381,47 @@ function initMaterialCalendar() {
     input.addEventListener("click", openMaterialCalendar);
 
     const prevBtn = document.getElementById("prevMonthBtn");
-    const nextBtn = document.getElementById("nextMonthBtn");
-
-    if (prevBtn) {
-        prevBtn.addEventListener("click", () => {
-            const prevMonth = new Date(calendarCurrentMonth.getFullYear(), calendarCurrentMonth.getMonth() - 1, 1);
-            if (prevMonth >= new Date(calendarMinDate.getFullYear(), calendarMinDate.getMonth(), 1)) {
-                calendarCurrentMonth = prevMonth;
-                generateMaterialCalendar();
-            }
+    const nextBtn = document.getElementById("nextMonthBtn");    if (prevBtn) {
+        ['mousedown', 'mouseup', 'click'].forEach(eventType => {
+            prevBtn.addEventListener(eventType, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (eventType === 'click') {
+                    const prevMonth = new Date(calendarCurrentMonth.getFullYear(), calendarCurrentMonth.getMonth() - 1, 1);
+                    if (prevMonth >= new Date(calendarMinDate.getFullYear(), calendarMinDate.getMonth(), 1)) {
+                        calendarCurrentMonth = prevMonth;
+                        generateMaterialCalendar();
+                    }
+                }
+                
+                setTimeout(() => {
+                    const calendar = document.getElementById("materialCalendar");
+                    if (calendar) calendar.focus();
+                }, 10);
+            });
         });
     }
 
     if (nextBtn) {
-        nextBtn.addEventListener("click", () => {
-            const nextMonth = new Date(calendarCurrentMonth.getFullYear(), calendarCurrentMonth.getMonth() + 1, 1);
-            if (nextMonth <= new Date(calendarMaxDate.getFullYear(), calendarMaxDate.getMonth(), 1)) {
-                calendarCurrentMonth = nextMonth;
-                generateMaterialCalendar();
-            }
+        ['mousedown', 'mouseup', 'click'].forEach(eventType => {
+            nextBtn.addEventListener(eventType, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (eventType === 'click') {
+                    const nextMonth = new Date(calendarCurrentMonth.getFullYear(), calendarCurrentMonth.getMonth() + 1, 1);
+                    if (nextMonth <= new Date(calendarMaxDate.getFullYear(), calendarMaxDate.getMonth(), 1)) {
+                        calendarCurrentMonth = nextMonth;
+                        generateMaterialCalendar();
+                    }
+                }
+                
+                setTimeout(() => {
+                    const calendar = document.getElementById("materialCalendar");
+                    if (calendar) calendar.focus();
+                }, 10);
+            });
         });
     }
 
@@ -408,19 +436,45 @@ function initMaterialCalendar() {
 function setupCalendarBlurClose() {
     const calendar = document.getElementById("materialCalendar");
     const dateInput = document.getElementById("date");
+    const prevBtn = document.getElementById("prevMonthBtn");
+    const nextBtn = document.getElementById("nextMonthBtn");
 
     if (!calendar || !dateInput) return;
+    
+    let isInteractingWithCalendar = false;
+    
+    if (prevBtn) {
+        prevBtn.addEventListener("mousedown", () => { 
+            isInteractingWithCalendar = true; 
+        });
+    }
+    
+    if (nextBtn) {
+        nextBtn.addEventListener("mousedown", () => { 
+            isInteractingWithCalendar = true; 
+        });
+    }
+    
+    calendar.addEventListener("mousedown", () => {
+        isInteractingWithCalendar = true;
+    });
+
+    document.addEventListener("mouseup", () => {
+        setTimeout(() => { 
+            isInteractingWithCalendar = false; 
+        }, 100);
+    });
 
     function handleFocusOut(e) {
         setTimeout(() => {
+            if (isInteractingWithCalendar) return;
+            
             if (!calendar.contains(document.activeElement) && document.activeElement !== dateInput) {
                 closeMaterialCalendar();
             }
-        }, 100);
+        }, 150);
     }
-
     dateInput.addEventListener("blur", handleFocusOut);
-    calendar.addEventListener("blur", handleFocusOut, true);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
