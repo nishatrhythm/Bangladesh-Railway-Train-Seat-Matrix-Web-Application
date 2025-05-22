@@ -331,20 +331,20 @@ let calendarJustOpened = false;
 function openMaterialCalendar() {
     const calendar = document.getElementById("materialCalendar");
     if (!calendar) return;
+    
+    if (calendar.style.display === "block") return;
+    
     updateCalendarDates();
     calendar.style.display = "block";
     generateMaterialCalendar();
 
     calendarJustOpened = true;
-    setTimeout(() => calendarJustOpened = false, 200);
-
-    calendar.addEventListener("click", (e) => {
-        e.stopPropagation();
-    });
     
-    calendar.addEventListener("mousedown", (e) => {
-        e.stopPropagation();
-    });
+    if (window.calendarOpenTimeout) clearTimeout(window.calendarOpenTimeout);
+    
+    window.calendarOpenTimeout = setTimeout(() => {
+        calendarJustOpened = false;
+    }, 500);
 }
 
 function closeMaterialCalendar() {
@@ -463,23 +463,40 @@ function setupCalendarBlurClose() {
         setTimeout(() => { 
             isInteractingWithCalendar = false; 
         }, 100);
-    });
-
-    function handleFocusOut(e) {
+    });    function handleFocusOut(e) {
+        if (calendarJustOpened) return;
+        
         setTimeout(() => {
-            if (isInteractingWithCalendar) return;
+            if (calendarJustOpened || isInteractingWithCalendar) return;
             
             if (!calendar.contains(document.activeElement) && document.activeElement !== dateInput) {
                 closeMaterialCalendar();
             }
-        }, 150);
+        }, 200);
     }
     dateInput.addEventListener("blur", handleFocusOut);
+}
+
+function setupCalendarClickOutside() {
+    const calendar = document.getElementById("materialCalendar");
+    const dateInput = document.getElementById("date");
+    
+    document.addEventListener('mousedown', (event) => {
+        if (calendarJustOpened) return;
+        
+        if (calendar && 
+            calendar.style.display === 'block' && 
+            !calendar.contains(event.target) && 
+            event.target !== dateInput) {
+            closeMaterialCalendar();
+        }
+    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     initMaterialCalendar();
     setupCalendarBlurClose();
+    setupCalendarClickOutside();
     setupTrainDropdown();
     const matrixForm = document.getElementById("matrixForm");
     if (matrixForm) matrixForm.addEventListener("submit", function (event) {
@@ -488,7 +505,6 @@ document.addEventListener('DOMContentLoaded', () => {
             showLoaderAndSubmit(event);
         }
     });
-
 
     const fields = [
         { id: 'train_model', errorId: 'train_model-error' },
