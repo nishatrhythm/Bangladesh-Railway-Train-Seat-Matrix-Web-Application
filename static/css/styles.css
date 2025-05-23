@@ -81,6 +81,38 @@ h1 i {
     }
 }
 
+
+.note {
+    margin-top: 40px;
+    line-height: 1.6;
+    color: rgb(0, 103, 71);
+    background-color: #f1f8f3;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid rgb(0, 103, 71);
+    font-size: 14px;
+    font-weight: 500;
+    text-align: justify;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    animation: fadeInUp 1s ease-in-out;
+    transition: box-shadow 0.3s, background-color 0.3s;
+}
+
+.note:hover {
+    box-shadow: 0 2px 10px rgba(0, 103, 71, 0.2);
+    background-color: #eaf4eb;
+}
+
+.note-bold {
+    font-weight: 800;
+}
+
+@media (max-width: 768px) {
+    .note {
+        font-size: 12px;
+    }
+}
+
 /* ========= */
 /* TEMPORARY */
 /* ========= */
