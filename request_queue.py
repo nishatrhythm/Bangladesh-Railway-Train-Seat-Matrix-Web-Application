@@ -1,88 +1,102 @@
-import threading
-import time
-import uuid
-import queue
-import random
+import threading, time, uuid, queue, random
 from typing import Dict, Any, Optional, Callable
 from datetime import datetime, timedelta
-import logging
-
-# Configure logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+from collections import deque
 
 class RequestQueue:
     def __init__(self, max_concurrent=1, cooldown_period=3):
-        """
-        Initialize the request queue system.
-        
-        Args:
-            max_concurrent: Maximum number of concurrent requests allowed
-            cooldown_period: Time in seconds to wait between batches of requests
-        """
         self.queue = queue.Queue()
         self.results = {}
-        self.statuses = {}  # Statuses: "queued", "processing", "completed", "failed"
+        self.statuses = {}
         self.max_concurrent = max_concurrent
         self.cooldown_period = cooldown_period
         self.active_requests = 0
         self.lock = threading.Lock()
         self.last_request_time = None
+        
+        self.requests = {}
+        self.processing_history = deque(maxlen=50)
+        self.abandonment_history = deque(maxlen=100)
+        self.avg_processing_time = 8.0
+        self.cleanup_interval = 60
+        self.last_cleanup = time.time()
+        
         self.worker_thread = threading.Thread(target=self._process_queue)
         self.worker_thread.daemon = True
         self.worker_thread.start()
-        logging.info(f"Request queue initialized with max_concurrent={max_concurrent}, cooldown_period={cooldown_period}s")
+        
+        self.enhanced_cleanup_thread = threading.Thread(target=self._enhanced_cleanup_loop)
+        self.enhanced_cleanup_thread.daemon = True
+        self.enhanced_cleanup_thread.start()
     
     def add_request(self, request_func, params):
-        """
-        Add a request to the queue.
-        
-        Args:
-            request_func: Function to execute
-            params: Parameters for the function
-            
-        Returns:
-            request_id: A unique ID to track this request
-        """
         request_id = str(uuid.uuid4())
+        current_time = datetime.now()
+        
         with self.lock:
             self.queue.put((request_id, request_func, params))
+            queue_size = self.queue.qsize()
+            
+            self.requests[request_id] = {
+                'request_func': request_func,
+                'params': params,
+                'timestamp': time.time(),
+                'last_heartbeat': time.time()
+            }
+            
             self.statuses[request_id] = {
                 "status": "queued",
-                "position": self.queue.qsize(),
-                "created_at": datetime.now(),
-                "estimated_time": self._estimate_wait_time(self.queue.qsize())
+                "position": queue_size,
+                "created_at": current_time,
+                "estimated_time": self._enhanced_estimate_wait_time(queue_size),
+                "last_heartbeat": time.time()
             }
         return request_id
     
-    def _estimate_wait_time(self, position):
-        """Estimate wait time based on queue position"""
-        # Rough estimate: each request takes about 5 seconds + cooldown
-        avg_request_time = 5 + (self.cooldown_period / self.max_concurrent)
-        batch = (position // self.max_concurrent)
-        position_in_batch = position % self.max_concurrent
+    def _enhanced_estimate_wait_time(self, position):
+        base_time = self.avg_processing_time + (self.cooldown_period / self.max_concurrent)
+        
+        predicted_abandonments = self._predict_abandonments(position)
+        effective_position = max(1, position - predicted_abandonments)
+        
+        batch = (effective_position // self.max_concurrent)
+        position_in_batch = effective_position % self.max_concurrent
         
         if position_in_batch == 0:
             position_in_batch = self.max_concurrent
             batch -= 1
             
-        wait_time = (batch * self.cooldown_period) + (position_in_batch * avg_request_time)
-        return int(wait_time)
+        wait_time = (batch * self.cooldown_period) + (position_in_batch * base_time)
+        return max(1, int(wait_time))
+    
+    def _predict_abandonments(self, current_position):
+        if not self.abandonment_history or current_position <= 1:
+            return 0
+        
+        recent_time = time.time() - 1800
+        recent_abandonments = [a for a in self.abandonment_history if a['timestamp'] > recent_time]
+        
+        if len(recent_abandonments) < 5:
+            return 0
+        
+        abandonment_rate = min(0.2, len(recent_abandonments) / max(10, current_position))
+        return int(current_position * abandonment_rate * 0.5)
+    
+    def update_heartbeat(self, request_id):
+        with self.lock:
+            current_time = time.time()
+            if request_id in self.statuses:
+                self.statuses[request_id]["last_heartbeat"] = current_time
+            if request_id in self.requests:
+                self.requests[request_id]["last_heartbeat"] = current_time
+                return True
+        return False
     
     def get_request_status(self, request_id):
-        """
-        Get the current status of a request
-        
-        Args:
-            request_id: The ID of the request to check
-            
-        Returns:
-            Dict with status information or None if not found
-        """
         with self.lock:
             if request_id in self.statuses:
                 status_data = self.statuses[request_id].copy()
                 
-                # Update position if still in queue
                 if status_data["status"] == "queued":
                     position = 0
                     for i, (rid, _, _) in enumerate(list(self.queue.queue)):
@@ -90,120 +104,179 @@ class RequestQueue:
                             position = i + 1
                             break
                     status_data["position"] = position
-                    status_data["estimated_time"] = self._estimate_wait_time(position)
-                
+                    status_data["estimated_time"] = self._enhanced_estimate_wait_time(position)
+                elif status_data["status"] == "processing":
+                    status_data["position"] = 0
+                    status_data["estimated_time"] = 0
                 return status_data
             return None
     
     def get_request_result(self, request_id):
-        """
-        Get the result of a completed request
-        
-        Args:
-            request_id: The ID of the request
-            
-        Returns:
-            The result of the request if completed, None otherwise
-        """
         with self.lock:
             if request_id in self.results:
                 result = self.results[request_id]
-                # Clean up
                 del self.results[request_id]
                 del self.statuses[request_id]
                 return result
             return None
     
+    def cancel_request(self, request_id):
+        with self.lock:
+            removed = False
+            
+            if request_id in self.statuses:
+                status = self.statuses[request_id]
+                if status["status"] == "queued":
+                    abandonment_data = {
+                        'position': status.get("position", 0),
+                        'wait_time': time.time() - status["created_at"].timestamp(),
+                        'timestamp': time.time()
+                    }
+                    self.abandonment_history.append(abandonment_data)
+                del self.statuses[request_id]
+                removed = True
+            
+            if request_id in self.results:
+                del self.results[request_id]
+            
+            if request_id in self.requests:
+                del self.requests[request_id]
+            
+            temp_queue = queue.Queue()
+            
+            while not self.queue.empty():
+                try:
+                    item = self.queue.get_nowait()
+                    if item[0] != request_id:
+                        temp_queue.put(item)
+                    else:
+                        removed = True
+                except queue.Empty:
+                    break
+            
+            self.queue = temp_queue
+            
+            return removed
+    
     def _process_queue(self):
-        """Worker thread to process queued requests"""
         while True:
-            # Process up to max_concurrent requests at a time
             batch = []
             with self.lock:
-                # Check cooldown period
                 if self.last_request_time and (datetime.now() - self.last_request_time) < timedelta(seconds=self.cooldown_period):
                     time_to_wait = (self.last_request_time + timedelta(seconds=self.cooldown_period) - datetime.now()).total_seconds()
                     if time_to_wait > 0:
-                        logging.info(f"Waiting {time_to_wait:.2f} seconds for cooldown")
-                        # Release lock while waiting
                         self.lock.release()
                         time.sleep(time_to_wait)
                         self.lock.acquire()
                 
-                # Get up to max_concurrent requests from the queue
                 while len(batch) < self.max_concurrent and not self.queue.empty():
                     item = self.queue.get()
-                    batch.append(item)
                     request_id = item[0]
-                    self.statuses[request_id]["status"] = "processing"
-                    logging.info(f"Request {request_id} status changed to processing")
+                    if request_id in self.statuses:
+                        batch.append(item)
+                        self.statuses[request_id]["status"] = "processing"
                 
                 if batch:
-                    logging.info(f"Processing batch of {len(batch)} requests")
                     self.last_request_time = datetime.now()
             
-            # Process the batch
             for request_id, request_func, params in batch:
+                start_time = time.time()
+                
+                with self.lock:
+                    if request_id not in self.statuses:
+                        continue
+                
                 try:
-                    logging.info(f"Executing request {request_id}")
-                    
-                    # Add retry mechanism for 403 errors
                     max_retries = 3
                     retry_count = 0
-                    retry_delay = 5  # seconds
+                    retry_delay = 5
                     
                     while retry_count < max_retries:
+                        with self.lock:
+                            if request_id not in self.statuses:
+                                break
+                        
                         try:
                             result = request_func(**params)
-                            # If successful, break out of retry loop
                             break
                         except Exception as e:
                             if "Rate limit exceeded" in str(e) or "403" in str(e):
                                 retry_count += 1
                                 if retry_count < max_retries:
                                     retry_delay_with_jitter = retry_delay + (retry_count * 2) + (random.random() * 2)
-                                    logging.warning(f"Rate limit hit for request {request_id}, retrying in {retry_delay_with_jitter:.2f} seconds (attempt {retry_count}/{max_retries})")
                                     time.sleep(retry_delay_with_jitter)
                                     continue
-                            # For non-rate limit errors or if max retries reached, re-raise
                             raise
                     
+                    end_time = time.time()
+                    processing_time = end_time - start_time
+                    self.processing_history.append(processing_time)
+                    
+                    if self.processing_history:
+                        self.avg_processing_time = sum(self.processing_history) / len(self.processing_history)
+                    
                     with self.lock:
-                        self.results[request_id] = result
-                        self.statuses[request_id]["status"] = "completed"
-                        logging.info(f"Request {request_id} completed successfully")
+                        if request_id in self.statuses:
+                            self.results[request_id] = result
+                            self.statuses[request_id]["status"] = "completed"
                 except Exception as e:
-                    logging.exception(f"Error processing request {request_id}: {str(e)}")
                     with self.lock:
-                        self.results[request_id] = {"error": str(e)}
-                        self.statuses[request_id]["status"] = "failed"
+                        if request_id in self.statuses:
+                            self.results[request_id] = {"error": str(e)}
+                            self.statuses[request_id]["status"] = "failed"
             
-            # If queue is empty, wait a bit before checking again
             if not batch:
                 time.sleep(1)
-                # Clean up old results and statuses
                 self._cleanup_old_entries()
     
     def _cleanup_old_entries(self):
-        """Clean up old completed/failed requests that haven't been retrieved"""
         with self.lock:
             current_time = datetime.now()
             expired_ids = []
             
-            # Find expired entries (older than 30 minutes)
             for request_id, status in self.statuses.items():
                 if status["status"] in ["completed", "failed"] and "created_at" in status:
                     time_diff = current_time - status["created_at"]
-                    if time_diff.total_seconds() > 1800:  # 30 minutes
+                    if time_diff.total_seconds() > 1800:
                         expired_ids.append(request_id)
-            
-            # Clean up expired entries
             for request_id in expired_ids:
                 if request_id in self.results:
                     del self.results[request_id]
                 if request_id in self.statuses:
                     del self.statuses[request_id]
-                logging.info(f"Cleaned up expired request {request_id}")
-
-# Global instance
-request_queue = RequestQueue()
+    
+    def _enhanced_cleanup_loop(self):
+        while True:
+            time.sleep(self.cleanup_interval)
+            self._enhanced_cleanup()
+    
+    def _enhanced_cleanup(self):
+        current_time = time.time()
+        stale_requests = []
+        
+        with self.lock:
+            for request_id, status in self.statuses.items():
+                if status["status"] == "queued":
+                    last_heartbeat = status.get("last_heartbeat", 0)
+                    if current_time - last_heartbeat > 90:
+                        stale_requests.append(request_id)
+        
+        for request_id in stale_requests:
+            self.cancel_request(request_id)
+        
+        if stale_requests:
+            print(f"Enhanced cleanup: Removed {len(stale_requests)} stale requests")
+    
+    def get_queue_stats(self):
+        with self.lock:
+            total_queued = sum(1 for s in self.statuses.values() if s["status"] == "queued")
+            total_processing = sum(1 for s in self.statuses.values() if s["status"] == "processing")
+            recent_abandonments = len([a for a in self.abandonment_history 
+                                      if time.time() - a['timestamp'] < 3600])
+            return {
+                "queued": total_queued,
+                "processing": total_processing,
+                "avg_processing_time": round(self.avg_processing_time, 2),
+                "recent_abandonments": recent_abandonments,
+                "queue_size": self.queue.qsize()
+            }

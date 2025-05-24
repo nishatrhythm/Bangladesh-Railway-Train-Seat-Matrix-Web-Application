@@ -43,9 +43,9 @@
         {% endif %}
 
         {% if CONFIG and CONFIG.queue_enabled %}
-        <div class="note" style="background-color: #e9f7fe; border-left: 3px solid #00a8ff; margin-bottom: 20px;">
-            <i class="fas fa-info-circle" style="color: #00a8ff;"></i> We've implemented a queue system to prevent overloading the Railway API. Your search will be processed in queue order, and you'll see real-time status updates while waiting.
-        </div>
+        <p class="note">
+            <span class="note-bold highlight">Important:</span> We've implemented a queue system to prevent overloading the Railway API. Your search will be processed in queue order, and you'll see real-time status updates while waiting.
+        </p><br>
         {% endif %}
         
         <form action="/matrix" method="POST" id="matrixForm">
@@ -113,6 +113,11 @@
         </div>
     </div>
     <script src="/static/js/script.js"></script>
+    <script>
+        sessionStorage.removeItem('queuePageVisited');
+        sessionStorage.removeItem('queueRedirecting');
+        sessionStorage.removeItem('lastStatusCheck');
+    </script>
 </body>
 
 </html>

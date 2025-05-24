@@ -44,7 +44,8 @@ function validateForm(event) {
         }
     }
 
-    if (!isValid) event.preventDefault();
+    if (isValid) showLoaderAndSubmit(event);
+    else event.preventDefault();
 }
 
 function focusNextUnfilledField(currentField) {
@@ -499,12 +500,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupCalendarClickOutside();
     setupTrainDropdown();
     const matrixForm = document.getElementById("matrixForm");
-    if (matrixForm) matrixForm.addEventListener("submit", function (event) {
-        validateForm(event);
-        if (!event.defaultPrevented) {
-            showLoaderAndSubmit(event);
-        }
-    });
+    if (matrixForm) matrixForm.addEventListener("submit", validateForm);
 
     const fields = [
         { id: 'train_model', errorId: 'train_model-error' },
@@ -557,3 +553,29 @@ function showLoaderAndSubmit(event) {
     
     setTimeout(() => form.submit(), 50);
 }
+
+function resetSubmitButton() {
+    const submitButton = document.querySelector('#matrixForm .btn-primary');
+    if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.style.opacity = '1';
+        submitButton.style.cursor = 'pointer';
+        const loader = submitButton.querySelector('.button-loader');
+        if (loader) {
+            loader.remove();
+        }
+        const existingIcon = submitButton.querySelector('.fa-calculator');
+        if (!existingIcon) {
+            const calculatorIcon = document.createElement('i');
+            calculatorIcon.className = 'fas fa-calculator';
+            submitButton.prepend(calculatorIcon);
+        }
+    }
+}
+
+// Handle browser back navigation to reset submit button state
+window.addEventListener('pageshow', function (event) {
+    if (document.getElementById('matrixForm')) {
+        resetSubmitButton();
+    }
+});

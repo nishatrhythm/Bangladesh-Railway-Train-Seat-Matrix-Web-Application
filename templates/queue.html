@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>In Queue | BR Train Seat Matrix</title>
-    <link rel="icon"
-        href="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-and-Fare-List-with-Route-Map/main/images/bangladesh-railway.png"
-        type="image/x-icon" sizes="30x30">
+    <title>In Queue | Train Seat Availability</title>
+    <link rel="icon" href="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-and-Fare-List-with-Route-Map/main/images/bangladesh-railway.png" type="image/x-icon" sizes="30x30">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/styles.css">
     <style>
@@ -22,243 +19,388 @@
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            padding: 25px;
+            padding: 30px;
             margin-bottom: 20px;
         }
 
+        .queue-header h2 {
+            color: #006747;
+            margin-bottom: 10px;
+        }
+
+        .queue-header p {
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .queue-status {
+            font-size: 1.1em;
+            color: #006747;
+            margin: 20px 0;
+            font-weight: 500;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #006747;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         .progress-container {
-            margin: 25px 0;
+            margin: 20px 0;
         }
 
         .progress-bar {
             width: 100%;
-            background-color: #f1f1f1;
-            border-radius: 10px;
+            height: 8px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
             overflow: hidden;
         }
 
         .progress-fill {
-            height: 20px;
-            background-color: #4CAF50;
-            border-radius: 10px;
-            transition: width 1s;
+            height: 100%;
+            background-color: #006747;
             width: 0%;
+            transition: width 0.5s ease;
         }
 
         .queue-info {
             display: flex;
             justify-content: space-between;
-            margin: 10px 0;
-        }
-
-        .queue-status {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #333;
-            margin: 15px 0;
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #666;
         }
 
         .queue-timer {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #4CAF50;
             margin: 20px 0;
+            font-size: 1.1em;
+            color: #006747;
         }
 
-        .pulsating-text {
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                opacity: 0.6;
-            }
-            50% {
-                opacity: 1;
-            }
-            100% {
-                opacity: 0.6;
-            }
-        }
-
-        .queue-details {
-            background-color: #f9f9f9;
-            border-radius: 6px;
+        .note {
+            background-color: #e9f7fe;
+            border-left: 3px solid #00a8ff;
             padding: 15px;
-            margin: 15px 0;
-            text-align: left;
-        }
-
-        .queue-details p {
-            margin: 8px 0;
-            font-size: 0.95rem;
-            color: #555;
-        }
-
-        .queue-details strong {
+            margin: 20px 0;
+            border-radius: 4px;
             color: #333;
         }
 
-        .btn-primary {
-            display: inline-block;
-            padding: 10px 20px;
-            color: #fff;
-            background: #007bff;
-            text-decoration: none;
+        .cancel-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px 24px;
             border-radius: 5px;
-            margin-top: 20px;
+            cursor: pointer;
+            font-size: 1em;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s;
         }
 
-        .btn-primary i {
-            margin-right: 5px;
+        .cancel-btn:hover {
+            background-color: #c0392b;
+            text-decoration: none;
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
 
         h1 {
             text-align: center;
-            font-size: 1.8rem;
-            margin-bottom: 20px;
+            color: #006747;
+            margin-bottom: 30px;
         }
 
-        h1 i {
-            margin-right: 10px;
+        .flyout-notification {
+            position: fixed;
+            top: 20px;
+            right: -300px;
+            background-color: #006747;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            min-width: 250px;
         }
 
-        h2 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
+        .flyout-notification.show {
+            right: 20px;
         }
 
-        h2 i {
-            margin-right: 10px;
+        .flyout-close {
+            float: right;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .noscript-warning {
+            background-color: #ffebee;
+            border: 1px solid #f44336;
+            color: #d32f2f;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .noscript-warning h2 {
+            color: #d32f2f;
+            margin-top: 0;
+        }
+
+        .instructions {
+            margin-top: 15px;
+            font-size: 0.9em;
         }
     </style>
 </head>
 
 <body>
-    <div class="container main-content">
-        <h1>
-            <i class="fas fa-train"></i> BR Train Seat Matrix BETA
-        </h1>
-
-        <div class="queue-container">
-            <div class="queue-card animated-fade-in">
-                <h2><i class="fas fa-hourglass-half"></i> Request In Queue</h2>
-                
-                <div class="queue-status" id="queueStatus">
-                    <span class="pulsating-text">Your request is in queue...</span>
+    <div class="container">
+        <div class="flyout-notification" id="flyoutNotification">
+            <span id="flyoutMessage"></span>
+            <i class="fas fa-times flyout-close" id="flyoutClose"></i>
+        </div>
+        <noscript>
+            <div class="container noscript-warning">
+                <h2>
+                    <i class="fas fa-exclamation-circle"></i> Please Enable JavaScript
+                </h2>
+                <p>This website requires JavaScript to function properly. Enable it in your browser settings to access full functionality and check train seat matrix.</p>
+                <div class="instructions">
+                    <strong>How to enable:</strong> Go to your browser settings > Privacy/Security > Enable JavaScript. Refresh the page after enabling.
                 </div>
-                
+            </div>
+        </noscript>
+
+        <h1><i class="fas fa-train"></i> BR Train Seat Matrix</h1>
+        <div class="queue-container">
+            <div class="queue-card">
+                <div class="queue-header">
+                    <h2><i class="fas fa-hourglass-half"></i> Request In Queue</h2>
+                    <p><i class="fas fa-train"></i> {{ form_values.train_model }}</p>
+                    <p><i class="fas fa-calendar-alt"></i> {{ form_values.date }}</p>
+                </div>
+                <div class="queue-status" id="queueStatus" aria-live="polite">
+                    {% if status.status == 'queued' %}
+                        <span>Your request is in queue...</span>
+                    {% else %}
+                        <span class="spinner"></span> Processing your request...
+                    {% endif %}
+                </div>
                 <div class="progress-container">
                     <div class="progress-bar">
                         <div class="progress-fill" id="progressBar"></div>
                     </div>
-                    <div class="queue-info">
-                        <span>Position: <strong id="queuePosition">{{ status.position }}</strong></span>
-                        <span>Estimated time: <strong id="estimatedTime">{{ status.estimated_time }}</strong> seconds</span>
+                    <div class="queue-info" id="queueInfo">
+                        {% if status.status == 'queued' %}
+                            <span>Position: <strong id="queuePosition">{{ status.position }}</strong></span>
+                            <span>Estimated time: <strong id="estimatedTime">{{ status.estimated_time }}</strong> seconds</span>
+                        {% else %}
+                            <span></span>
+                            <span></span>
+                        {% endif %}
                     </div>
                 </div>
-                
-                <div class="queue-timer" id="queueTimer">
+                <div class="queue-timer">
                     <i class="fas fa-clock"></i> <span id="timerCounter">0</span>s
                 </div>
-                
-                <div class="queue-details">
-                    <p><strong>Train:</strong> <span id="trainModel">{{ form_values.train_model }}</span></p>
-                    <p><strong>Date:</strong> <span id="journeyDate">{{ form_values.date }}</span></p>
-                </div>
-                
                 <p class="note">
-                    <i class="fas fa-info-circle"></i> Please wait while we generate the seat matrix. Do not refresh this page.
+                    <i class="fas fa-info-circle"></i> Please wait while we check for available seats. Do not refresh this page.
                 </p>
             </div>
-            
-            <a href="{{ url_for('home') }}" class="btn-primary" draggable="false">
+            <button onclick="cancelRequest()" class="cancel-btn">
                 <i class="fas fa-arrow-left"></i> Cancel and Go Back
-            </a>
+            </button>
         </div>
     </div>
 
     <script>
-        // Queue polling variables
         const requestId = "{{ request_id }}";
         let timer = 0;
         let intervalId = null;
-        
-        // Start the timer
+        let pageVisited = false;
+
+        window.addEventListener('load', function () {
+            const currentStatus = "{{ status.status }}";
+            
+            const queueRedirecting = sessionStorage.getItem('queueRedirecting');
+            if (queueRedirecting === 'true') {
+                sessionStorage.removeItem('queueRedirecting');
+                sessionStorage.removeItem('queuePageVisited');
+                window.location.href = '/';
+                return;
+            }
+
+            if (performance.navigation.type === 1) {
+                const previousPageVisit = sessionStorage.getItem('queuePageVisited');
+                const lastStatusCheck = sessionStorage.getItem('lastStatusCheck');
+                const now = Date.now();
+                
+                if (previousPageVisit === 'true' && 
+                    lastStatusCheck && 
+                    (now - parseInt(lastStatusCheck)) < 5000 &&
+                    (currentStatus === 'queued' || currentStatus === 'processing')) {
+                    
+                    window.location.href = '/queue_wait?refresh_check=true';
+                    return;
+                }
+            }
+            
+            sessionStorage.setItem('queuePageVisited', 'true');
+            pageVisited = true;
+            
+            startTimer();
+            checkQueueStatus();
+        });
+
+        window.addEventListener('beforeunload', function(event) {
+            const queueRedirecting = sessionStorage.getItem('queueRedirecting');
+            
+            if (pageVisited && queueRedirecting !== 'true') {
+                navigator.sendBeacon('/cancel_request_beacon/' + requestId, '');
+                sessionStorage.removeItem('queuePageVisited');
+                sessionStorage.removeItem('lastStatusCheck');
+            }
+        });
+
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                sendHeartbeat();
+            }
+        });
+
+        function cancelRequest() {
+            clearInterval(intervalId);
+            sessionStorage.removeItem('queuePageVisited');
+            sessionStorage.removeItem('lastStatusCheck');
+            sessionStorage.removeItem('queueRedirecting');
+            pageVisited = false;
+            
+            fetch('/cancel_request/' + requestId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }).then(response => response.json())
+            .then(data => {
+                window.location.href = '/';
+            }).catch(() => {
+                window.location.href = '/';
+            });
+        }
+
         function startTimer() {
             intervalId = setInterval(() => {
                 timer++;
-                document.getElementById('timerCounter').textContent = timer;
-                
-                // Poll for status
-                if (timer % 3 === 0) {  // Check status every 3 seconds
+                const minutes = Math.floor(timer / 60);
+                const seconds = timer % 60;
+                if (timer > 60) {
+                    document.getElementById('timerCounter').textContent = `${minutes} min ${seconds} sec`;
+                } else {
+                    document.getElementById('timerCounter').textContent = timer;
+                }
+                if (timer % 2 === 0) {
                     checkQueueStatus();
                 }
             }, 1000);
         }
-        
-        // Check queue status
+
         async function checkQueueStatus() {
             try {
+                sessionStorage.setItem('lastStatusCheck', Date.now().toString());
+                
+                await sendHeartbeat();
+                
                 const response = await fetch('/queue_status/' + requestId);
                 const data = await response.json();
-                
+
+                if (data.error) {
+                    clearInterval(intervalId);
+                    sessionStorage.removeItem('lastStatusCheck');
+                    document.getElementById('queueStatus').innerHTML = '<i class="fas fa-exclamation-circle"></i> Request failed!';
+                    document.getElementById('queueStatus').style.color = '#e74c3c';
+                    document.getElementById('queueInfo').innerHTML = `<span>Error: <strong>${data.errorMessage || "There was a problem processing your request."}</strong></span>`;
+                    document.getElementById('progressBar').style.width = '0%';
+                    setTimeout(() => { window.location.href = '/'; }, 3000);
+                    return;
+                }
+
                 if (data.status === 'completed') {
                     clearInterval(intervalId);
-                    document.getElementById('queueStatus').innerHTML = '<i class="fas fa-check-circle"></i> Request completed!';
-                    document.getElementById('queueStatus').style.color = '#4CAF50';
-                    document.getElementById('progressBar').style.width = '100%';
+                    sessionStorage.setItem('queueRedirecting', 'true');
+                    sessionStorage.removeItem('lastStatusCheck');
+                    sessionStorage.removeItem('queuePageVisited');
+                    pageVisited = false;
                     
-                    // Redirect to results with request_id
-                    setTimeout(() => {
-                        window.location.href = '/matrix_result/' + requestId;
+                    document.getElementById('queueStatus').innerHTML = '<i class="fas fa-check-circle"></i> Request completed!';
+                    document.getElementById('queueStatus').style.color = '#006747';
+                    document.getElementById('progressBar').style.width = '100%';
+                    setTimeout(() => { 
+                        window.location.href = '/show_results/' + requestId; 
                     }, 500);
                 } else if (data.status === 'failed') {
                     clearInterval(intervalId);
+                    sessionStorage.removeItem('lastStatusCheck');
                     document.getElementById('queueStatus').innerHTML = '<i class="fas fa-exclamation-circle"></i> Request failed!';
-                    document.getElementById('queueStatus').style.color = '#f44336';
-                    
-                    // Add more detailed error message if available
-                    const errorMessage = data.errorMessage || "There was a problem processing your request. This could be due to rate limiting or a server issue.";
-                    document.getElementById('queuePosition').parentElement.innerHTML = `<span>Error: <strong>${errorMessage}</strong></span>`;
-                    document.getElementById('estimatedTime').parentElement.innerHTML = '<span>Redirecting to home page in <strong id="redirectCounter">3</strong> seconds...</span>';
-                    
-                    // Countdown for redirection
-                    let count = 3;
-                    const countdownInterval = setInterval(() => {
-                        count--;
-                        document.getElementById('redirectCounter').textContent = count;
-                        if (count <= 0) {
-                            clearInterval(countdownInterval);
-                            window.location.href = '/';
-                        }
-                    }, 1000);
+                    document.getElementById('queueStatus').style.color = '#e74c3c';
+                    document.getElementById('queueInfo').innerHTML = `<span>Error: <strong>${data.errorMessage || "There was a problem processing your request."}</strong></span>`;
+                    document.getElementById('progressBar').style.width = '0%';
+                    setTimeout(() => { window.location.href = '/'; }, 3000);
                 } else {
-                    // Update queue position and progress
-                    document.getElementById('queuePosition').textContent = data.position;
-                    document.getElementById('estimatedTime').textContent = data.estimated_time;
-                    
-                    // Calculate progress percentage (inverse of position)
-                    const progressPercent = data.position <= 1 ? 90 : Math.max(10, 100 - (data.position * 20));
-                    document.getElementById('progressBar').style.width = progressPercent + '%';
-                    
-                    // Update status text
                     if (data.status === 'processing') {
-                        document.getElementById('queueStatus').innerHTML = '<i class="fas fa-cog fa-spin"></i> Processing your request...';
-                        document.getElementById('queueStatus').style.color = '#2196F3';
+                        document.getElementById('queueStatus').innerHTML = '<span class="spinner"></span> Processing your request...';
+                        document.getElementById('queueStatus').style.color = '#006747';
+                        document.getElementById('queueInfo').innerHTML = '';
+                        document.getElementById('progressBar').style.width = '90%';
+                    } else {
+                        document.getElementById('queueStatus').innerHTML = '<span>Your request is in queue...</span>';
+                        document.getElementById('queueStatus').style.color = '#006747';
+                        document.getElementById('queueInfo').innerHTML = `
+                            <span>Position: <strong id="queuePosition">${data.position}</strong></span>
+                            <span>Estimated time: <strong id="estimatedTime">${data.estimated_time}</strong> seconds</span>
+                        `;
+                        const progressPercent = data.position <= 1 ? 90 : Math.max(10, 100 - (data.position * 15));
+                        document.getElementById('progressBar').style.width = progressPercent + '%';
                     }
                 }
             } catch (error) {
                 console.error('Error checking queue status:', error);
             }
         }
-        
-        // Start everything when the page loads
-        window.addEventListener('load', function() {
-            startTimer();
-            checkQueueStatus(); // Check immediately on load
-        });
+
+        async function sendHeartbeat() {
+            try {
+                await fetch('/queue_heartbeat/' + requestId, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+            } catch (error) {
+                console.log('Heartbeat failed:', error);
+            }
+        }
     </script>
 </body>
-
 </html>
