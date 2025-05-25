@@ -34,6 +34,22 @@
 </head>
 
 <body>
+    <div class="flyout-notification" id="flyoutNotification">
+        <span id="flyoutMessage"></span>
+        <i class="fas fa-times flyout-close" id="flyoutClose"></i>
+    </div>
+    <noscript>
+        <div class="container noscript-warning">
+            <h2><i class="fas fa-exclamation-circle"></i> Please Enable JavaScript</h2>
+            <p>This website requires JavaScript to function properly. Enable it in your browser settings to access full
+                functionality and check train seat availability.</p>
+            <div class="instructions">
+                <strong>How to enable:</strong> Go to your browser settings > Privacy/Security > Enable JavaScript.
+                Refresh the page after enabling.
+            </div>
+        </div>
+    </noscript>
+    
     <div class="container main-content">
         <h1><i class="fas fa-subway"></i> BR Train Seat Matrix <sup class="beta-badge">BETA</sup></h1>
         {% if error %}
@@ -43,8 +59,8 @@
         {% endif %}
 
         {% if CONFIG and CONFIG.queue_enabled %}
-        <p class="note">
-            <span class="note-bold highlight">Important:</span> We've implemented a queue system to prevent overloading the Railway API. Your search will be processed in queue order, and you'll see real-time status updates while waiting.
+        <p class="note bengali">
+            <span class="note-bold highlight">লক্ষ্য করুনঃ </span> বর্তমানে আমাদের ওয়েবসাইটে অতিরিক্ত ব্যবহারকারীর চাপ রয়েছে। এজন্য আমরা একটি ধারাবাহিক অর্ডারে সেবা প্রদান করছি। ফলে আপনাকে বেশ কিছুটা সময় অপেক্ষা করতে হতে পারে এবং কখনো কখনো ফলাফল পুরোপুরি নির্ভুল নাও হতে পারে। যদি আপনি দ্রুত এবং আরও নির্ভুল ফলাফল পেতে চান, সেক্ষেত্রে নিচের গিটহাব লিংক থেকে প্রজেক্টের সোর্স কোড ডাউনলোড করে নিজস্ব কম্পিউটারে ব্যবহার করার অনুরোধ জানানো যাচ্ছে।
         </p><br>
         {% endif %}
         
@@ -111,6 +127,22 @@
             <span class="dot">•</span>
             <a href="https://forms.gle/NV72PC1z75sq77tg7" target="_blank">Feedback</a>
         </div>
+
+        {% if is_banner_enabled %}
+        <div id="bannerModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal"><i class="fas fa-times"></i></span>
+                <div id="bannerImageContainer"></div>
+                <div class="modal-footer">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="dontShowAgain">
+                        <span class="checkmark"></span>
+                        Don't show this again
+                    </label>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
     <script src="/static/js/script.js"></script>
     <script>

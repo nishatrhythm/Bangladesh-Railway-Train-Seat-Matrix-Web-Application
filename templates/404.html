@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - Not Found | Train Seat Availability</title>
-    <style>{{ styles_css | safe }}</style>
+    <title>404 - Not Found | Train Seat Matrix</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
     <link rel="icon" href="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-and-Fare-List-with-Route-Map/main/images/bangladesh-railway.png" type="image/x-icon" sizes="30x30">
 </head>
@@ -42,6 +42,23 @@
             <i class="fas fa-arrow-left"></i> Return to Home Now
         </a>
     </div>
-    <script>{{ script_js | safe }}</script>
+    <script src="/static/js/script.js"></script>
+    <script>
+        function start404Countdown() {
+            const countdownElement = document.getElementById('countdown');
+            if (countdownElement) {
+                let countdown = 10;
+                const timer = setInterval(() => {
+                    countdown--;
+                    countdownElement.textContent = countdown;
+                    if (countdown <= 0) {
+                        clearInterval(timer);
+                        window.location.href = '/';
+                    }
+                }, 1000);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', start404Countdown);
+    </script>
 </body>
 </html>

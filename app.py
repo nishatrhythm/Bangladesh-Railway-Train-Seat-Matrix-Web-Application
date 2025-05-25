@@ -12,17 +12,41 @@ RESULT_CACHE = {}
 with open('config.json', 'r', encoding='utf-8') as config_file:
     CONFIG = json.load(config_file)
 
+with open('static/js/script.js', 'r', encoding='utf-8') as js_file:
+    SCRIPT_JS_CONTENT = js_file.read()
+with open('static/css/styles.css', 'r', encoding='utf-8') as css_file:
+    STYLES_CSS_CONTENT = css_file.read()
+
 def configure_request_queue():
     max_concurrent = CONFIG.get("queue_max_concurrent", 1)
     cooldown_period = CONFIG.get("queue_cooldown_period", 3)
+    batch_cleanup_threshold = CONFIG.get("queue_batch_cleanup_threshold", 10)
+    cleanup_interval = CONFIG.get("queue_cleanup_interval", 30)
+    heartbeat_timeout = CONFIG.get("queue_heartbeat_timeout", 90)
     
-    return RequestQueue(max_concurrent=max_concurrent, cooldown_period=cooldown_period)
+    return RequestQueue(
+        max_concurrent=max_concurrent, 
+        cooldown_period=cooldown_period,
+        batch_cleanup_threshold=batch_cleanup_threshold,
+        cleanup_interval=cleanup_interval,
+        heartbeat_timeout=heartbeat_timeout
+    )
 
 request_queue = configure_request_queue()
 
 with open('trains_en.json', 'r') as f:
     trains_data = json.load(f)
     trains = trains_data['trains']
+
+def check_maintenance():
+    if CONFIG.get("is_maintenance", 0):
+        return render_template(
+            'notice.html',
+            message=CONFIG.get("maintenance_message", ""),
+            styles_css=STYLES_CSS_CONTENT,
+            script_js=SCRIPT_JS_CONTENT
+        )
+    return None
 
 @app.before_request
 def block_cloudflare_noise():
@@ -38,6 +62,10 @@ def set_cache_headers(response):
 
 @app.route('/')
 def home():
+    maintenance_response = check_maintenance()
+    if maintenance_response:
+        return maintenance_response
+
     error = session.pop('error', None)
 
     app_version = CONFIG.get("version", "1.0.0")
@@ -64,17 +92,23 @@ def home():
         error=error,
         app_version=app_version,
         CONFIG=config,
-        banner_image="",
+        banner_image=banner_image,
         min_date=min_date.strftime("%Y-%m-%d"),
         max_date=max_date.strftime("%Y-%m-%d"),
         bst_midnight_utc=bst_midnight_utc,
         show_disclaimer=True,
         form_values=form_values,
-        trains=trains
+        trains=trains,
+        styles_css=STYLES_CSS_CONTENT,
+        script_js=SCRIPT_JS_CONTENT
     )
 
 @app.route('/matrix', methods=['POST'])
 def matrix():
+    maintenance_response = check_maintenance()
+    if maintenance_response:
+        return maintenance_response
+
     train_model_full = request.form.get('train_model', '').strip()
     journey_date_str = request.form.get('date', '').strip()
 
@@ -132,6 +166,10 @@ def process_matrix_request(train_model, journey_date_str, api_date_format, form_
 
 @app.route('/queue_wait')
 def queue_wait():
+    maintenance_response = check_maintenance()
+    if maintenance_response:
+        return maintenance_response
+    
     request_id = session.get('queue_request_id')
     if not request_id:
         session['error'] = "Your request session has expired. Please search again."
@@ -154,7 +192,9 @@ def queue_wait():
         'queue.html',
         request_id=request_id,
         status=status, 
-        form_values=form_values
+        form_values=form_values,
+        styles_css=STYLES_CSS_CONTENT,
+        script_js=SCRIPT_JS_CONTENT
     )
 
 @app.route('/queue_status/<request_id>')
@@ -178,6 +218,10 @@ def cancel_request(request_id):
         if session.get('queue_request_id') == request_id:
             session.pop('queue_request_id', None)
         
+        stats = request_queue.get_queue_stats()
+        if stats.get('cancelled_pending', 0) > 5:
+            request_queue.force_cleanup()
+        
         return jsonify({"cancelled": removed, "status": "success"})
     except Exception as e:
         return jsonify({"cancelled": False, "status": "error", "error": str(e)}), 500
@@ -200,6 +244,10 @@ def queue_heartbeat(request_id):
 
 @app.route('/show_results')
 def show_results():
+    maintenance_response = check_maintenance()
+    if maintenance_response:
+        return maintenance_response
+
     request_id = session.get('queue_request_id')
     if not request_id:
         session['error'] = "Your request session has expired. Please search again."
@@ -208,6 +256,10 @@ def show_results():
 
 @app.route('/show_results/<request_id>')
 def show_results_with_id(request_id):
+    maintenance_response = check_maintenance()
+    if maintenance_response:
+        return maintenance_response
+
     queue_result = request_queue.get_request_result(request_id)
     
     if not queue_result:
@@ -228,10 +280,20 @@ def show_results_with_id(request_id):
     if session.get('queue_request_id') == request_id:
         session.pop('queue_request_id', None)
     
-    return render_template('matrix.html', **result, form_values=form_values)
+    return render_template(
+        'matrix.html',
+        **result,
+        form_values=form_values,
+        styles_css=STYLES_CSS_CONTENT,
+        script_js=SCRIPT_JS_CONTENT
+    )
 
 @app.route('/matrix_result')
 def matrix_result():
+    maintenance_response = check_maintenance()
+    if maintenance_response:
+        return maintenance_response
+
     result_id = session.pop('result_id', None)
     result = RESULT_CACHE.pop(result_id, None) if result_id else None
     form_values = session.get('form_values', None)
@@ -239,7 +301,13 @@ def matrix_result():
     if not result:
         return redirect(url_for('home'))
 
-    return render_template('matrix.html', **result, form_values=form_values)
+    return render_template(
+        'matrix.html',
+        **result,
+        form_values=form_values,
+        styles_css=STYLES_CSS_CONTENT,
+        script_js=SCRIPT_JS_CONTENT
+    )
 
 @app.route('/queue_stats')
 def queue_stats():
@@ -249,9 +317,21 @@ def queue_stats():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/queue_cleanup', methods=['POST'])
+def queue_cleanup():
+    try:
+        request_queue.force_cleanup()
+        stats = request_queue.get_queue_stats()
+        return jsonify({"status": "success", "message": "Cleanup completed", "stats": stats})
+    except Exception as e:
+        return jsonify({"status": "error", "error": str(e)}), 500
+
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    maintenance_response = check_maintenance()
+    if maintenance_response:
+        return maintenance_response
+    return render_template('404.html', styles_css=STYLES_CSS_CONTENT, script_js=SCRIPT_JS_CONTENT), 404
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
