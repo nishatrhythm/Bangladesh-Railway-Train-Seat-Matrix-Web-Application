@@ -1316,6 +1316,27 @@ button:hover {
     margin-right: 5px;
 }
 
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 103, 71, 0.3);
+    border-top: 3px solid #006747;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 5px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 .queue-container {
     max-width: 700px;
     margin: 0 auto;
