@@ -318,6 +318,13 @@ class RequestQueue:
         if stale_requests:
             print(f"Enhanced cleanup: Removed {len(stale_requests)} stale requests")
     
+    def force_cleanup(self):
+        with self.lock:
+            if self.cancelled_requests:
+                self._batch_remove_cancelled()
+        self._enhanced_cleanup()
+        self._cleanup_old_entries()
+    
     def get_queue_stats(self):
         with self.lock:
             total_queued = sum(1 for s in self.statuses.values() if s["status"] == "queued")
@@ -333,12 +340,5 @@ class RequestQueue:
                 "queue_size": self.queue.qsize(),
                 "cancelled_pending": len(self.cancelled_requests)
             }
-    
-    def force_cleanup(self):
-        with self.lock:
-            if self.cancelled_requests:
-                self._batch_remove_cancelled()
-        self._enhanced_cleanup()
-        self._cleanup_old_entries()
 
 request_queue = RequestQueue()

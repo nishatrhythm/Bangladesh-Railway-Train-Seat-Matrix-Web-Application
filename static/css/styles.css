@@ -32,7 +32,7 @@ h1 {
     color: rgb(0, 103, 71);
     font-weight: 800;
     line-height: 1;
-    margin: 30px 0px 40px;
+    margin: 30px 0px 20px;
     animation: fadeInTranslate 0.8s ease-out;
 }
 
@@ -353,6 +353,8 @@ input[readonly].error-input {
     transform-origin: bottom center;
     max-height: calc(100vh - 100px);
     overflow-y: auto;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
 }
 
 .calendar-dialog.fade-out {
@@ -1256,7 +1258,7 @@ button:hover {
 }
 
 .note {
-    margin-top: 40px;
+    margin-top: 30px;
     line-height: 1.6;
     color: rgb(0, 103, 71);
     background-color: #f1f8f3;
@@ -1378,6 +1380,10 @@ button:hover {
     display: inline-block;
 }
 
+.queue-header h2 i {
+    margin-right: 5px;
+}
+
 .queue-header p {
     font-size: 16px;
     color: #444;
@@ -1476,6 +1482,7 @@ button:hover {
     text-align: center;
     background: linear-gradient(to bottom, #f2f6fa, #ffffff);
     padding: 20px;
+    margin-top: 30px;
     margin-bottom: 20px;
     border-radius: 8px 8px 0 0;
     border-top: 3px solid #006747;
