@@ -1,590 +1,474 @@
-# Bangladesh Railway Train Seat Matrix Web Application
-
-![Banner Image](images/link_share_image.png)
-
-## Overview
-
-This web application provides a comprehensive solution for checking seat availability and fare information for Bangladesh Railway trains. It features a unique matrix visualization that allows users to view segmented seat availability across multiple stations on a train's route. The application fetches real-time data from the Bangladesh Railway API to display accurate seat counts, fares, and route information.
-
-**Live Website:** [seat.onrender.com](https://seat.onrender.com)
-
-## Features
-
-- **Train Selection**: Search and select from a comprehensive list of Bangladesh Railway trains
-- **Date Selection**: User-friendly calendar interface for journey date selection
-- **Seat Availability Matrix**: Visual representation of available seats between any two stations
-- **Segmented Fare Display**: Clear breakdown of fares between each station pair
-- **Route Visualization**: Interactive route map showing all stops with arrival/departure times
-- **Overnight Journey Support**: Special handling for trains that cross midnight into the next day
-- **Direct Booking Links**: Seamless redirection to the official Bangladesh Railway e-ticket portal
-
-## Screenshots
-
-| ![Screenshot 1](images/Screenshot_1.png) | ![Screenshot 2](images/Screenshot_2.png) |
-|:---:|:---:|
-
-## Technical Details
-
-### Architecture
-
-The application follows a client-server architecture:
-- **Frontend**: HTML, CSS, JavaScript
-- **Backend**: Python with Flask framework
-- **Data Source**: Bangladesh Railway API (railspaapi.shohoz.com)
-
-### Algorithm and Program Flow
-
-1. **Homepage Load**:
-   - Initialize date constraints (current day to 10 days ahead) with Bangladesh Standard Time (BST)
-   - Load train list from `trains_en.json` during application startup for optimal performance
-   - Set up form validation and submission handlers
-   - Manage user session data for form persistence across page reloads
-   - Implement cache control headers to prevent stale data issues
-
-2. **Form Submission**:
-   - Validate required inputs (train name and journey date)
-   - Parse train model number using regex extraction from full train name with format "TRAIN_NAME (MODEL_NUMBER)"
-   - Convert user-friendly date format (DD-MMM-YYYY) to API-required format (YYYY-MM-DD)
-   - Store form values in Flask session for persistence and better user experience
-   - Implement error handling with user-friendly messages
-
-3. **Matrix Computation**:
-   - Call `compute_matrix()` function in a separate module to maintain code organization
-   - Execute train data API request to fetch complete route information
-   - Calculate station dates for multi-day journeys using BST time zone
-   - Process overnight journeys using time difference detection algorithm
-   - Validate if train runs on the selected day of week using the days list from API
-   - Handle numerous edge cases (invalid train model, no available seats, API errors)
-
-4. **Parallel Data Fetching with Threading Optimization**:
-   - Create efficient station pair combinations for all origin-destination pairs
-   - Use ThreadPoolExecutor with 10 worker threads to manage concurrent API requests
-   - Implement tuple-based return values for clean data handling in the callback
-   - Use `as_completed()` to process results as soon as they're available
-   - Optimize API calls with smart parameter handling and error management
-   - Implement automatic retry mechanisms for transient API failures
-
-5. **Result Processing and Caching**:
-   - Generate comprehensive fare matrices for each seat type with nested dictionaries
-   - Calculate total available seats by summing online and offline allocations
-   - Format dates for different contexts (display, API calls, and direct booking links)
-   - Cache API results with UUID-based identifiers in memory to reduce redundant processing
-   - Return a complete data structure with all information needed for rendering
-   - Apply special handling for multi-day journeys with next/previous day calculations
-
-6. **Result Rendering and Route Visualization**:
-   - Display interactive seat availability matrices filtered by seat type
-   - Implement responsive route visualization with collapsible sections
-   - Generate direct booking links with pre-filled parameters to the official Bangladesh Railway portal
-   - Apply conditional visual cues for stations with date transitions
-   - Format time and duration values for human readability
-
-### Data Fetching and Processing
-
-#### Train Route Data
-
-The application fetches train route data using a dedicated function that handles API interaction:
-
-```python
-def fetch_train_data(model: str, api_date: str) -> dict:
-    url = "https://railspaapi.shohoz.com/v1.0/web/train-routes"
-    payload = {"model": model, "departure_date_time": api_date}
-    headers = {'Content-Type': 'application/json'}
-
-    response = requests.post(url, json=payload, headers=headers)
-    response.raise_for_status()  # Raises exception for 4XX/5XX responses
-    return response.json().get("data")
-```
-
-This function:
-- Accepts train model number and API-formatted date
-- Creates a structured JSON payload
-- Sets appropriate content-type header
-- Validates HTTP response status
-- Extracts and returns only the relevant "data" portion of the response
-
-The returned data includes:
-- Train name and model number
-- Complete route with stations
-- Days of operation
-- Arrival/departure times at each station
-- Halt duration at intermediate stations
-
-#### Seat Availability Data
-
-Seat availability between station pairs is fetched using a specialized function that returns a tuple for efficient threading:
-
-```python
-def get_seat_availability(train_model: str, journey_date: str, from_city: str, to_city: str) -> tuple:
-    url = "https://railspaapi.shohoz.com/v1.0/web/bookings/search-trips-v2"
-    params = {
-        "from_city": from_city,
-        "to_city": to_city,
-        "date_of_journey": journey_date,
-        "seat_class": "SHULOV"  # Default parameter, actual search returns all seat types
-    }
-
-    try:
-        response = requests.get(url, params=params)
-        response.raise_for_status()
-        trains = response.json().get("data", {}).get("trains", [])
-
-        for train in trains:
-            if train.get("train_model") == train_model:
-                seat_info = {stype: {"online": 0, "offline": 0, "fare": 0, "vat_amount": 0} for stype in SEAT_TYPES}
-                for seat in train.get("seat_types", []):
-                    stype = seat["type"]
-                    if stype in seat_info:
-                        fare = float(seat["fare"])
-                        vat_amount = float(seat["vat_amount"])
-                        if stype in ["AC_B", "F_BERTH"]:
-                            fare += 50  # Additional berth charge for sleeper classes
-                        seat_info[stype] = {
-                            "online": seat["seat_counts"]["online"],
-                            "offline": seat["seat_counts"]["offline"],
-                            "fare": fare,
-                            "vat_amount": vat_amount
-                        }
-                return (from_city, to_city, seat_info)
-
-        return (from_city, to_city, None)
-
-    except requests.RequestException:
-        return (from_city, to_city, None)  # Graceful failure with tuple format maintained
-```
-
-This function:
-- Makes GET requests with query parameters
-- Implements robust error handling for API failures
-- Searches returned train list for the specific train model
-- Processes detailed seat information for all 10 defined seat types
-- Calculates complete fare including VAT and special charges
-- Records both online and offline seat allocations
-- Returns origin-destination pair with seat info in a consistent tuple format even during errors
-
-### Handling Overnight Journeys
-
-The application features sophisticated algorithms to handle trains that operate across midnight, a common scenario in long-distance rail travel:
-
-1. **Date Transition Detection Algorithm**:
-   ```python
-   # Excerpt from the time transition detection algorithm
-   MAX_REASONABLE_GAP_HOURS = 12
-   
-   for i, stop in enumerate(routes):
-       stop["display_date"] = None
-       time_str = stop.get("departure_time") or stop.get("arrival_time")
-       
-       if time_str and "BST" in time_str:
-           time_clean = time_str.replace(" BST", "").strip()
-           try:
-               hour_min, am_pm = time_clean.split(' ')
-               hour, minute = map(int, hour_min.split(':'))
-               am_pm = am_pm.lower()
-               
-               # Convert to 24-hour format
-               if am_pm == "pm" and hour != 12:
-                   hour += 12
-               elif am_pm == "am" and hour == 12:
-                   hour = 0
-                   
-               current_time = timedelta(hours=hour, minutes=minute)
-               
-               if previous_time is not None:
-                   time_diff = (current_time - previous_time).total_seconds() / 3600
-                   if current_time < previous_time:
-                       # Time went backward - potential date change
-                       time_diff = ((current_time + timedelta(days=1)) - previous_time).total_seconds() / 3600
-                       if time_diff < MAX_REASONABLE_GAP_HOURS:
-                           # Mark date transitions
-                           routes[i - 1]["display_date"] = current_date.strftime("%d %b")
-                           current_date += timedelta(days=1)
-                           stop["display_date"] = current_date.strftime("%d %b")
-               
-               previous_time = current_time
-   ```
-   
-   The algorithm:
-   - Tracks time progression between consecutive stations
-   - Converts 12-hour AM/PM format to 24-hour format for calculations
-   - Detects when time jumps backward (indicating day change)
-   - Applies a reasonable time gap threshold (12 hours) to avoid false positives
-   - Annotates stations with date information when transitions are detected
-   - Handles edge cases where time format is inconsistent
-
-2. **Multi-day Journey Data Management**:
-   - Creates comprehensive mapping of stations to their respective dates
-   - Stores both API-formatted dates (YYYY-MM-DD) and display-formatted dates (DD-MMM-YYYY)
-   - Automatically adjusts booking URLs for stations on different dates
-   - Identifies routes with segmented dates for special UI handling:
-   ```python
-   unique_dates = set(station_dates.values())
-   has_segmented_dates = len(unique_dates) > 1
-   
-   if has_segmented_dates:
-       date_obj = datetime.strptime(journey_date_str, "%d-%b-%Y")
-       next_day_obj = date_obj + timedelta(days=1)
-       prev_day_obj = date_obj - timedelta(days=1)
-       next_day_str = next_day_obj.strftime("%d-%b-%Y")
-       prev_day_str = prev_day_obj.strftime("%d-%b-%Y")
-   ```
-
-3. **User Interface Adaptations**:
-   - Displays prominent alert panel for overnight journeys
-   - Shows visual date indicators next to stations in timeline view
-   - Implements intelligent suggestions for finding complete ticket availability:
-   ```html
-   {% if has_segmented_dates %}
-   <div class="travel-alert">
-       <div class="alert-header">
-           <i class="fas fa-exclamation-triangle"></i>
-           <h3>Date Selection for Overnight Journey</h3>
-       </div>
-       <p>This train departs from its origin station on {{ date }}, but reaches certain stations after midnight — 
-          in the early hours of {{ next_day_str }}. Ticket availability for those post-midnight arrivals 
-          may appear under {{ next_day_str }}.</p>
-       <div class="alert-tip">
-           <i class="fas fa-lightbulb"></i>
-           <p>Tip: To find tickets for arrivals early on {{ date }}, try searching with {{ prev_day_str }} 
-              as your journey date.</p>
-       </div>
-   </div>
-   {% endif %}
-   ```
-
-### Data Representation and Visualization
-
-#### Comprehensive Data Structure
-
-The application uses a highly optimized nested data structure to organize all information:
-
-```python
-# Final data structure returned from compute_matrix function
-return {
-    "train_model": train_model,                       # Train model number
-    "train_name": train_name,                         # Full train name
-    "date": journey_date_str,                         # User-selected journey date
-    "stations": stations,                             # Ordered list of all stations
-    "seat_types": SEAT_TYPES,                         # Available seat classes
-    "fare_matrices": fare_matrices,                   # Nested fare and seat data
-    "has_data_map": seat_type_has_data,              # Quick lookup for seat types with data
-    "routes": routes,                                 # Enhanced route data with times
-    "days": days,                                     # Days when train operates
-    "total_duration": total_duration,                 # Total journey time
-    "station_dates": station_dates,                   # Mapping stations to API dates
-    "station_dates_formatted": station_dates_formatted, # Formatted dates for display
-    "has_segmented_dates": has_segmented_dates,       # Flag for overnight journeys
-    "next_day_str": next_day_str,                     # Next day for overnight journeys
-    "prev_day_str": prev_day_str,                     # Previous day for overnight journeys
-}
-```
-
-#### Multi-Dimensional Fare Matrix
-
-The application organizes seat availability data in a sophisticated nested matrix format:
-
-```python
-# Structure of fare_matrices
-fare_matrices = {
-    "SEAT_TYPE_1": {                   # First dimension: Seat type
-        "STATION_A": {                 # Second dimension: Origin station
-            "STATION_B": {             # Third dimension: Destination station
-                "online": 15,          # Online quota seats
-                "offline": 5,          # Offline quota seats
-                "fare": 455.0,         # Base fare
-                "vat_amount": 23.75    # VAT amount
-            },
-            "STATION_C": { ... }
-        },
-        "STATION_B": { ... }
-    },
-    "SEAT_TYPE_2": { ... }
-}
-```
-
-This structure provides:
-- **Efficient Lookup**: O(1) complexity for any origin-destination-seat type combination
-- **Comprehensive Data**: Complete fare breakdown with online/offline allocations
-- **Space Optimization**: Only valid origin-destination pairs are stored
-- **Logical Organization**: Data is organized by seat type first, then origin-destination
-- **Accessibility**: Easy traversal for rendering in the template
-- **Flexible Filtering**: Quick filtering by seat type availability
-
-#### Interactive Route Visualization
-
-The route is displayed as an interactive expandable timeline with sophisticated rendering:
-
-```html
-<div class="station-timeline">
-    {% for stop in routes %}
-    <div class="station-item {% if loop.first %}start{% elif loop.last %}end{% endif %}">
-        <div class="station-node">
-            <div class="station-icon-circle">
-                <i class="fas fa-location-dot"></i>
-            </div>
-            {% if not loop.last %}
-            <div class="station-line"></div>
-            {% endif %}
-        </div>
-        <div class="station-info">
-            <div class="station-header">
-                <div class="station-name">
-                    {{ stop.city }}
-                    {% if stop.display_date %}
-                    <span class="station-date">{{ stop.display_date }}</span>
-                    {% endif %}
-                </div>
-                {% if loop.first %}
-                <span class="station-type-label start">Origin</span>
-                {% elif loop.last %}
-                <span class="station-type-label end">Destination</span>
-                {% endif %}
-            </div>
-            <!-- Time information rendering -->
-        </div>
-    </div>
-    {% endfor %}
-</div>
-```
-
-Key visualization features:
-- **Intelligent Layout**: Special styling for origin, intermediate, and destination stations
-- **Time Formatting**: Conversion of 24-hour time to user-friendly AM/PM format
-- **Duration Calculation**: Human-readable formatting of journey and halt durations
-- **Visual Indicators**: Clear marking of overnight transitions
-- **Responsive Design**: Adapts to mobile and desktop viewports
-- **Interactive Elements**: Expandable sections to manage screen real estate
-- **Visual Hierarchy**: Intuitive representation of the complete journey
-
-## Performance Optimizations
-
-The application implements several key optimizations for speed and efficiency:
-
-1. **Concurrent API Requests**:
-   - Uses Python's ThreadPoolExecutor for parallel execution
-   - Processes up to 10 API requests simultaneously
-   - Reduces total processing time by 80-90% compared to sequential requests
-   - Implements smart result handling with `as_completed()` for responsive processing
-
-2. **Stateless Result Caching**:
-   - Uses UUID-based identifiers for temporally storing matrix computation results
-   - Avoids redundant API calls and calculations on page refresh
-   - Clears cache after successful rendering to manage memory usage
-   ```python
-   result_id = str(uuid.uuid4())
-   RESULT_CACHE[result_id] = result
-   session['result_id'] = result_id
-   ```
-
-3. **Selective Data Loading**:
-   - Pre-loads train list during application startup
-   - Renders only the available seat types in the matrix view
-   - Uses conditional rendering to avoid heavy DOM operations
-   - Implements expandable sections for large data visualizations
-
-4. **Edge Case Handling**:
-   - Graceful error recovery for API failures with meaningful messages
-   - Session-based form data persistence to preserve user inputs
-   - Input validation before API calls to prevent unnecessary requests
-   - Cache control headers to prevent browser caching of dynamic data
-
-## Installation
-
-### Prerequisites
-
-- Python 3.8 or higher
-- Flask 3.1.0
-- Requests 2.32.3
-- pytz 2025.2
-- A modern web browser with JavaScript enabled
-
-### Setup
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application.git
-   cd Bangladesh-Railway-Train-Seat-Matrix-Web-Application
-   ```
-
-2. Create and activate a virtual environment (recommended):
-   ```bash
-   python -m venv venv
-   # On Windows
-   venv\Scripts\activate
-   # On macOS/Linux
-   source venv/bin/activate
-   ```
-
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. Run the application:
-   ```bash
-   python app.py
-   ```
-
-5. Open your browser and navigate to:
-   ```
-   http://localhost:5000
-   ```
-
-### Configuration Options
-
-The application supports several environment variables for configuration:
-
-- `PORT`: Set custom port (default: 5000)
-- `DEBUG`: Enable debug mode (set to 1)
-- `SECRET_KEY`: Custom session encryption key
-
-## Security Considerations
-
-The application implements several security best practices:
-
-1. **Input Validation**:
-   - All user inputs are validated before processing
-   - Regex pattern matching for train model extraction
-   - Date format validation to prevent injection attacks
-
-2. **API Protection**:
-   - Implemented `block_cloudflare_noise()` function to filter noise requests
-   ```python
-   @app.before_request
-   def block_cloudflare_noise():
-       if request.path.startswith('/cdn-cgi/'):
-           return '', 404
-   ```
-   - Cache control headers to prevent response caching
-   ```python
-   @app.after_request
-   def set_cache_headers(response):
-       response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
-       response.headers['Pragma'] = 'no-cache'
-       response.headers['Expires'] = '0'
-       return response
-   ```
-
-3. **Error Handling**:
-   - Custom 404 page for not found errors
-   - User-friendly error messages
-   - Session-based error passing to maintain RESTful routes
-
-4. **Data Security**:
-   - No persistent storage of user data
-   - Transient caching with UUID-based identifiers
-   - Session management using Flask's secure cookie system
-
-## Deployment
-
-The application can be deployed to any platform supporting Python web applications:
-
-1. **Render**:
-   - Create a new Web Service
-   - Connect your GitHub repository
-   - Set build command: `pip install -r requirements.txt`
-   - Set start command: `gunicorn app:app`
-   - Add environment variable: `SECRET_KEY=your_secure_key`
-
-2. **Docker Deployment**:
-   ```dockerfile
-   FROM python:3.10-slim
-   
-   WORKDIR /app
-   
-   COPY requirements.txt .
-   RUN pip install --no-cache-dir -r requirements.txt
-   
-   COPY . .
-   
-   ENV PORT=5000
-   
-   EXPOSE $PORT
-   
-   CMD ["python", "app.py"]
-   ```
-
-3. **Other platforms**:
-   - **Railway.app**: Automatic deployment with GitHub integration
-   - **Heroku**: Deploy with Procfile (`web: gunicorn app:app`)
-   - **PythonAnywhere**: WSGI configuration with Flask application
-   - **AWS/Azure/GCP**: Deploy using platform-specific container services
-
-## Contributing
-
-Contributions to improve the application are welcome. Please follow these steps:
-
-1. Fork the repository
-2. Create a new branch (`git checkout -b feature/improvement`)
-3. Make your changes
-4. Commit your changes (`git commit -am 'Add new feature'`)
-5. Push to the branch (`git push origin feature/improvement`)
-6. Create a new Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Future Enhancements
-
-Several enhancements are planned for future releases:
-
-1. **Seat Type Descriptions**:
-   - Add detailed descriptions for each seat type (AC_B, SNIGDHA, etc.)
-   - Include images of seat types for better user understanding
-
-2. **Advanced Filtering**:
-   - Filter by minimum available seats
-   - Filter by fare range
-   - Filter by arrival/departure time
-
-3. **Multi-Language Support**:
-   - Bengali language interface
-   - Language preference persistence
-
-4. **Booking Integration**:
-   - Direct booking API integration (pending official API access)
-   - Seat layout visualization
-
-5. **Performance Enhancements**:
-   - API response caching with time-based expiration
-   - Progressive web app capabilities
-   - Service worker for offline access to train list
-
-## Technical Challenges and Solutions
-
-During development, several key challenges were encountered and solved:
-
-1. **Overnight Journey Detection**:
-   - **Challenge**: Identifying when a train crosses midnight without explicit date information in API
-   - **Solution**: Implemented time progression analysis algorithm that detects backward time jumps with heuristic verification
-
-2. **API Rate Limiting**:
-   - **Challenge**: The Bangladesh Railway API occasionally rate-limits requests during high traffic
-   - **Solution**: Implemented concurrent requests with optimal thread count (10) to balance speed and reliability
-
-3. **Multi-Station Fare Calculation**:
-   - **Challenge**: Organizing fare data for complex routes with many stations
-   - **Solution**: Developed a multi-dimensional nested dictionary structure for O(1) lookup performance
-
-4. **Data Consistency**:
-   - **Challenge**: API occasionally returns inconsistent data formats
-   - **Solution**: Implemented robust error handling and data validation at multiple levels
-
-## Acknowledgements
-
-- Bangladesh Railway for providing the API infrastructure
-- [Shohoz](https://www.shohoz.com/) for their API integration services
-- Flask framework and Python community for the excellent tools
-- All contributors who have helped improve this project through feedback and suggestions
-
-## Contact
-
-For any questions, suggestions, or contributions, please:
-- Open an issue on GitHub
-- Contact the project maintainer at [nishatrhythm@gmail.com](mailto:nishatrhythm@gmail.com)
-- Follow on GitHub: [@nishatrhythm](https://github.com/nishatrhythm)
+# 🚆 Bangladesh Railway Train Seat Matrix Web Application
+
+A comprehensive web application to **visualize segmented seat availability and fare matrices** for Bangladesh Railway trains. This version focuses on **direct and segmented ticketing analysis, smart routing algorithms, and real-time availability tracking** — built using Flask + Vanilla JS + REST APIs.
+
+✨ **Key Features:**
+- 🧮 **Segmented Seat Matrix**: View seat availability across all route segments for any train
+- 🎯 **Smart Route Finding**: Direct, segmented, and mixed-class ticketing options
+- 📊 **Fare Matrix Visualization**: Complete fare breakdown by seat class and route
+- 🗓️ **Date-Aware Journey Planning**: Handles overnight journeys with proper date segmentation
+- 🚄 **Complete Train Coverage**: All 120+ Bangladesh Railway trains supported
+- 📱 **Mobile-Optimized Interface**: Fully responsive design for all devices
+- ⚡ **Zero Authentication Required**: No login needed for basic functionality
+- ⏳ **Queue System**: Intelligent request management to prevent API overload
 
 ---
 
-© 2025 Nishat Mahmud | [GitHub](https://github.com/nishatrhythm)
+## 🌐 Live Site
+
+👉 **Live URL:** [seat.onrender.com](https://seat.onrender.com)  
+⚠️ **Note:** First load may be delayed up to 1 minute due to free-tier cold starts.
+
+<br>
+
+| <img src="images/Screenshot_1.png" width="400"> | <img src="images/Screenshot_2.png" width="400"> |
+|--------------------------------------------------|--------------------------------------------------|
+| <div align="center">**Seat Matrix Interface**</div>     | <div align="center">**Train Route View**</div>   |
+
+---
+
+## 📚 Table of Contents
+
+1. [Project Structure](#-project-structure)  
+2. [Features Overview](#️-features-overview)  
+3. [Core Logic](#-core-logic)  
+4. [Matrix Algorithm](#-matrix-algorithm)  
+5. [Frontend Features](#️-frontend-features)  
+6. [Queue Management](#-queue-management)  
+7. [API Integration](#-api-integration)  
+8. [Cache Control](#-cache-control)  
+9. [Technologies Used](#-technologies-used)  
+10. [Setup Instructions](#-setup-instructions)  
+11. [Configuration](#️-configuration)  
+12. [License](#-license)
+
+---
+
+## 📂 Project Structure
+```
+.
+├── app.py                        # Flask backend with routes, session mgmt & rendering
+├── config.json                   # Dynamic config: maintenance, queue settings, app version
+├── matrixCalculator.py           # Core matrix computation, API calls, fare calculations
+├── request_queue.py              # Advanced queue system for managing concurrent requests
+├── trains_en.json                # Complete list of 120+ Bangladesh Railway trains
+├── LICENSE                       # Project license
+├── README.md                     # Project documentation (this file)
+├── requirements.txt              # Python dependencies
+├── images/
+│   ├── link_share_image.png      # Social sharing preview image
+│   ├── Screenshot_1.png          # Interface screenshots
+│   └── Screenshot_2.png          # Matrix view screenshots
+├── static/
+│   ├── css/
+│   │   └── styles.css            # Responsive UI with matrix visualizations
+│   ├── images/
+│   │   └── sample_banner.png     # Default banner image
+│   └── js/
+│       └── script.js             # Frontend logic, validations, dropdowns
+└── templates/
+    ├── 404.html                  # Custom error page with auto-redirect
+    ├── index.html                # Home form with train selection
+    ├── matrix.html               # Seat matrix visualizer with route analysis
+    ├── notice.html               # Maintenance mode page
+    └── queue.html                # Queue status tracking page
+```
+
+---
+
+## ⚙️ Features Overview
+
+| Feature                                  | Status ✅ | Description |
+|------------------------------------------|-----------|-------------|
+| Segmented Seat Matrix Visualization      | ✅        | Complete route-to-route availability matrix |
+| Direct & Segmented Route Finding         | ✅        | Smart algorithm for optimal ticket combinations |
+| Mixed-Class Ticketing Analysis          | ✅        | Find routes using different seat classes |
+| Real-time API Integration               | ✅        | Live data from Bangladesh Railway systems |
+| Date-Aware Journey Planning             | ✅        | Handles overnight trains with proper segmentation |
+| Interactive Availability Checker        | ✅        | Dynamic route analysis within matrix view |
+| Advanced Queue Management               | ✅        | Prevents API overload with intelligent queuing |
+| Responsive Matrix Tables                | ✅        | Mobile-optimized data visualization |
+| Train Route Visualization              | ✅        | Complete route maps with timing information |
+| Maintenance Mode Support               | ✅        | Configurable site-wide notices |
+| Session-based Form State              | ✅        | Preserves user input across requests |
+| Custom Error Handling                 | ✅        | Graceful fallbacks for API failures |
+| Social Media Integration              | ✅        | Open Graph tags for sharing |
+| Cache-Control Headers                 | ✅        | Ensures fresh data on every request |
+
+---
+
+## 🧠 Core Logic
+
+### 🚂 Train Matrix Computation
+
+The heart of the application lies in `matrixCalculator.py`, which implements:
+
+```python
+def compute_matrix(train_model: str, journey_date_str: str, api_date_format: str) -> dict
+```
+
+**Process Flow:**
+1. **Train Route Fetching**: Gets complete route with all stations and timings
+2. **Parallel API Calls**: Uses ThreadPoolExecutor for concurrent seat availability checks
+3. **Matrix Construction**: Builds N×N matrix for all station-to-station combinations
+4. **Fare Aggregation**: Processes multiple seat classes (S_CHAIR, SNIGDHA, AC_B, etc.)
+
+### 🔄 Smart Route Finding Algorithm
+
+Three intelligent routing strategies:
+
+#### 1. Direct Routes
+```javascript
+// Checks for direct tickets between origin and destination
+const directRoute = fareMatrices[seatType][origin][destination];
+```
+
+#### 2. Segmented Routes (Same Class)
+```javascript
+// Finds optimal path through intermediate stations
+function findRoutes(origin, destination, seatType, stations, fareMatrices)
+```
+
+#### 3. Mixed-Class Routes
+```javascript
+// Uses different seat classes for different segments
+function findMixedRoutes(origin, destination, stations, fareMatrices, seatTypes)
+```
+
+### 📊 Seat Type Processing
+
+Supports all Bangladesh Railway seat classes:
+- **S_CHAIR** (Shovan Chair)
+- **SHOVAN** (Shovan)
+- **SNIGDHA** (Snigdha)
+- **F_SEAT** (First Class Seat)
+- **F_CHAIR** (First Class Chair)
+- **AC_S** (AC Seat)
+- **F_BERTH** (First Class Berth)
+- **AC_B** (AC Berth)
+- **SHULOV** (Shulov)
+- **AC_CHAIR** (AC Chair)
+
+---
+
+## 🧮 Matrix Algorithm
+
+### Data Structure
+```python
+fare_matrices = {
+    "seat_type": {
+        "from_station": {
+            "to_station": {
+                "online": int,     # Available seats
+                "offline": int,    # Counter seats
+                "fare": float,     # Base fare
+                "vat_amount": float # VAT amount
+            }
+        }
+    }
+}
+```
+
+### Concurrent Processing
+- **ThreadPoolExecutor**: Parallel API calls for all route segments
+- **Max Workers**: Dynamically calculated based on route complexity
+- **Timeout Handling**: 30-second timeout per API call
+- **Error Recovery**: Graceful handling of failed requests
+
+### Matrix Visualization
+- **Color-coded Cells**: Available (green), unavailable (gray), disabled (diagonal)
+- **Fare Display**: Shows total fare including VAT and charges
+- **Direct Links**: Click-to-buy integration with official booking system
+- **Responsive Design**: Horizontal scroll on mobile devices
+
+---
+
+## 🎨 Frontend Features
+
+### 1. Advanced Train Selection
+- **Autocomplete Dropdown**: 120+ trains with fuzzy search
+- **Model Extraction**: Automatically extracts train numbers from names
+- **Validation**: Ensures valid train selection before submission
+
+### 2. Matrix Interaction
+- **Expandable Route View**: Collapsible train route with station timings
+- **Availability Checker**: Interactive origin/destination selector within matrix
+- **Real-time Calculations**: Dynamic fare computation for route segments
+
+### 3. Mobile Optimization
+- **Responsive Tables**: Horizontal scroll with sticky headers
+- **Touch-friendly Controls**: Large tap targets for mobile interaction
+- **Optimized Layout**: Single-column layout on small screens
+
+### 4. Date Intelligence
+```javascript
+// Handles overnight journeys with proper date calculation
+const hasSegmentedDates = stations.some(station => 
+    stationDates[station] !== date
+);
+```
+
+---
+
+## ⏳ Queue Management
+
+### Advanced Request Queue (`request_queue.py`)
+
+**Features:**
+- **Concurrent Limiting**: Configurable max concurrent requests
+- **Cooldown Periods**: Prevents API flooding
+- **Request Prioritization**: FIFO with abandonment detection
+- **Health Monitoring**: Tracks processing times and success rates
+- **Auto-cleanup**: Removes stale requests and results
+
+**Configuration:**
+```json
+{
+    "queue_max_concurrent": 1,
+    "queue_cooldown_period": 3,
+    "queue_batch_cleanup_threshold": 10,
+    "queue_cleanup_interval": 30,
+    "queue_heartbeat_timeout": 60
+}
+```
+
+**Process Flow:**
+1. Request submitted → Added to queue
+2. Queue position displayed to user
+3. Request processed when slot available
+4. Results cached and delivered
+5. Automatic cleanup of completed requests
+
+---
+
+## 🔌 API Integration
+
+### Bangladesh Railway API Endpoints
+
+#### 1. Train Route Data
+```http
+POST https://railspaapi.shohoz.com/v1.0/web/train-routes
+Content-Type: application/json
+{
+    "model": "TRAIN_MODEL",
+    "departure_date_time": "YYYY-MM-DD"
+}
+```
+
+#### 2. Seat Availability
+```http
+GET https://railspaapi.shohoz.com/v1.0/web/bookings/search-trips-v2
+Params: from_city, to_city, date_of_journey, seat_class
+```
+
+### Error Handling
+- **Network Timeouts**: 30-second request timeout
+- **Rate Limiting**: Built-in cooldown mechanisms
+- **Fallback Responses**: Graceful degradation on API failures
+- **Retry Logic**: Automatic retries for transient failures
+
+---
+
+## 🚦 Cache Control
+
+All responses include strict cache headers:
+```http
+Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+Pragma: no-cache
+Expires: 0
+```
+
+**Benefits:**
+- Always fresh data from APIs
+- No stale seat availability information
+- Proper handling of dynamic content
+- Prevents browser caching issues
+
+---
+
+## 🧰 Technologies Used
+
+### Backend
+- **Python 3.10+**
+- **Flask 3.1.0** - Web framework
+- **requests 2.32.3** - HTTP client for API calls
+- **pytz 2025.2** - Timezone handling for BST
+- **colorama 0.4.6** - Terminal color output
+
+### Frontend
+- **HTML5** with semantic markup
+- **CSS3** with Flexbox and Grid
+- **Vanilla JavaScript** - No external dependencies
+- **Font Awesome 6.5.0** - Icon library
+- **Responsive Design** - Mobile-first approach
+
+### Data Processing
+- **Concurrent Programming** - ThreadPoolExecutor
+- **JSON Processing** - Native Python JSON
+- **Date/Time Handling** - pytz for timezone awareness
+- **Matrix Algorithms** - Custom pathfinding implementation
+
+---
+
+## 🧪 Setup Instructions
+
+### 1. Clone Repository
+```bash
+git clone https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application.git
+cd Bangladesh-Railway-Train-Seat-Matrix-Web-Application
+```
+
+### 2. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Configure Application
+Edit `config.json` for customization:
+```json
+{
+    "version": "1.0.0",
+    "is_maintenance": 0,
+    "queue_max_concurrent": 1,
+    "queue_cooldown_period": 3,
+    "queue_enabled": true
+}
+```
+
+### 4. Run Application
+```bash
+python app.py
+```
+
+### 5. Access Application
+Visit `http://localhost:5000` in your browser
+
+---
+
+## ⚙️ Configuration
+
+### Queue Settings
+- **max_concurrent**: Number of simultaneous API requests (default: 1)
+- **cooldown_period**: Delay between requests in seconds (default: 3)
+- **batch_cleanup_threshold**: Trigger cleanup after N completed requests
+- **cleanup_interval**: Background cleanup frequency in seconds
+- **heartbeat_timeout**: Request timeout in seconds
+
+### Maintenance Mode
+```json
+{
+    "is_maintenance": 1,
+    "maintenance_message": "Site is under maintenance..."
+}
+```
+
+### Banner System
+```json
+{
+    "is_banner_enabled": 1,
+    "image_link": "https://example.com/banner.png",
+    "force_banner": 0
+}
+```
+
+---
+
+## 🔧 API Response Format
+
+### Matrix Data Structure
+```json
+{
+    "stations": ["DHAKA", "CHATTOGRAM", "SYLHET"],
+    "fare_matrices": {
+        "S_CHAIR": {
+            "DHAKA": {
+                "CHATTOGRAM": {
+                    "online": 45,
+                    "offline": 12,
+                    "fare": 350.0,
+                    "vat_amount": 0.0
+                }
+            }
+        }
+    },
+    "station_dates": {
+        "DHAKA": "2025-05-26",
+        "CHATTOGRAM": "2025-05-26"
+    }
+}
+```
+
+---
+
+## 🛡️ Security Features
+
+- **Input Sanitization**: All form inputs validated server-side
+- **Session Management**: Secure session handling with Flask
+- **XSS Protection**: Proper template escaping
+- **CSRF Protection**: Session-based form validation
+- **Rate Limiting**: Queue system prevents API abuse
+
+---
+
+## 📱 Mobile Features
+
+- **Responsive Tables**: Horizontal scroll with fixed headers
+- **Touch Optimization**: Large clickable areas
+- **Adaptive Layout**: Single-column on mobile
+- **Fast Loading**: Optimized assets and lazy loading
+- **Offline Detection**: Network status awareness
+
+---
+
+## 🎯 Future Enhancements
+
+- [ ] Multi-language support (Bengali/English)
+- [ ] API caching layer for improved performance
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## ⚖️ Disclaimer
+
+This application uses **publicly accessible APIs** provided by Bangladesh Railway's official e-ticketing platform. All data is fetched through legitimate REST endpoints without any reverse engineering or unauthorized access.
+
+- **Educational Purpose**: Designed for learning and informational use
+- **API Compliance**: Respects rate limits and terms of service
+- **No Data Scraping**: Uses official API endpoints only
+- **Privacy Focused**: No user data collection or storage
+
+If requested by the official service provider, access will be adjusted accordingly.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- **Bangladesh Railway** for providing public API access
+- **Shohoz** for the e-ticketing platform integration
+- **Open Source Community** for inspiration and tools
+- **Contributors** who help improve this project
+
+---
+
+<div align="center">
+
+**Made with ❤️ for Bangladesh Railway passengers**
+
+[🌐 Live Demo](https://seat.onrender.com) | [📧 Feedback](https://forms.gle/NV72PC1z75sq77tg7) | [⭐ Star on GitHub](https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application)
+
+</div>
