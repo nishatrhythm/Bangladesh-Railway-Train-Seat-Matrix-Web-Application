@@ -19,11 +19,19 @@ A comprehensive web application to **visualize segmented seat availability and f
 👉 **Live URL:** [seat.onrender.com](https://seat.onrender.com)  
 ⚠️ **Note:** First load may be delayed up to 1 minute due to free-tier cold starts.
 
-<br>
-
 | <img src="images/Screenshot_1.png" width="400"> | <img src="images/Screenshot_2.png" width="400"> |
 |--------------------------------------------------|--------------------------------------------------|
 | <div align="center">**Seat Matrix Interface**</div>     | <div align="center">**Train Route View**</div>   |
+
+---
+
+<div align="center">
+  <a href="https://youtu.be/zG55QW73N0c">
+    <img src="https://img.youtube.com/vi/zG55QW73N0c/hqdefault.jpg" alt="Watch the Video" width="500">
+  </a>
+</div>
+
+> **Video Guide:** You can run this entire project on your own computer. Detailed video instructions are available in [the YouTube video above](https://youtu.be/zG55QW73N0c).
 
 ---
 
