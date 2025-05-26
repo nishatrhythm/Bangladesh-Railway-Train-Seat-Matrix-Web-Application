@@ -32,7 +32,7 @@
         <h1><i class="fas fa-th-list"></i> Seat Matrix for {{ train_name }}</h1>
 
         <a href="/" class="btn-primary">
-            <i class="fas fa-arrow-left"></i> Back to Home
+            <i class="fas fa-arrow-left"></i> Back to Search
         </a>
 
         <div class="date-header">
@@ -284,10 +284,16 @@
         </div>
 
         <a href="/" class="btn-primary">
-            <i class="fas fa-arrow-left"></i> Back to Home
+            <i class="fas fa-arrow-left"></i> Back to Search
         </a>
     </div>
+
+    <button id="backToTopBtn">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
     <script src="/static/js/script.js"></script>
+    
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const tables = document.querySelectorAll(".table-responsive");
@@ -649,8 +655,8 @@
             let isValid = true;
             let firstEmptyField = null;
             const validations = [
-                { id: 'ca-origin-station', errorId: 'ca-origin-station-error', inputId: 'ca-origin-station-input', message: 'Origin station is required' },
-                { id: 'ca-destination-station', errorId: 'ca-destination-station-error', inputId: 'ca-destination-station-input', message: 'Destination station is required' }
+                { id: 'ca-origin-station', errorId: 'ca-origin-station-error', inputId: 'ca-origin-station-input', message: 'From station is required' },
+                { id: 'ca-destination-station', errorId: 'ca-destination-station-error', inputId: 'ca-destination-station-input', message: 'To station is required' }
             ];
 
             validations.forEach(validation => {
@@ -888,6 +894,39 @@
             window.stationDatesFormatted = {{ station_dates_formatted | tojson }};
             window.date = {{ date | tojson }};
         });
+    </script>
+    <script>
+        (function setupBackToTopButton() {
+            const btn = document.getElementById('backToTopBtn');
+            if (!btn) return;
+
+            let hideTimeout;
+            let lastScrollY = window.scrollY;
+
+            function showButton() {
+                btn.classList.add('visible');
+                clearTimeout(hideTimeout);
+                hideTimeout = setTimeout(() => {
+                    btn.classList.remove('visible');
+                }, 5000);
+            }
+
+            function handleScroll() {
+                const scrollY = window.scrollY;
+                if (scrollY > 300) {
+                    if (scrollY !== lastScrollY) showButton();
+                } else {
+                    btn.classList.remove('visible');
+                }
+                lastScrollY = scrollY;
+            }
+
+            btn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            window.addEventListener('scroll', handleScroll);
+        })();
     </script>
 </body>
 
