@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
 
 html {
     scroll-behavior: smooth;
@@ -1302,7 +1303,7 @@ button:hover {
 }
 
 .bengali {
-    font-family: 'Noto Sans Bengali', sans-serif;
+    font-family: 'Hind Siliguri', sans-serif;
 }
 
 .cancel-btn {
@@ -2203,7 +2204,7 @@ details[open] .route-body {
 }
 
 .matrix-card td.available .taka-icon {
-    font-family: 'Noto Sans Bengali', sans-serif;
+    font-family: 'Hind Siliguri', sans-serif;
     font-size: 14px;
     line-height: 1;
 }

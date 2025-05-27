@@ -226,11 +226,11 @@
         {% endfor %}
 
         <div class="ca-check-availability-section">
-            <h2><i class="fas fa-search"></i> Check Ticket Availability</h2>
+            <h2><i class="fas fa-search"></i> টিকিট পাওয়া যাচ্ছে কিনা দেখুন</h2>
             <form id="ca-availability-form" class="ca-availability-form">
                 <div class="ca-form-row">
                     <div class="ca-form-group">
-                        <label for="ca-origin-station-input">From Station</label>
+                        <label for="ca-origin-station-input">যাত্রা শুরুর স্টেশন</label>
                         <div class="ca-input-with-icon ca-custom-dropdown" id="ca-origin-station-dropdown">
                             <i class="fas fa-train ca-input-icon"></i>
                             <input type="text" id="ca-origin-station-input" placeholder="Select from station"
@@ -244,13 +244,13 @@
                                 </div>
                             </div>
                         </div>
-                        <span class="ca-error-message" id="ca-origin-station-error">From station is required</span>
+                        <span class="ca-error-message" id="ca-origin-station-error">শুরু স্টেশনটি প্রয়োজন</span>
                     </div>
                     <div class="swap-icon-wrapper" id="ca-swap-button" title="Swap stations">
                         <i class="fas fa-exchange-alt swap-icon"></i>
                     </div>
                     <div class="ca-form-group">
-                        <label for="ca-destination-station-input">To Station</label>
+                        <label for="ca-destination-station-input">গন্তব্য স্টেশন</label>
                         <div class="ca-input-with-icon ca-custom-dropdown" id="ca-destination-station-dropdown">
                             <i class="fas fa-train ca-input-icon"></i>
                             <input type="text" id="ca-destination-station-input"
@@ -264,18 +264,17 @@
                                 </div>
                             </div>
                         </div>
-                        <span class="ca-error-message" id="ca-destination-station-error">To station is
-                            required</span>
+                        <span class="ca-error-message" id="ca-destination-station-error">গন্তব্য স্টেশন প্রয়োজন</span>
                     </div>
                 </div>
                 <div class="ca-form-group ca-submit-btn">
                     <button type="submit" class="ca-btn-primary">
-                        <i class="fas fa-search"></i> Check Availability
+                        <i class="fas fa-search"></i> চেক করুন
                     </button>
                 </div>
                 <p class="ca-info-text">
                     <i class="fas fa-info-circle"></i>
-                    Ticket availability is shown based on the last matrix you generated. For the most accurate and updated results, please generate the matrix again.
+                    টিকিট খালি থাকার তথ্যটি আপনার আগের দেখা তালিকার ওপর ভিত্তি করে দেখানো হচ্ছে। সবথেকে সঠিক ও নতুন তথ্য দেখতে, দয়া করে আবার তালিকাটি তৈরি করুন
                 </p>
             </form>
             <div class="ca-route-results" id="ca-route-results" style="display: none;">

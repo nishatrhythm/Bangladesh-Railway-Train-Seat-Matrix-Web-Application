@@ -39,7 +39,7 @@
                     {% if status.status == 'queued' %}
                         <span>Your request is in queue...</span>
                     {% else %}
-                        <span class="spinner"></span> Processing your request...
+                        <span class="spinner"></span> অনুগ্রহ করে অপেক্ষা করুন...
                     {% endif %}
                 </div>
                 <div class="progress-container">
@@ -69,11 +69,11 @@
                     <i class="fas fa-clock"></i> <span id="timerCounter">0</span>
                 </div>
                 <p class="note">
-                    <i class="fas fa-info-circle"></i> Please wait while we check for available seats. Do not refresh this page.
+                    <i class="fas fa-info-circle"></i> আসন খোঁজা হচ্ছে, অপেক্ষা করুন । এই পেইজ রিফ্রেশ করবেন না...
                 </p>
             </div>
             <button onclick="cancelRequest()" class="cancel-btn">
-                <i class="fas fa-arrow-left"></i> Cancel and Go Back
+                <i class="fas fa-arrow-left"></i> বাতিল করুন ও ফিরে যান
             </button>
         </div>
     </div>
@@ -142,7 +142,7 @@
             sessionStorage.removeItem('queueRedirecting');
             pageVisited = false;
 
-            document.getElementById('queueStatus').innerHTML = '<i class="fas fa-times-circle"></i> Cancelling request...';
+            document.getElementById('queueStatus').innerHTML = '<i class="fas fa-times-circle"></i> বাতিল করা হচ্ছে...';
             document.getElementById('queueStatus').style.color = '#e74c3c';
             
             fetch('/cancel_request/' + requestId, {
@@ -153,7 +153,7 @@
             }).then(response => response.json())
                 .then(data => {
                     if (data.cancelled) {
-                        document.getElementById('queueStatus').innerHTML = '<i class="fas fa-check-circle"></i> Request cancelled successfully';
+                        document.getElementById('queueStatus').innerHTML = '<i class="fas fa-check-circle"></i> অনুরোধ সফলভাবে বাতিল হয়েছে!';
                         document.getElementById('queueStatus').style.color = '#006747';
                     }
                     setTimeout(() => {
@@ -192,7 +192,7 @@
                 if (data.error) {
                     clearInterval(intervalId);
                     sessionStorage.removeItem('lastStatusCheck');
-                    document.getElementById('queueStatus').innerHTML = '<i class="fas fa-exclamation-circle"></i> Request failed!';
+                    document.getElementById('queueStatus').innerHTML = '<i class="fas fa-exclamation-circle"></i> আপনার অনুরোধটি সফল হয়নি! অনুগ্রহ করে আবার চেষ্টা করুন !!';
                     document.getElementById('queueStatus').style.color = '#e74c3c';
                     document.getElementById('queueInfo').innerHTML = `<span>Error: <strong>${data.errorMessage || "There was a problem processing your request."}</strong></span>`;
                     document.getElementById('progressBar').style.width = '0%';
@@ -207,7 +207,7 @@
                     sessionStorage.removeItem('queuePageVisited');
                     pageVisited = false;
                     
-                    document.getElementById('queueStatus').innerHTML = '<i class="fas fa-check-circle"></i> Request completed!';
+                    document.getElementById('queueStatus').innerHTML = '<i class="fas fa-check-circle"></i> আপনার অনুরোধ সফল হয়েছে!!';
                     document.getElementById('queueStatus').style.color = '#006747';
                     document.getElementById('progressBar').style.width = '100%';
                     setTimeout(() => { 
@@ -216,14 +216,14 @@
                 } else if (data.status === 'failed') {
                     clearInterval(intervalId);
                     sessionStorage.removeItem('lastStatusCheck');
-                    document.getElementById('queueStatus').innerHTML = '<i class="fas fa-exclamation-circle"></i> Request failed!';
+                    document.getElementById('queueStatus').innerHTML = '<i class="fas fa-exclamation-circle"></i> আপনার অনুরোধটি সফল হয়নি! অনুগ্রহ করে আবার চেষ্টা করুন !! ';
                     document.getElementById('queueStatus').style.color = '#e74c3c';
                     document.getElementById('queueInfo').innerHTML = `<span>Error: <strong>${data.errorMessage || "There was a problem processing your request."}</strong></span>`;
                     document.getElementById('progressBar').style.width = '0%';
                     setTimeout(() => { window.location.href = '/'; }, 3000);
                 } else {
                     if (data.status === 'processing') {
-                        document.getElementById('queueStatus').innerHTML = '<span class="spinner"></span> Processing your request...';
+                        document.getElementById('queueStatus').innerHTML = '<span class="spinner"></span> অনুগ্রহ করে অপেক্ষা করুন...';
                         document.getElementById('queueStatus').style.color = '#006747';
                         document.getElementById('queueInfo').innerHTML = '';
                         document.getElementById('progressBar').style.width = '90%';

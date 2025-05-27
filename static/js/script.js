@@ -10,8 +10,8 @@ function validateForm(event) {
     let isValid = true;
     let firstEmptyField = null;
     const validations = [
-        { id: 'train_model', errorId: 'train_model-error', message: 'Train Model is required' },
-        { id: 'date', errorId: 'date-error', message: 'Date of Journey is required' }
+        { id: 'train_model', errorId: 'train_model-error', message: 'ট্রেনের নাম আবশ্যক' },
+        { id: 'date', errorId: 'date-error', message: 'অনুগ্রহ করে ভ্রমণের তারিখ নির্বাচন করুন' }
     ];
 
     validations.forEach(validation => {
