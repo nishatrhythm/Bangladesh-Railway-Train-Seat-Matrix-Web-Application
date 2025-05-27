@@ -13,7 +13,13 @@ def fetch_train_data(model: str, api_date: str) -> dict:
         "model": model,
         "departure_date_time": api_date
     }
-    headers = {'Content-Type': 'application/json'}
+    # If Shohoz API requires authentication, replace YOUR_API_KEY_HERE with an actual API key.
+    # Check Shohoz API documentation for more details.
+    headers = {
+        'Content-Type': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Authorization': 'Bearer YOUR_API_KEY_HERE'  # Placeholder for API key
+    }
 
     response = requests.post(url, json=payload, headers=headers)
     response.raise_for_status()
@@ -27,9 +33,15 @@ def get_seat_availability(train_model: str, journey_date: str, from_city: str, t
         "date_of_journey": journey_date,
         "seat_class": "SHULOV"
     }
+    # If Shohoz API requires authentication, replace YOUR_API_KEY_HERE with an actual API key.
+    # Check Shohoz API documentation for more details.
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Authorization': 'Bearer YOUR_API_KEY_HERE'  # Placeholder for API key
+    }
 
     try:
-        response = requests.get(url, params=params)
+        response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
         trains = response.json().get("data", {}).get("trains", [])
 
