@@ -480,3 +480,17 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 [🌐 Live Demo](https://seat.onrender.com) | [📧 Feedback](https://forms.gle/NV72PC1z75sq77tg7) | [⭐ Star on GitHub](https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application)
 
 </div>
+
+---
+
+## 🛠️ API Key Configuration
+
+This application interacts with the Shohoz API to fetch train and seat availability data. If you encounter `403 Forbidden` errors, it likely means that an API key or specific authorization headers are required by Shohoz.
+
+You may need to:
+1. Obtain an API key from Shohoz (check their official website for API documentation).
+2. Update the `matrixCalculator.py` file:
+   - In the `fetch_train_data` function, replace `'Authorization': 'Bearer YOUR_API_KEY_HERE'` with your actual API key/token.
+   - In the `get_seat_availability` function, replace `'Authorization': 'Bearer YOUR_API_KEY_HERE'` with your actual API key/token.
+
+Please refer to the comments within `matrixCalculator.py` for the exact lines to modify.
