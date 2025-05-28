@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, abort
 from datetime import datetime, timedelta
-import json, pytz, os, re, uuid
+import json, pytz, os, re, uuid, base64
 from matrixCalculator import compute_matrix
 from request_queue import RequestQueue
 
@@ -16,6 +16,16 @@ with open('static/js/script.js', 'r', encoding='utf-8') as js_file:
     SCRIPT_JS_CONTENT = js_file.read()
 with open('static/css/styles.css', 'r', encoding='utf-8') as css_file:
     STYLES_CSS_CONTENT = css_file.read()
+
+default_banner_path = 'static/images/sample_banner.png'
+DEFAULT_BANNER_IMAGE = ""
+if os.path.exists(default_banner_path):
+    try:
+        with open(default_banner_path, 'rb') as img_file:
+            encoded_image = base64.b64encode(img_file.read()).decode('utf-8')
+            DEFAULT_BANNER_IMAGE = f"data:image/png;base64,{encoded_image}"
+    except Exception:
+        pass
 
 def configure_request_queue():
     max_concurrent = CONFIG.get("queue_max_concurrent", 1)
@@ -70,7 +80,10 @@ def home():
 
     app_version = CONFIG.get("version", "1.0.0")
     config = CONFIG.copy()
-    banner_image = ""
+    
+    banner_image = CONFIG.get("image_link") or DEFAULT_BANNER_IMAGE
+    if not banner_image:
+        banner_image = ""
 
     bst_tz = pytz.timezone('Asia/Dhaka')
     bst_now = datetime.now(bst_tz)
@@ -92,6 +105,7 @@ def home():
         error=error,
         app_version=app_version,
         CONFIG=config,
+        is_banner_enabled=CONFIG.get("is_banner_enabled", 0),
         banner_image=banner_image,
         min_date=min_date.strftime("%Y-%m-%d"),
         max_date=max_date.strftime("%Y-%m-%d"),

@@ -51,7 +51,7 @@
     </noscript>
     
     <div class="container main-content">
-        <h1><i class="fas fa-subway"></i> BR Train Seat Matrix <sup class="beta-badge">BETA</sup></h1>
+        <h1><i class="fas fa-subway"></i> BR Train Seat Matrix</h1>
 
         {% if CONFIG and CONFIG.queue_enabled %}
         <p class="note bengali">
@@ -150,6 +150,7 @@
         sessionStorage.removeItem('queuePageVisited');
         sessionStorage.removeItem('queueRedirecting');
         sessionStorage.removeItem('lastStatusCheck');
+        window.bannerImageUrl = "{{ banner_image | safe }}";
     </script>
 </body>
 

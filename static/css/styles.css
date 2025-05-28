@@ -52,39 +52,6 @@ h1 i {
     margin-right: 10px;
 }
 
-/* ========= */
-/* TEMPORARY */
-/* ========= */
-
-.beta-badge {
-    background: #006747;
-    color: #fff;
-    font-size: 0.4em;
-    font-weight: 500;
-    padding: 5px;
-    border-radius: 3px;
-    margin-left: 7px;
-    letter-spacing: 0.1em;
-    vertical-align: super;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    text-shadow: 0 1px 1px rgba(0,0,0,0.03);
-    font-family: inherit;
-    cursor: default;
-    user-select: none;
-    animation: fadeInUp 1s cubic-bezier(.39,.575,.565,1) both;
-}
-
-@media (max-width: 480px) {
-    .beta-badge {
-        padding: 2px;
-        margin-left: 4px;
-    }
-}
-
-/* ========= */
-/* TEMPORARY */
-/* ========= */
-
 form {
     display: flex;
     flex-direction: column;

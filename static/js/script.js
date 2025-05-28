@@ -654,3 +654,92 @@ window.addEventListener('pageshow', function (event) {
         resetSubmitButton();
     }
 });
+
+function loadBannerImage() {
+    return new Promise((resolve) => {
+        const bannerContainer = document.getElementById('bannerImageContainer');
+        if (!bannerContainer) {
+            resolve();
+            return;
+        }
+
+        const configData = JSON.parse(document.getElementById('app-config').textContent);
+        const appVersion = configData.version || "1.0.0";
+        const currentImageUrl = window.bannerImageUrl;
+
+        if (!currentImageUrl) {
+            resolve();
+            return;
+        }
+
+        const cachedImageData = localStorage.getItem('bannerImageData');
+        const img = document.createElement('img');
+        img.alt = 'Banner';
+        img.className = 'banner-image animated-zoom-in';
+
+        if (cachedImageData) {
+            const parsedCache = JSON.parse(cachedImageData);
+            if (parsedCache.url === currentImageUrl && parsedCache.version === appVersion) {
+                img.src = parsedCache.base64;
+                bannerContainer.appendChild(img);
+                resolve();
+                return;
+            }
+        }
+
+        img.src = currentImageUrl;
+        bannerContainer.appendChild(img);
+
+        localStorage.setItem('bannerImageData', JSON.stringify({
+            url: currentImageUrl,
+            base64: currentImageUrl,
+            version: appVersion
+        }));
+
+        img.onload = () => resolve();
+        img.onerror = () => {
+            bannerContainer.removeChild(img);
+            resolve();
+        };
+    });
+}
+
+document.addEventListener('DOMContentLoaded', async function() {
+    if (document.getElementById('bannerModal')) {
+        await loadBannerImage();
+        
+        const configData = JSON.parse(document.getElementById('app-config').textContent);
+        const forceBanner = configData.force_banner || 0;
+        const appVersion = configData.version || "1.0.0";
+
+        const modal = document.getElementById('bannerModal');
+        const closeModal = document.querySelector('.close-modal');
+        const dontShowAgainCheckbox = document.getElementById('dontShowAgain');
+        const storedData = JSON.parse(localStorage.getItem('bannerState') || '{}');
+        const dontShowAgain = storedData.dontShowAgain === true;
+        const storedVersion = storedData.version || "0.0.0";
+
+        if (modal) {
+            if (forceBanner === 1 && (!dontShowAgain || storedVersion !== appVersion)) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            } else if (forceBanner !== 1 && !dontShowAgain) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            if (closeModal) {
+                closeModal.addEventListener('click', function () {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                    if (dontShowAgainCheckbox && dontShowAgainCheckbox.checked) {
+                        localStorage.setItem('bannerState', JSON.stringify({
+                            dontShowAgain: true,
+                            version: appVersion
+                        }));
+                    }
+                });
+            }
+        }
+    }
+});
