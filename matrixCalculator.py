@@ -15,9 +15,27 @@ def fetch_train_data(model: str, api_date: str) -> dict:
     }
     headers = {'Content-Type': 'application/json'}
 
-    response = requests.post(url, json=payload, headers=headers)
-    response.raise_for_status()
-    return response.json().get("data")
+    max_retries = 3
+    retry_count = 0
+
+    while retry_count < max_retries:
+        try:
+            response = requests.post(url, json=payload, headers=headers)
+            if response.status_code == 403:
+                raise Exception("Rate limit exceeded. Please try again later.")
+                
+            if response.status_code >= 500:
+                retry_count += 1
+                if retry_count == max_retries:
+                    raise Exception("We're unable to connect to the Bangladesh Railway website right now. Please try again in a few minutes.")
+                continue
+                
+            response.raise_for_status()
+            return response.json().get("data")
+        except requests.RequestException as e:
+            if hasattr(e, 'response') and e.response and e.response.status_code == 403:
+                raise Exception("Rate limit exceeded. Please try again later.")
+            raise
 
 def get_seat_availability(train_model: str, journey_date: str, from_city: str, to_city: str) -> tuple:
     url = "https://railspaapi.shohoz.com/v1.0/web/bookings/search-trips-v2"
@@ -28,33 +46,48 @@ def get_seat_availability(train_model: str, journey_date: str, from_city: str, t
         "seat_class": "SHULOV"
     }
 
-    try:
-        response = requests.get(url, params=params)
-        response.raise_for_status()
-        trains = response.json().get("data", {}).get("trains", [])
+    max_retries = 3
+    retry_count = 0
 
-        for train in trains:
-            if train.get("train_model") == train_model:
-                seat_info = {stype: {"online": 0, "offline": 0, "fare": 0, "vat_amount": 0} for stype in SEAT_TYPES}
-                for seat in train.get("seat_types", []):
-                    stype = seat["type"]
-                    if stype in seat_info:
-                        fare = float(seat["fare"])
-                        vat_amount = float(seat["vat_amount"])
-                        if stype in ["AC_B", "F_BERTH"]:
-                            fare += 50
-                        seat_info[stype] = {
-                            "online": seat["seat_counts"]["online"],
-                            "offline": seat["seat_counts"]["offline"],
-                            "fare": fare,
-                            "vat_amount": vat_amount
-                        }
-                return (from_city, to_city, seat_info)
+    while retry_count < max_retries:
+        try:
+            response = requests.get(url, params=params)
+            if response.status_code == 403:
+                raise Exception("Rate limit exceeded. Please try again later.")
+                
+            if response.status_code >= 500:
+                retry_count += 1
+                if retry_count == max_retries:
+                    raise Exception("We're unable to connect to the Bangladesh Railway website right now. Please try again in a few minutes.")
+                continue
+                
+            response.raise_for_status()
+            trains = response.json().get("data", {}).get("trains", [])
 
-        return (from_city, to_city, None)
+            for train in trains:
+                if train.get("train_model") == train_model:
+                    seat_info = {stype: {"online": 0, "offline": 0, "fare": 0, "vat_amount": 0} for stype in SEAT_TYPES}
+                    for seat in train.get("seat_types", []):
+                        stype = seat["type"]
+                        if stype in seat_info:
+                            fare = float(seat["fare"])
+                            vat_amount = float(seat["vat_amount"])
+                            if stype in ["AC_B", "F_BERTH"]:
+                                fare += 50
+                            seat_info[stype] = {
+                                "online": seat["seat_counts"]["online"],
+                                "offline": seat["seat_counts"]["offline"],
+                                "fare": fare,
+                                "vat_amount": vat_amount
+                            }
+                    return (from_city, to_city, seat_info)
 
-    except requests.RequestException:
-        return (from_city, to_city, None)
+            return (from_city, to_city, None)
+
+        except requests.RequestException as e:
+            if hasattr(e, 'response') and e.response and e.response.status_code == 403:
+                raise Exception("Rate limit exceeded. Please try again later.")
+            return (from_city, to_city, None)
 
 def compute_matrix(train_model: str, journey_date_str: str, api_date_format: str) -> dict:
     train_data = fetch_train_data(train_model, api_date_format)
