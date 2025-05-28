@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, abort
 from datetime import datetime, timedelta
 import json, pytz, os, re, uuid
 from matrixCalculator import compute_matrix
@@ -103,11 +103,14 @@ def home():
         script_js=SCRIPT_JS_CONTENT
     )
 
-@app.route('/matrix', methods=['POST'])
+@app.route('/matrix', methods=['GET', 'POST'])
 def matrix():
     maintenance_response = check_maintenance()
     if maintenance_response:
         return maintenance_response
+    
+    if request.method == 'GET':
+        abort(404)
 
     train_model_full = request.form.get('train_model', '').strip()
     journey_date_str = request.form.get('date', '').strip()

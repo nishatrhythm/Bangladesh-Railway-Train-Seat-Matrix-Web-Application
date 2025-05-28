@@ -781,7 +781,7 @@
                             segmentHtml += `
                                 <div class="ca-route-segment">
                                     <div class="ca-route-segment-header">
-                                        ${seg.from} to ${seg.to}
+                                        ${seg.from} → ${seg.to}
                                         ${!allSameDay ? `<span class="ca-route-segment-date">${new Date(seg.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-')}</span>` : ''}
                                     </div>
                                     <div class="ca-fare-breakdown">
@@ -822,7 +822,7 @@
                         segmentHtml += `
                             <div class="ca-route-segment">
                                 <div class="ca-route-segment-header">
-                                    ${seg.from} to ${seg.to} [${seg.seatType}]
+                                    ${seg.from} → ${seg.to} [${seg.seatType}]
                                     ${!allSameDay ? `<span class="ca-route-segment-date">starts ${new Date(seg.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-')}</span>` : ''}
                                 </div>
                                 <div class="ca-fare-breakdown">
