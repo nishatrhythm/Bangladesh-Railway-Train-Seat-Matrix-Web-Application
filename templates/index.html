@@ -31,6 +31,10 @@
     <script id="app-config" type="application/json">
         {{ CONFIG | tojson | safe }}
     </script>
+    <!-- Trains Data with App Version -->
+    <script id="trains-data" type="application/json">
+        {"trains": {{ trains | tojson | safe }}, "version": "{{ app_version }}"}
+    </script>
 </head>
 
 <body>

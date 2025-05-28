@@ -2,6 +2,47 @@ document.documentElement.classList.add('js-enabled');
 
 let focusDueToValidation = false;
 let suppressEvents = false;
+let trainData = [];
+
+function loadTrains() {
+    return new Promise((resolve) => {
+        const cachedTrains = localStorage.getItem('railwayTrains');
+        const trainsElement = document.getElementById('trains-data');
+        let serverTrains, serverVersion;
+
+        if (trainsElement) {
+            const data = JSON.parse(trainsElement.textContent);
+            serverTrains = data.trains;
+            serverVersion = data.version || "1.0.0";
+        } else {
+            serverTrains = [];
+            serverVersion = "1.0.0";
+        }
+
+        if (cachedTrains) {
+            const cachedData = JSON.parse(cachedTrains);
+            const cachedVersion = cachedData.version || "0.0.0";
+            if (cachedVersion === serverVersion) {
+                trainData = cachedData.trains;
+                resolve();
+            } else {
+                trainData = serverTrains;
+                localStorage.setItem('railwayTrains', JSON.stringify({
+                    trains: serverTrains,
+                    version: serverVersion
+                }));
+                resolve();
+            }
+        } else {
+            trainData = serverTrains;
+            localStorage.setItem('railwayTrains', JSON.stringify({
+                trains: serverTrains,
+                version: serverVersion
+            }));
+            resolve();
+        }
+    });
+}
 
 function validateForm(event) {
     const text = document.getElementById('train-model-input').value.trim();
@@ -90,8 +131,21 @@ function setupTrainDropdown() {
     const optionsContainer = document.getElementById('train-model-options');
     const hiddenInput = document.getElementById('train_model');
     const errorField = document.getElementById('train_model-error');
-    let allOptions = Array.from(optionsContainer.querySelectorAll('.dropdown-option'));
+    let allOptions = [];
     let focusedOptionIndex = -1;
+
+    function populateTrainOptions() {
+        optionsContainer.innerHTML = '';
+        trainData.forEach(train => {
+            const option = document.createElement('div');
+            option.className = 'dropdown-option';
+            option.setAttribute('data-value', train);
+            option.textContent = train;
+            optionsContainer.appendChild(option);
+        });
+        allOptions = Array.from(optionsContainer.querySelectorAll('.dropdown-option'));
+        setupOptionEventListeners();
+    }
 
     function openDropdown() {
         dropdownMenu.style.display = 'block';
@@ -185,13 +239,19 @@ function setupTrainDropdown() {
             e.preventDefault();
             closeDropdown();
         }
-    });
-
-    allOptions.forEach(option => {
+    });    allOptions.forEach(option => {
         option.addEventListener('click', () => {
             selectOption(option);
         });
     });
+
+    function setupOptionEventListeners() {
+        allOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                selectOption(option);
+            });
+        });
+    }
 
     document.addEventListener('click', (e) => {
         if (!dropdown.contains(e.target)) closeDropdown();
@@ -201,6 +261,10 @@ function setupTrainDropdown() {
         textInput.value = hiddenInput.value;
         const selectedOption = allOptions.find(opt => opt.dataset.value === hiddenInput.value);
         if (selectedOption) selectedOption.classList.add('selected');
+    }
+
+    if (trainData.length > 0) {
+        populateTrainOptions();
     }
 }
 
@@ -504,7 +568,8 @@ function setupCalendarClickOutside() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadTrains();
     initMaterialCalendar();
     setupCalendarBlurClose();
     setupCalendarClickOutside();
