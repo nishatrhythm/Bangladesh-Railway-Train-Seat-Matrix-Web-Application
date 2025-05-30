@@ -1,7 +1,8 @@
 {
     "version": "1.0.0",
-    "is_maintenance": 0,
-    "maintenance_message": "This website is currently undergoing scheduled maintenance. We are working on a feature that will allow users to access the website without providing their mobile number and password. We strictly maintain user data privacy and will not compromise on data security. We expect the patch update to be live within the day.",
+    "is_maintenance": 1,
+    "maintenance_message_en": "This website is currently undergoing scheduled maintenance. We are working on a feature that will allow users to access the website without providing their mobile number and password. We strictly maintain user data privacy and will not compromise on data security. We expect the patch update to be live within the day.",
+    "maintenance_message_bn": "এই ওয়েবসাইটটি বর্তমানে নির্ধারিত রক্ষণাবেক্ষণের জন্য বন্ধ রয়েছে। আমরা এমন একটি ফিচার নিয়ে কাজ করছি, যাতে ব্যবহারকারীরা মোবাইল নম্বর ও পাসওয়ার্ড ছাড়াই ওয়েবসাইটটি ব্যবহার করতে পারেন। আমরা ব্যবহারকারীর তথ্যের গোপনীয়তা কঠোরভাবে রক্ষা করি এবং ডেটা নিরাপত্তার ক্ষেত্রে কোনো আপস করি না। আশা করছি, আজকের মধ্যেই আপডেটটি চালু হবে।",
     "is_banner_enabled": 1,
     "image_link": "",
     "force_banner": 0,

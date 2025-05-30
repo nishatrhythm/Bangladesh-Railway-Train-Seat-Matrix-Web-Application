@@ -65,7 +65,8 @@ def check_maintenance():
     if CONFIG.get("is_maintenance", 0):
         return render_template(
             'notice.html',
-            message=CONFIG.get("maintenance_message", ""),
+            message_en=CONFIG.get("maintenance_message_en", ""),
+            message_bn=CONFIG.get("maintenance_message_bn", ""),
             styles_css=STYLES_CSS_CONTENT,
             script_js=SCRIPT_JS_CONTENT
         )
@@ -409,9 +410,8 @@ logger.addHandler(console_handler)
 
 def get_local_ip():
     try:
-        # This does not actually connect, just figures out which interface to use
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8", 80))  # Google's public DNS server
+        s.connect(("8.8.8.8", 80))
         ip = s.getsockname()[0]
         s.close()
         return ip
