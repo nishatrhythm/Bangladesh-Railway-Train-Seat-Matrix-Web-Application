@@ -1574,7 +1574,6 @@ button:hover {
     animation: fadeInUp 0.8s ease-in-out;
     transition: box-shadow 0.3s;
     -webkit-tap-highlight-color: transparent;
-    -webkit-user-drag: none;
 }
 
 .route-card:hover {
@@ -1976,6 +1975,36 @@ details[open] .route-body {
 #backToTopBtn.visible {
     opacity: 1;
     visibility: visible;
+}
+
+.lang-toggle-btn {
+    position: absolute;
+    top: 24px;
+    right: 32px;
+    background: #006747;
+    color: #fff;
+    border: none;
+    border-radius: 24px;
+    padding: 8px 18px 8px 14px;
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0,103,71,0.08);
+    cursor: pointer;
+    z-index: 1001;
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.lang-toggle-btn:hover {
+    background: #004f3a;
+    color: #fff;
+    transform: scale(1.04);
+}
+
+.lang-toggle-btn i {
+    font-size: 18px;
 }
 
 ::selection {
@@ -3352,32 +3381,32 @@ details[open] .route-body {
     }
 
     .queue-container {
-        padding: 15px;
+        padding: 10px;
     }
 
     .queue-card {
-        padding: 15px;
+        padding: 10px;
     }
 
     .queue-header h2 {
-        font-size: 18px;
+        font-size: 16px;
     }
 
     .queue-header p {
-        font-size: 14px;
+        font-size: 13px;
     }
 
     .queue-status {
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
 
     .queue-timer {
-        font-size: 1.2rem;
+        font-size: 1rem;
     }
 
-    .queue-info {
-        flex-direction: column;
-        gap: 8px;
+    .cancel-btn {
+        font-size: 12px;
+        padding: 8px 15px;
     }
 }
 

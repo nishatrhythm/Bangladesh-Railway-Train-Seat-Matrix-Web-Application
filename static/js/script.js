@@ -537,11 +537,9 @@ function setupCalendarBlurClose() {
             isInteractingWithCalendar = false; 
         }, 100);
     });    function handleFocusOut(e) {
-        if (calendarJustOpened) return;
-        
+        // Fix: Remove reference to undefined calendarJustOpened
         setTimeout(() => {
-            if (calendarJustOpened || isInteractingWithCalendar) return;
-            
+            if (isInteractingWithCalendar) return;
             if (!calendar.contains(document.activeElement) && document.activeElement !== dateInput) {
                 closeMaterialCalendar();
             }
@@ -602,6 +600,126 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
     });
+});
+
+let trainBnMap = {};
+
+async function loadTrainBnMap() {
+    try {
+        const res = await fetch('/trains_bn.json');
+        if (res.ok) {
+            trainBnMap = await res.json();
+        }
+    } catch (e) {
+        trainBnMap = {};
+    }
+}
+
+function getTrainBn(name) {
+    return trainBnMap[name] || name;
+}
+
+// Language toggle logic
+function setLanguage(lang) {
+    const isBangla = lang === 'bn';
+    document.documentElement.setAttribute('lang', isBangla ? 'bn' : 'en');
+    // Text content
+    document.querySelectorAll('.translatable').forEach(el => {
+        if (!el.dataset.en) el.dataset.en = el.innerText;
+        if (isBangla) {
+            if (el.dataset.bn) el.innerText = el.dataset.bn;
+        } else {
+            if (el.dataset.en) el.innerText = el.dataset.en;
+        }
+    });
+    // HTML content (for notes with links)
+    document.querySelectorAll('.translatable-html').forEach(el => {
+        if (!el.dataset.enHtml) el.dataset.enHtml = el.innerHTML;
+        if (isBangla) {
+            if (el.dataset.bn) el.innerHTML = el.dataset.bn;
+        } else {
+            if (el.dataset.enHtml) el.innerHTML = el.dataset.enHtml;
+        }
+    });
+    // Placeholders
+    document.querySelectorAll('.translatable-placeholder').forEach(el => {
+        if (!el.defaultPlaceholder) el.defaultPlaceholder = el.placeholder;
+        if (isBangla) {
+            if (el.dataset.bnPlaceholder) el.placeholder = el.dataset.bnPlaceholder;
+        } else {
+            if (el.defaultPlaceholder) el.placeholder = el.defaultPlaceholder;
+        }
+    });
+    // Train dropdown options (dynamic, from trains_en.json)
+    document.querySelectorAll('#train-model-options .dropdown-option').forEach(opt => {
+        if (!opt.dataset.en) opt.dataset.en = opt.textContent;
+        if (isBangla) {
+            opt.textContent = getTrainBn(opt.dataset.en);
+        } else {
+            opt.textContent = opt.dataset.en;
+        }
+    });
+    // Calendar
+    const calendarTitle = document.getElementById('calendarTitle');
+    if (calendarTitle) {
+        const date = calendarCurrentMonth || new Date();
+        calendarTitle.textContent = formatBanglaDate(date, isBangla);
+    }
+    // Calendar weekdays
+    const weekdays = isBangla ? ['রবি','সোম','মঙ্গল','বুধ','বৃহঃ','শুক্র','শনি'] : ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    document.querySelectorAll('.calendar-weekdays span').forEach((el, i) => {
+        el.textContent = weekdays[i];
+    });
+    // Calendar days (numbers)
+    document.querySelectorAll('.calendar-day').forEach(el => {
+        if (/^\d+$/.test(el.textContent)) {
+            if (isBangla) {
+                el.textContent = toBanglaNumber(el.textContent);
+            } else {
+                el.textContent = toEnglishNumber(el.textContent);
+            }
+        }
+    });
+    // Toggle button text
+    const btnText = document.getElementById('langToggleText');
+    if (btnText) btnText.innerText = isBangla ? 'English' : 'বাংলা';
+    // Save to localStorage
+    localStorage.setItem('siteLang', lang);
+}
+
+function formatBanglaDate(date, isBangla) {
+    if (!isBangla) return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    const months = ['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+    const y = toBanglaNumber(date.getFullYear().toString());
+    const m = months[date.getMonth()];
+    return m + ' ' + y;
+}
+function toBanglaNumber(str) {
+    return str.replace(/[0-9]/g, d => '০১২৩৪৫৬৭৮৯'[d]);
+}
+function toEnglishNumber(str) {
+    return str.replace(/[০-৯]/g, d => '0123456789'['০১২৩৪৫৬৭৮৯'.indexOf(d)]);
+}
+
+async function setupLanguageToggle() {
+    document.querySelectorAll('.translatable-placeholder').forEach(el => {
+        if (!el.defaultPlaceholder) el.defaultPlaceholder = el.placeholder;
+    });
+    await loadTrainBnMap();
+    const btn = document.getElementById('langToggleBtn');
+    if (btn) {
+        btn.addEventListener('click', () => {
+            const current = localStorage.getItem('siteLang') || 'en';
+            setLanguage(current === 'en' ? 'bn' : 'en');
+        });
+    }
+    setLanguage(localStorage.getItem('siteLang') || 'en');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // ...existing code...
+    setupLanguageToggle();
+    // ...existing code...
 });
 
 function showLoaderAndSubmit(event) {

@@ -48,6 +48,16 @@ with open('trains_en.json', 'r') as f:
     trains_data = json.load(f)
     trains = trains_data['trains']
 
+with open('trains_bn.json', 'r', encoding='utf-8') as f:
+    trains_bn_data = json.load(f)
+
+def get_trains_bn():
+    return trains_bn_data
+
+@app.route('/trains_bn.json')
+def serve_trains_bn():
+    return jsonify(get_trains_bn())
+
 def check_maintenance():
     if CONFIG.get("is_maintenance", 0):
         return render_template(
@@ -351,4 +361,4 @@ def page_not_found(e):
     return render_template('404.html', styles_css=STYLES_CSS_CONTENT, script_js=SCRIPT_JS_CONTENT), 404
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5001)))

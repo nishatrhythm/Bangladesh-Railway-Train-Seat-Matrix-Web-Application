@@ -55,11 +55,16 @@
     </noscript>
     
     <div class="container main-content">
-        <h1><i class="fas fa-subway"></i> BR Train Seat Matrix</h1>
+        <!-- Language Toggle Button -->
+        <button id="langToggleBtn" class="lang-toggle-btn" type="button" aria-label="Switch Language">
+            <i class="fas fa-language"></i> <span id="langToggleText">বাংলা</span>
+        </button>
+
+        <h1><i class="fas fa-subway"></i> <span class="translatable" data-bn="বিআর ট্রেন সিট ম্যাট্রিক্স">BR Train Seat Matrix</span></h1>
 
         {% if CONFIG and CONFIG.queue_enabled %}
-        <p class="note bengali">
-            <span class="note-bold highlight">লক্ষ্য করুনঃ </span> আপনি আপনার নিজের কম্পিউটার থেকেই পুরো প্রজেক্টটি চালাতে পারবেন। এ সম্পর্কিত প্রয়োজনীয় দিকনির্দেশনা <a href="https://youtu.be/zG55QW73N0c" target="_blank">এই ইউটিউব ভিডিওটিতে</a> পাওয়া যাবে। 
+        <p class="note translatable-html" data-bn='<span class="note-bold highlight">লক্ষ্য করুনঃ </span> আপনি আপনার নিজের কম্পিউটার থেকেই পুরো প্রজেক্টটি চালাতে পারবেন। এ সম্পর্কিত প্রয়োজনীয় দিকনির্দেশনা <a href="https://youtu.be/zG55QW73N0c" target="_blank">এই ইউটিউব ভিডিওটিতে</a> পাওয়া যাবে।'>
+            <span class="note-bold highlight">Note:</span> You can run this entire project on your own computer. Detailed instructions are available in <a href="https://youtu.be/zG55QW73N0c" target="_blank">this YouTube video</a>.
         </p><br>
         {% endif %}
         
@@ -72,28 +77,28 @@
         <form action="/matrix" method="POST" id="matrixForm">
             <div class="form-row">
                 <div class="form-group">
-                    <label for="train_model">Train Name</label>
+                    <label for="train_model" class="translatable" data-bn="ট্রেনের নাম">Train Name</label>
                     <div class="input-with-icon custom-dropdown" id="train-model-dropdown">
                         <i class="fas fa-train input-icon"></i>
-                        <input type="text" id="train-model-input" placeholder="Enter train name" autocomplete="off"
+                        <input type="text" id="train-model-input" placeholder="Enter train name" class="translatable-placeholder" data-bn-placeholder="ট্রেনের নাম লিখুন" autocomplete="off"
                             value="{{ form_values.train_model if form_values else '' }}">
                         <input type="hidden" id="train_model" name="train_model"
                             value="{{ form_values.train_model if form_values else '' }}">
                         <div class="dropdown-menu" id="train-model-menu" style="display: none;">
                             <div class="dropdown-options" id="train-model-options">
-                                {% for train in trains %}
-                                <div class="dropdown-option" data-value="{{ train }}">{{ train }}</div>
-                                {% endfor %}
-                            </div>
+    {% for train in trains %}
+    <div class="dropdown-option" data-value="{{ train }}" data-bn="{{ train | replace('EXPRESS', 'এক্সপ্রেস') | replace('Express', 'এক্সপ্রেস') | replace('INTERCITY', 'ইন্টারসিটি') | replace('Intercity', 'ইন্টারসিটি') | replace('COMMUTER', 'কমিউটার') | replace('Commuter', 'কমিউটার') | replace('SHUTTLE', 'শাটল') | replace('SHUTTLE', 'শাটল') | replace('MAIL', 'মেইল') | replace('Mail', 'মেইল') | replace('EID SPL', 'ঈদ স্পেশাল') | replace('EID', 'ঈদ') | replace('SPL', 'স্পেশাল') }}">{{ train }}</div>
+    {% endfor %}
+</div>
                         </div>
                     </div>
-                    <span class="error-message" id="train_model-error">Train model is required</span>
+                    <span class="error-message translatable" id="train_model-error" data-bn="ট্রেনের নাম আবশ্যক">Train model is required</span>
                 </div>
                 <div class="form-group">
-                    <label for="date">Date of Journey</label>
+                    <label for="date" class="translatable" data-bn="ভ্রমণের তারিখ">Date of Journey</label>
                     <div class="input-with-icon">
                         <i class="fas fa-calendar-alt input-icon"></i>
-                        <input type="text" id="date" name="date" readonly placeholder="Select a date"
+                        <input type="text" id="date" name="date" readonly placeholder="Select a date" class="translatable-placeholder" data-bn-placeholder="তারিখ নির্বাচন করুন"
                             value="{{ form_values.date if form_values else '' }}" data-min-date="{{ min_date }}"
                             data-max-date="{{ max_date }}" data-bst-midnight-utc="{{ bst_midnight_utc }}" />
                         <div class="calendar-dialog" id="materialCalendar" style="display: none;">
@@ -104,25 +109,26 @@
                             </div>
                             <div class="calendar-grid">
                                 <div class="calendar-weekdays">
-                                    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                                    <span class="calendar-day translatable" data-bn="রবি">Sun</span><span class="calendar-day translatable" data-bn="সোম">Mon</span><span class="calendar-day translatable" data-bn="মঙ্গল">Tue</span><span class="calendar-day translatable" data-bn="বুধ">Wed</span><span class="calendar-day translatable" data-bn="বৃহঃ">Thu</span><span class="calendar-day translatable" data-bn="শুক্র">Fri</span><span class="calendar-day translatable" data-bn="শনি">Sat</span>
                                 </div>
                                 <div class="calendar-days" id="calendarDays"></div>
                             </div>
                         </div>
                     </div>
-                    <span class="error-message" id="date-error">Date of journey is required</span>
+                    <span class="error-message translatable" id="date-error" data-bn="ভ্রমণের তারিখ আবশ্যক">Date of journey is required</span>
                 </div>
             </div>
             <div class="form-group submit-btn">
-                <button type="submit" class="btn-primary">
-                    <i class="fas fa-calculator"></i> Generate Matrix
+                <button type="submit" class="btn-primary translatable" data-bn="ম্যাট্রিক্স দেখুন"><i class="fas fa-calculator"></i> Generate Matrix
                 </button>
             </div>
         </form>
         <footer class="new-footer">
-            <p>This project is open source. Check it out on <a
-                    href="https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application"
-                    target="_blank">GitHub</a>.</p>
+            <div class="translatable-html"
+                data-bn="এই প্রকল্পটি ওপেন সোর্স। <a href='https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application' target='_blank'>গিটহাবে</a> দেখুন"
+                data-en-html="This project is open source. Check it out on <a href='https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application' target='_blank'>GitHub</a>">
+                This project is open source. Check it out on <a href="https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application" target="_blank">GitHub</a>
+            </div>
         </footer>
 
         <div class="footer-links">
