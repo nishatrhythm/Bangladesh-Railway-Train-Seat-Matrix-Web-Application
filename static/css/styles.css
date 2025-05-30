@@ -1,8 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali&display=swap');
+@import url('https://fonts.maateen.me/solaiman-lipi/font.css');
 
 html {
     scroll-behavior: smooth;
+}
+
+:lang(bn) {
+  font-family: 'SolaimanLipi', sans-serif;
+}
+
+/* Ensure Font Awesome icons are not broken */
+.fas, .fa {
+  font-family: 'Font Awesome 6 Free'; /* or your correct FA version */
+  font-weight: 900; /* adjust based on style: solid/regular/light */
 }
 
 body {
@@ -14,6 +25,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    transition: opacity 0.3s;
 }
 
 .container {
@@ -1997,14 +2009,53 @@ details[open] .route-body {
     transition: background 0.2s, color 0.2s, transform 0.2s;
 }
 
-.lang-toggle-btn:hover {
-    background: #004f3a;
-    color: #fff;
-    transform: scale(1.04);
+.lang-toggle-btn:lang(en) {
+    font-family: 'SolaimanLipi', sans-serif;
 }
 
-.lang-toggle-btn i {
-    font-size: 18px;
+.lang-toggle-btn:lang(bn) {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.lang-toggle-mobile-label {
+    display: none;
+    font-size: 20px;
+    font-weight: 900;
+    margin-right: 0;
+    border-radius: 100%;
+}
+
+.lang-toggle-desktop {
+    display: inline-flex;
+    align-items: center;
+}
+
+.lang-toggle-mobile {
+    display: none;
+    font-size: 20px;
+    font-weight: 900;
+    margin-right: 0;
+}
+
+@media (max-width: 600px) {
+    .lang-toggle-desktop, .lang-toggle-text {
+        display: none !important;
+    }
+    .lang-toggle-mobile {
+        display: inline-block !important;
+    }
+    .lang-toggle-mobile-label {
+        display: inline-block !important;
+    }
+    .lang-toggle-btn {
+        padding: 8px 14px;
+        font-size: 18px;
+        right: 12px;
+        top: 12px;
+    }
+    .lang-toggle-btn i.fa {
+        display: none;
+    }
 }
 
 ::selection {
@@ -2568,7 +2619,7 @@ details[open] .route-body {
 }
 
 .ca-route-badge.mixed {
-    background: linear-gradient(135deg, #a21caf, #7c3aed);
+       background: linear-gradient(135deg, #a21caf, #7c3aed);
 }
 
 .ca-seat-type-label {
@@ -3378,511 +3429,6 @@ details[open] .route-body {
     .ca-invalid-route-message {
         font-size: 14px;
         padding: 16px;
-    }
-
-    .queue-container {
-        padding: 10px;
-    }
-
-    .queue-card {
-        padding: 10px;
-    }
-
-    .queue-header h2 {
-        font-size: 16px;
-    }
-
-    .queue-header p {
-        font-size: 13px;
-    }
-
-    .queue-status {
-        font-size: 0.9rem;
-    }
-
-    .queue-timer {
-        font-size: 1rem;
-    }
-
-    .cancel-btn {
-        font-size: 12px;
-        padding: 8px 15px;
-    }
-}
-
-@media (max-width: 480px) {
-    .container {
-        padding: 10px;
-    }
-
-    h1 {
-        font-size: 22px;
-    }
-
-    button {
-        font-size: 14px;
-        padding: 10px;
-    }
-
-    .btn-primary {
-        padding: 10px 12px;
-    }
-
-    .calendar-dialog {
-        padding: 10px;
-        border-radius: 8px;
-        max-width: 100%;
-        width: 100%;
-        font-size: 14px;
-    }
-
-    .calendar-month-year {
-        font-size: 14px;
-    }
-
-    .calendar-nav {
-        font-size: 14px;
-        height: 30px;
-        width: 30px;
-    }
-
-    .calendar-weekdays span,
-    .calendar-day,
-    .calendar-day-spacer {
-        height: 30px;
-        width: 30px;
-        font-size: 12px;
-    }
-
-    .dropdown-input {
-        font-size: 13px;
-        height: 38px;
-    }
-
-    .dropdown-value {
-        font-size: 13px;
-    }
-
-    .dropdown-caret {
-        font-size: 14px;
-    }
-
-    .dropdown-option {
-        font-size: 14px;
-    }
-
-    .error {
-        font-size: 14px;
-    }
-
-    .new-footer {
-        font-size: 12px;
-    }
-
-    .footer-links {
-        font-size: 12px;
-        padding: 10px 0 8px 0;
-        word-break: break-word;
-    }
-
-    .footer-links a,
-    .footer-links .dot {
-        display: inline-block;
-        margin: 0 2px;
-    }
-
-    .footer-links .dot {
-        font-size: 13px;
-    }
-
-    .note {
-        font-size: 12px;
-    }
-
-    .modal-content {
-        padding: 10px;
-        max-width: 95%;
-        max-height: 75vh;
-    }
-
-    .close-modal {
-        font-size: 20px;
-        top: 10px;
-        right: 10px;
-    }
-
-    .banner-image {
-        max-height: calc(75vh - 70px);
-        margin-bottom: 8px;
-    }
-
-    .modal-footer {
-        font-size: 12px;
-        padding-top: 6px;
-    }
-
-    .custom-checkbox {
-        padding-left: 22px;
-    }
-
-    .checkmark {
-        height: 12px;
-        width: 12px;
-    }
-
-    .custom-checkbox .checkmark:after {
-        left: 4px;
-        top: 1px;
-        width: 3px;
-        height: 6px;
-    }
-
-    .notice-card {
-        padding: 15px;
-        margin: 10px;
-    }
-
-    .notice-header {
-        font-size: 22px;
-        margin: 15px 0 20px;
-    }
-
-    .notice-icon {
-        font-size: 35px;
-    }
-
-    .notice-text {
-        font-size: 14px;
-    }
-
-    .flyout-notification {
-        min-width: 270px;
-        padding: 8px 12px;
-        font-size: 13px;
-    }
-
-    .flyout-notification .flyout-close {
-        font-size: 12px;
-        margin-left: 8px;
-        width: 20px;
-        height: 20px;
-    }
-
-    .flyout-notification::before {
-        font-size: 14px;
-        margin-right: 6px;
-    }
-
-    .noscript-warning {
-        padding: 15px;
-        margin: 10px auto;
-    }
-
-    .noscript-warning h2 {
-        font-size: 18px;
-        gap: 8px;
-    }
-
-    .noscript-warning h2 i {
-        font-size: 20px;
-    }
-
-    .noscript-warning p {
-        font-size: 13px;
-        line-height: 1.5;
-    }
-
-    .noscript-warning .instructions {
-        padding: 10px;
-        font-size: 12px;
-    }
-
-    .error-404 {
-        padding: 20px 10px;
-    }
-
-    .error-404 .train-icon {
-        font-size: 40px;
-    }
-
-    .error-404 .error-text {
-        font-size: 14px;
-    }
-
-    .error-404 .countdown-wrapper p {
-        font-size: 13px;
-    }
-
-    .error-404 .progress-bar {
-        max-width: 200px;
-        font-size: 12px;
-    }
-
-    .matrix-container {
-        padding: 10px;
-        margin: 0;
-        width: 100%;
-    }
-
-    .date-header {
-        padding: 12px;
-    }
-
-    .date-header h2 {
-        font-size: 18px;
-    }
-
-    .travel-alert {
-        padding: 10px;
-    }
-
-    .alert-header h3 {
-        font-size: 14px;
-    }
-
-    .alert-header i {
-        font-size: 15px;
-    }
-
-    .travel-alert p {
-        font-size: 12px;
-    }
-
-    .alert-tip p {
-        font-size: 12px;
-    }
-
-    .route-card h3 {
-        font-size: 14px;
-        padding: 6px 12px;
-    }
-
-    .route-visualization-card {
-        margin-bottom: 20px;
-    }
-
-    .route-toggle-btn {
-        font-size: 13px;
-        padding: 10px 12px;
-    }
-
-    .toggle-arrow {
-        font-size: 14px;
-    }
-
-    .route-body {
-        padding: 15px;
-    }
-
-    .route-train-header h3 {
-        font-size: 14px;
-    }
-
-    .run-days-list {
-        gap: 6px;
-        font-size: 11px;
-        margin: 8px 0 12px;
-    }
-
-    .run-days-title {
-        font-size: 11px;
-        width: 100%;
-        text-align: center;
-    }
-
-    .run-day {
-        padding: 3px 6px;
-        font-size: 11px;
-    }
-
-    .run-day sup {
-        font-size: 7px;
-    }
-
-    .station-item {
-        margin-bottom: 20px;
-    }
-
-    .station-node {
-        margin-top: 6px;
-        width: 24px;
-        height: 24px;
-        margin-right: 10px;
-    }
-
-    .station-icon-circle {
-        width: 24px;
-        height: 24px;
-    }
-
-    .station-icon-circle i {
-        font-size: 10px;
-    }
-
-    .station-info {
-        padding: 10px 12px;
-    }
-
-    .station-header {
-        margin-bottom: 6px;
-    }
-
-    .station-name {
-        font-size: 14px;
-    }
-
-    .station-date {
-        font-size: 11px;
-        padding: 2px 6px;
-        margin-left: 4px;
-    }
-
-    .station-type-label {
-        font-size: 9px;
-        padding: 2px 6px;
-    }
-
-    .station-meta-row {
-        gap: 6px 8px;
-        font-size: 12px;
-    }
-
-    .meta-item {
-        padding: 4px 8px;
-    }
-
-    .total-journey-time {
-        padding: 6px 12px;
-        font-size: 12px;
-        gap: 4px;
-    }
-
-    .total-journey-time i {
-        font-size: 12px;
-    }
-
-    .station-timeline {
-        padding: 0 5px;
-    }
-
-    .station-timeline::before {
-        left: 17px;
-    }
-
-    .station-timeline::before {
-        height: calc(100% - 170px);
-    }
-
-    .station-node {
-        margin-top: 8px;
-    }
-
-    .matrix-card {
-        padding: 12px;
-    }
-
-    .matrix-card h3 {
-        font-size: 14px;
-    }
-
-    .matrix-card td.available .seat-count {
-        font-size: 14px;
-        padding: 2px 5px;
-    }
-
-    .matrix-card td.available {
-        padding: 4px 4px;
-    }
-
-    .matrix-card td.available .buy-link {
-        font-size: 10px;
-        padding: 2px 5px;
-        gap: 2px;
-    }
-
-    .matrix-card td.available .fare {
-        font-size: 10px;
-        padding: 1px 4px;
-    }
-
-    .matrix-card td.available .fare-value {
-        font-size: 10px;
-    }
-
-    .matrix-card td.available .taka-icon {
-        font-size: 11px;
-    }
-
-    .matrix-card thead th:first-child,
-    .matrix-card tbody td:first-child {
-        white-space: normal;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-    }
-
-    .matrix-card thead th:first-child {
-        font-size: 11px;
-        padding: 6px 4px;
-        min-width: 80px;
-        max-width: 80px;
-    }
-
-    .matrix-card tbody td:first-child {
-        font-size: 11px;
-        padding: 6px 4px;
-        min-width: 80px;
-        max-width: 80px;
-    }
-
-    .ca-check-availability-section {
-        padding: 20px;
-        margin: 16px 0;
-    }
-
-    .ca-check-availability-section h2 {
-        font-size: 18px;
-    }
-
-    .ca-input-with-icon input {
-        font-size: 14px;
-        padding: 12px 14px 12px 40px;
-    }
-
-    .ca-input-icon {
-        font-size: 18px;
-        left: 12px;
-    }
-
-    .ca-dropdown-option {
-        font-size: 14px;
-    }
-
-    .ca-route-results {
-        margin-top: 12px;
-    }
-
-    .ca-seat-type-label {
-        font-size: 11px;
-    }
-
-    .ca-fare-item,
-    .ca-ticket-availability,
-    .ca-btn-primary.buy-link {
-        margin-bottom: 8px;
-    }
-
-    .ca-no-route-message,
-    .ca-invalid-route-message {
-        font-size: 13px;
-        padding: 14px;
-    }
-
-    .ca-info-text {
-        font-size: 10px;
-    }
-
-    .ca-info-text i {
-        font-size: 10px;
     }
 
     .queue-container {

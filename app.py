@@ -3,6 +3,9 @@ from datetime import datetime, timedelta
 import json, pytz, os, re, uuid, base64
 from matrixCalculator import compute_matrix
 from request_queue import RequestQueue
+import logging
+import sys
+import socket
 
 app = Flask(__name__)
 app.secret_key = "super_secret_key"
@@ -360,5 +363,68 @@ def page_not_found(e):
         return maintenance_response
     return render_template('404.html', styles_css=STYLES_CSS_CONTENT, script_js=SCRIPT_JS_CONTENT), 404
 
+# ANSI color codes
+RESET = "\033[0m"
+CYAN = "\033[96m"    # for module name
+BOLD = "\033[1m"
+
+# Level colors
+LEVEL_COLORS = {
+    'DEBUG':     "\033[94m",        # Blue
+    'INFO':      "\033[92m",        # Green
+    'WARNING':   "\033[1;33m",      # Bold Yellow
+    'ERROR':     "\033[91m",        # Red
+    'CRITICAL':  "\033[1;95m"       # Bold Magenta
+}
+
+class PrettyConsoleFormatter(logging.Formatter):
+    def format(self, record):
+        record.asctime = self.formatTime(record, self.datefmt)
+        module_color = CYAN
+        level_color = LEVEL_COLORS.get(record.levelname, "")
+        reset = RESET
+        bold = BOLD
+        module_name = f"{record.module:<24}"
+        level_name = f"{record.levelname:<8}"
+        formatted = (
+            f"[{record.asctime}] "
+            f"[{module_color}{module_name}{reset}] "
+            f"{level_color}{bold}{level_name}{reset} "
+            f"{level_color}{record.getMessage()}{reset}"
+        )
+        return formatted
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+console_handler = logging.StreamHandler(sys.stdout)
+console_handler.setLevel(logging.INFO)
+console_format = PrettyConsoleFormatter(
+    fmt="%(asctime)s %(module)s %(levelname)s %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
+console_handler.setFormatter(console_format)
+logger.handlers = []  # Remove any default handlers
+logger.addHandler(console_handler)
+
+def get_local_ip():
+    try:
+        # This does not actually connect, just figures out which interface to use
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))  # Google's public DNS server
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except Exception:
+        return "127.0.0.1"
+        
 if __name__ == "__main__":
+
+    allow_internal_log = CONFIG.get("allow_internal_log", 0)
+    if not allow_internal_log:
+        import logging
+        logging.getLogger('werkzeug').setLevel(logging.WARNING)
+        local_ip = get_local_ip()
+        print(f"App running at: http://{local_ip}:5001 (or http://127.0.0.1:5001)")
+
     app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5001)))

@@ -622,69 +622,83 @@ function getTrainBn(name) {
 // Language toggle logic
 function setLanguage(lang) {
     const isBangla = lang === 'bn';
-    document.documentElement.setAttribute('lang', isBangla ? 'bn' : 'en');
-    // Text content
-    document.querySelectorAll('.translatable').forEach(el => {
-        if (!el.dataset.en) el.dataset.en = el.innerText;
-        if (isBangla) {
-            if (el.dataset.bn) el.innerText = el.dataset.bn;
-        } else {
-            if (el.dataset.en) el.innerText = el.dataset.en;
-        }
-    });
-    // HTML content (for notes with links)
-    document.querySelectorAll('.translatable-html').forEach(el => {
-        if (!el.dataset.enHtml) el.dataset.enHtml = el.innerHTML;
-        if (isBangla) {
-            if (el.dataset.bn) el.innerHTML = el.dataset.bn;
-        } else {
-            if (el.dataset.enHtml) el.innerHTML = el.dataset.enHtml;
-        }
-    });
-    // Placeholders
-    document.querySelectorAll('.translatable-placeholder').forEach(el => {
-        if (!el.defaultPlaceholder) el.defaultPlaceholder = el.placeholder;
-        if (isBangla) {
-            if (el.dataset.bnPlaceholder) el.placeholder = el.dataset.bnPlaceholder;
-        } else {
-            if (el.defaultPlaceholder) el.placeholder = el.defaultPlaceholder;
-        }
-    });
-    // Train dropdown options (dynamic, from trains_en.json)
-    document.querySelectorAll('#train-model-options .dropdown-option').forEach(opt => {
-        if (!opt.dataset.en) opt.dataset.en = opt.textContent;
-        if (isBangla) {
-            opt.textContent = getTrainBn(opt.dataset.en);
-        } else {
-            opt.textContent = opt.dataset.en;
-        }
-    });
-    // Calendar
-    const calendarTitle = document.getElementById('calendarTitle');
-    if (calendarTitle) {
-        const date = calendarCurrentMonth || new Date();
-        calendarTitle.textContent = formatBanglaDate(date, isBangla);
-    }
-    // Calendar weekdays
-    const weekdays = isBangla ? ['রবি','সোম','মঙ্গল','বুধ','বৃহঃ','শুক্র','শনি'] : ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-    document.querySelectorAll('.calendar-weekdays span').forEach((el, i) => {
-        el.textContent = weekdays[i];
-    });
-    // Calendar days (numbers)
-    document.querySelectorAll('.calendar-day').forEach(el => {
-        if (/^\d+$/.test(el.textContent)) {
-            if (isBangla) {
-                el.textContent = toBanglaNumber(el.textContent);
-            } else {
-                el.textContent = toEnglishNumber(el.textContent);
+    const body = document.body;
+    if (body) {
+        body.style.transition = 'opacity 0.3s';
+        body.style.opacity = '0';
+        setTimeout(() => {
+            document.documentElement.setAttribute('lang', isBangla ? 'bn' : 'en');
+            // Text content
+            document.querySelectorAll('.translatable').forEach(el => {
+                if (!el.dataset.en) el.dataset.en = el.innerText;
+                if (isBangla) {
+                    if (el.dataset.bn) el.innerText = el.dataset.bn;
+                } else {
+                    if (el.dataset.en) el.innerText = el.dataset.en;
+                }
+            });
+            // HTML content (for notes with links)
+            document.querySelectorAll('.translatable-html').forEach(el => {
+                if (!el.dataset.enHtml) el.dataset.enHtml = el.innerHTML;
+                if (isBangla) {
+                    if (el.dataset.bn) el.innerHTML = el.dataset.bn;
+                } else {
+                    if (el.dataset.enHtml) el.innerHTML = el.dataset.enHtml;
+                }
+            });
+            // Placeholders
+            document.querySelectorAll('.translatable-placeholder').forEach(el => {
+                if (!el.defaultPlaceholder) el.defaultPlaceholder = el.placeholder;
+                if (isBangla) {
+                    if (el.dataset.bnPlaceholder) el.placeholder = el.dataset.bnPlaceholder;
+                } else {
+                    if (el.defaultPlaceholder) el.placeholder = el.defaultPlaceholder;
+                }
+            });
+            // Train dropdown options (dynamic, from trains_en.json)
+            document.querySelectorAll('#train-model-options .dropdown-option').forEach(opt => {
+                if (!opt.dataset.en) opt.dataset.en = opt.textContent;
+                if (isBangla) {
+                    opt.textContent = getTrainBn(opt.dataset.en);
+                } else {
+                    opt.textContent = opt.dataset.en;
+                }
+            });
+            // Calendar
+            const calendarTitle = document.getElementById('calendarTitle');
+            if (calendarTitle) {
+                const date = calendarCurrentMonth || new Date();
+                calendarTitle.textContent = formatBanglaDate(date, isBangla);
             }
-        }
-    });
-    // Toggle button text
-    const btnText = document.getElementById('langToggleText');
-    if (btnText) btnText.innerText = isBangla ? 'English' : 'বাংলা';
-    // Save to localStorage
-    localStorage.setItem('siteLang', lang);
+            // Calendar weekdays
+            const weekdays = isBangla ? ['রবি','সোম','মঙ্গল','বুধ','বৃহঃ','শুক্র','শনি'] : ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+            document.querySelectorAll('.calendar-weekdays span').forEach((el, i) => {
+                el.textContent = weekdays[i];
+            });
+            // Calendar days (numbers)
+            document.querySelectorAll('.calendar-day').forEach(el => {
+                if (/^\d+$/.test(el.textContent)) {
+                    if (isBangla) {
+                        el.textContent = toBanglaNumber(el.textContent);
+                    } else {
+                        el.textContent = toEnglishNumber(el.textContent);
+                    }
+                }
+            });
+            // Toggle button text
+            const btnText = document.getElementById('langToggleText');
+            if (btnText) btnText.innerText = isBangla ? 'English' : 'বাংলা';
+            // Toggle button mobile label
+            const btnMobileLabel = document.getElementById('langToggleMobileLabel');
+            if (btnMobileLabel) btnMobileLabel.innerText = isBangla ? 'A' : 'অ';
+            // Save to localStorage
+            localStorage.setItem('siteLang', lang);
+            // Fade in
+            setTimeout(() => {
+                body.style.opacity = '1';
+            }, 10);
+        }, 300);
+    }
 }
 
 function formatBanglaDate(date, isBangla) {

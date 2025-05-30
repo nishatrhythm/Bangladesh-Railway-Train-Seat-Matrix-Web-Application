@@ -2,12 +2,15 @@ import requests
 from datetime import datetime, timedelta
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import logging
 
 SEAT_TYPES = [
     "S_CHAIR", "SHOVAN", "SNIGDHA", "F_SEAT", "F_CHAIR", "AC_S", "F_BERTH", "AC_B", "SHULOV", "AC_CHAIR"
 ]
 
 def fetch_train_data(model: str, api_date: str) -> dict:
+    logger = logging.getLogger()
+    logger.info(f"Fetching train data for model={model}, api_date={api_date}")
     url = "https://railspaapi.shohoz.com/v1.0/web/train-routes"
     payload = {
         "model": model,
@@ -21,23 +24,30 @@ def fetch_train_data(model: str, api_date: str) -> dict:
     while retry_count < max_retries:
         try:
             response = requests.post(url, json=payload, headers=headers)
+            logger.debug(f"POST {url} status={response.status_code}")
             if response.status_code == 403:
+                logger.error("Rate limit exceeded from Shohoz API.")
                 raise Exception("Rate limit exceeded. Please try again later.")
                 
             if response.status_code >= 500:
                 retry_count += 1
                 if retry_count == max_retries:
+                    logger.error("Max retries exceeded for fetch_train_data.")
                     raise Exception("We're unable to connect to the Bangladesh Railway website right now. Please try again in a few minutes.")
                 continue
                 
             response.raise_for_status()
+            logger.info("Train data fetch successful.")
             return response.json().get("data")
         except requests.RequestException as e:
+            logger.error(f"RequestException: {e}")
             if hasattr(e, 'response') and e.response and e.response.status_code == 403:
                 raise Exception("Rate limit exceeded. Please try again later.")
             raise
 
 def get_seat_availability(train_model: str, journey_date: str, from_city: str, to_city: str) -> tuple:
+    logger = logging.getLogger()
+    logger.info(f"Checking seat availability: {train_model} {from_city}->{to_city} on {journey_date}")
     url = "https://railspaapi.shohoz.com/v1.0/web/bookings/search-trips-v2"
     params = {
         "from_city": from_city,
@@ -52,16 +62,20 @@ def get_seat_availability(train_model: str, journey_date: str, from_city: str, t
     while retry_count < max_retries:
         try:
             response = requests.get(url, params=params)
+            logger.debug(f"GET {url} status={response.status_code}")
             if response.status_code == 403:
+                logger.error("Rate limit exceeded from Shohoz API.")
                 raise Exception("Rate limit exceeded. Please try again later.")
                 
             if response.status_code >= 500:
                 retry_count += 1
                 if retry_count == max_retries:
+                    logger.error("Max retries exceeded for get_seat_availability.")
                     raise Exception("We're unable to connect to the Bangladesh Railway website right now. Please try again in a few minutes.")
                 continue
                 
             response.raise_for_status()
+            logger.info("Seat availability fetch successful.")
             trains = response.json().get("data", {}).get("trains", [])
 
             for train in trains:
@@ -85,13 +99,17 @@ def get_seat_availability(train_model: str, journey_date: str, from_city: str, t
             return (from_city, to_city, None)
 
         except requests.RequestException as e:
+            logger.error(f"RequestException: {e}")
             if hasattr(e, 'response') and e.response and e.response.status_code == 403:
                 raise Exception("Rate limit exceeded. Please try again later.")
             return (from_city, to_city, None)
 
 def compute_matrix(train_model: str, journey_date_str: str, api_date_format: str) -> dict:
+    logger = logging.getLogger()
+    logger.info(f"Computing matrix for {train_model} on {journey_date_str}")
     train_data = fetch_train_data(train_model, api_date_format)
     if not train_data or not train_data.get("train_name") or not train_data.get("routes"):
+        logger.error("No information found for this train.")
         raise Exception("No information found for this train. Please try another train or date.")
 
     stations = [r['city'] for r in train_data['routes']]
@@ -200,6 +218,7 @@ def compute_matrix(train_model: str, journey_date_str: str, api_date_format: str
         next_day_str = next_day_obj.strftime("%d-%b-%Y")
         prev_day_str = prev_day_obj.strftime("%d-%b-%Y")
 
+    logger.info("Matrix computation complete.")
     return {
         "train_model": train_model,
         "train_name": train_name,

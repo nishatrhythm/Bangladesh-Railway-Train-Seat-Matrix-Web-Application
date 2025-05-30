@@ -2,9 +2,13 @@ import threading, time, uuid, queue, random
 from typing import Dict, Any, Optional, Callable
 from datetime import datetime, timedelta
 from collections import deque, OrderedDict
+import logging
 
 class RequestQueue:
     def __init__(self, max_concurrent=1, cooldown_period=3, batch_cleanup_threshold=10, cleanup_interval=30, heartbeat_timeout=60):
+        self.logger = logging.getLogger()
+        self.logger.info("Initializing RequestQueue")
+        
         self.queue = queue.Queue()
         self.results = {}
         self.statuses = {}
@@ -33,8 +37,11 @@ class RequestQueue:
         self.enhanced_cleanup_thread = threading.Thread(target=self._enhanced_cleanup_loop)
         self.enhanced_cleanup_thread.daemon = True
         self.enhanced_cleanup_thread.start()
+        
+        self.logger.info("RequestQueue initialized.")
     
     def add_request(self, request_func, params):
+        self.logger.info(f"Adding request: {params}")
         request_id = str(uuid.uuid4())
         current_time = datetime.now()
         
@@ -58,9 +65,11 @@ class RequestQueue:
                 "estimated_time": self._enhanced_estimate_wait_time(queue_size),
                 "last_heartbeat": time.time()
             }
+        self.logger.info(f"Request {request_id} added to queue.")
         return request_id
     
     def _enhanced_estimate_wait_time(self, position):
+        self.logger.debug(f"Estimating wait time for position {position}")
         base_time = self.avg_processing_time + (self.cooldown_period / self.max_concurrent)
         
         predicted_abandonments = self._predict_abandonments(position)
@@ -77,6 +86,7 @@ class RequestQueue:
         return max(1, int(wait_time))
     
     def _predict_abandonments(self, current_position):
+        self.logger.debug(f"Predicting abandonments for position {current_position}")
         if not self.abandonment_history or current_position <= 1:
             return 0
         
@@ -90,6 +100,7 @@ class RequestQueue:
         return int(current_position * abandonment_rate * 0.5)
     
     def update_heartbeat(self, request_id):
+        self.logger.debug(f"Updating heartbeat for {request_id}")
         with self.lock:
             current_time = time.time()
             if request_id in self.statuses:
@@ -100,6 +111,7 @@ class RequestQueue:
         return False
     
     def get_request_status(self, request_id):
+        self.logger.debug(f"Getting status for {request_id}")
         with self.lock:
             if request_id in self.statuses:
                 status_data = self.statuses[request_id].copy()
@@ -115,6 +127,7 @@ class RequestQueue:
             return None
     
     def _get_fast_position(self, request_id):
+        self.logger.debug(f"Getting fast position for {request_id}")
         if request_id not in self.queue_order:
             return 0
         
@@ -130,6 +143,7 @@ class RequestQueue:
         return position
     
     def get_request_result(self, request_id):
+        self.logger.debug(f"Getting result for {request_id}")
         with self.lock:
             if request_id in self.results:
                 result = self.results[request_id]
@@ -139,6 +153,7 @@ class RequestQueue:
             return None
     
     def cancel_request(self, request_id):
+        self.logger.info(f"Cancelling request {request_id}")
         with self.lock:
             removed = False
             
@@ -169,9 +184,11 @@ class RequestQueue:
             if len(self.cancelled_requests) >= self.batch_cleanup_threshold:
                 self._batch_remove_cancelled()
             
+            self.logger.info(f"Request {request_id} cancelled.")
             return removed
     
     def _batch_remove_cancelled(self):
+        self.logger.info("Batch removing cancelled requests")
         if not self.cancelled_requests:
             return
         
@@ -192,9 +209,11 @@ class RequestQueue:
         self.cancelled_requests.clear()
         
         if removed_count > 0:
-            print(f"Batch cleanup: Removed {removed_count} cancelled requests from queue")
+            self.logger.info(f"Batch cleanup: Removed {removed_count} cancelled requests from queue")
+        self.logger.info("Batch remove complete.")
     
     def _process_queue(self):
+        self.logger.info("Processing queue thread started.")
         while True:
             batch = []
             with self.lock:
@@ -269,6 +288,7 @@ class RequestQueue:
                         if request_id in self.statuses:
                             self.results[request_id] = {"error": str(e)}
                             self.statuses[request_id]["status"] = "failed"
+                            self.logger.error(f"Error processing request {request_id}: {e}")
             
             if not batch:
                 time.sleep(1)
@@ -294,6 +314,7 @@ class RequestQueue:
                     del self.queue_order[request_id]
     
     def _enhanced_cleanup_loop(self):
+        self.logger.info("Enhanced cleanup thread started.")
         while True:
             time.sleep(self.cleanup_interval)
             self._enhanced_cleanup()
@@ -316,7 +337,7 @@ class RequestQueue:
             self.cancel_request(request_id)
         
         if stale_requests:
-            print(f"Enhanced cleanup: Removed {len(stale_requests)} stale requests")
+            self.logger.info(f"Enhanced cleanup: Removed {len(stale_requests)} stale requests")
     
     def force_cleanup(self):
         with self.lock:

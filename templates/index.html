@@ -57,7 +57,9 @@
     <div class="container main-content">
         <!-- Language Toggle Button -->
         <button id="langToggleBtn" class="lang-toggle-btn" type="button" aria-label="Switch Language">
-            <i class="fas fa-language"></i> <span id="langToggleText">বাংলা</span>
+            <i class="fa fa-language" aria-hidden="true"></i>
+            <span class="lang-toggle-text" id="langToggleText">বাংলা</span>
+            <span class="lang-toggle-mobile-label" id="langToggleMobileLabel">A</span>
         </button>
 
         <h1><i class="fas fa-subway"></i> <span class="translatable" data-bn="বিআর ট্রেন সিট ম্যাট্রিক্স">BR Train Seat Matrix</span></h1>
@@ -119,24 +121,21 @@
                 </div>
             </div>
             <div class="form-group submit-btn">
-                <button type="submit" class="btn-primary translatable" data-bn="ম্যাট্রিক্স দেখুন"><i class="fas fa-calculator"></i> Generate Matrix
-                </button>
+                <button type="submit" class="btn-primary translatable-html" data-bn='<i class="fas fa-calculator"></i> ম্যাট্রিক্স দেখুন'><i class="fas fa-calculator"></i> Generate Matrix</button>
             </div>
         </form>
         <footer class="new-footer">
-            <div class="translatable-html"
-                data-bn="এই প্রকল্পটি ওপেন সোর্স। <a href='https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application' target='_blank'>গিটহাবে</a> দেখুন"
-                data-en-html="This project is open source. Check it out on <a href='https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application' target='_blank'>GitHub</a>">
+            <p class="translatable-html" data-bn="<p> এই প্রকল্পটি ওপেন সোর্স। <a href='https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application' target='_blank'>গিটহাবে</a> দেখুন।</p>" data-en-html="<p>This project is open source. Check it out on <a href='https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application' target='_blank'>GitHub</a></p>">
                 This project is open source. Check it out on <a href="https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application" target="_blank">GitHub</a>
-            </div>
+            </p>
         </footer>
 
         <div class="footer-links">
-            <a href="https://trainseat.onrender.com" target="_blank">Seat Availability</a>
+            <a class="translatable" data-bn="আসনের প্রাপ্যতা" href="https://trainseat.onrender.com" target="_blank">Seat Availability</a>
             <span class="dot">•</span>
-            <a href="https://bdrailway.vercel.app" target="_blank">Train Fare</a>
+            <a class="translatable" data-bn="ট্রেনের ভাড়া" href="https://bdrailway.vercel.app" target="_blank">Train Fare</a>
             <span class="dot">•</span>
-            <a href="https://forms.gle/NV72PC1z75sq77tg7" target="_blank">Feedback</a>
+            <a class="translatable" data-bn="ফিডব্যাক" href="https://forms.gle/NV72PC1z75sq77tg7" target="_blank">Feedback</a>
         </div>
 
         {% if is_banner_enabled %}

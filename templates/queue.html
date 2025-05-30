@@ -8,38 +8,40 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/styles.css">
 </head>
-
 <body>
     <div class="flyout-notification" id="flyoutNotification">
         <span id="flyoutMessage"></span>
         <i class="fas fa-times flyout-close" id="flyoutClose"></i>
     </div>
+    <!-- Language Toggle Button -->
+    <button id="langToggleBtn" class="lang-toggle-btn" type="button" aria-label="Switch Language">
+        <i class="fa fa-language" aria-hidden="true"></i>
+        <span class="lang-toggle-text" id="langToggleText">বাংলা</span>
+        <span class="lang-toggle-mobile-label" id="langToggleMobileLabel">A</span>
+    </button>
     <noscript>
         <div class="container noscript-warning">
-            <h2><i class="fas fa-exclamation-circle"></i> Please Enable JavaScript</h2>
-            <p>This website requires JavaScript to function properly. Enable it in your browser settings to access full
-                functionality and check train seat availability.</p>
+            <h2 class="translatable" data-bn="দয়া করে জাভাস্ক্রিপ্ট চালু করুন"><i class="fas fa-exclamation-circle"></i> Please Enable JavaScript</h2>
+            <p class="translatable" data-bn="এই ওয়েবসাইটটি সঠিকভাবে কাজ করতে জাভাস্ক্রিপ্ট প্রয়োজন। আপনার ব্রাউজারের সেটিংসে গিয়ে এটি চালু করুন এবং পুনরায় লোড করুন।">This website requires JavaScript to function properly. Enable it in your browser settings to access full functionality and check train seat availability.</p>
             <div class="instructions">
-                <strong>How to enable:</strong> Go to your browser settings > Privacy/Security > Enable JavaScript.
-                Refresh the page after enabling.
+                <strong class="translatable" data-bn="কিভাবে চালু করবেন:">How to enable:</strong> <span class="translatable" data-bn="ব্রাউজার সেটিংস > প্রাইভেসি/সিকিউরিটি > জাভাস্ক্রিপ্ট চালু করুন। চালু করার পর পেজটি রিফ্রেশ করুন।">Go to your browser settings > Privacy/Security > Enable JavaScript. Refresh the page after enabling.</span>
             </div>
         </div>
     </noscript>
-
     <div class="container">
-        <h1><i class="fas fa-subway"></i> BR Train Seat Matrix</h1>
+        <h1><i class="fas fa-subway"></i> <span class="translatable" data-bn="বিআর ট্রেন সিট ম্যাট্রিক্স">BR Train Seat Matrix</span></h1>
         <div class="queue-container">
             <div class="queue-card">
                 <div class="queue-header">
-                    <h2><i class="fas fa-hourglass-half"></i> Request In Queue</h2>
+                    <h2 class="translatable" data-bn="অনুরোধ কিউতে"><i class="fas fa-hourglass-half"></i> Request In Queue</h2>
                     <p><i class="fas fa-train"></i> {{ form_values.train_model }}</p>
                     <p><i class="fas fa-calendar-alt"></i> {{ form_values.date }}</p>
                 </div>
                 <div class="queue-status" id="queueStatus" aria-live="polite">
                     {% if status.status == 'queued' %}
-                        <span>Your request is in queue...</span>
+                        <span class="translatable" data-bn="আপনার অনুরোধ কিউতে আছে...">Your request is in queue...</span>
                     {% else %}
-                        <span class="spinner"></span> Processing your request...
+                        <span class="spinner"></span> <span class="translatable" data-bn="আপনার অনুরোধ প্রক্রিয়াকরণ হচ্ছে...">Processing your request...</span>
                     {% endif %}
                 </div>
                 <div class="progress-container">
@@ -48,17 +50,16 @@
                     </div>
                     <div class="queue-info" id="queueInfo">
                         {% if status.status == 'queued' %}
-                            <span>Position: <strong id="queuePosition">{{ status.position }}</strong></span>
-                            <span>Estimated time: <strong id="estimatedTime">
+                            <span class="translatable" data-bn="অবস্থান:">Position:</span> <strong id="queuePosition">{{ status.position }}</strong>
+                            <span class="translatable" data-bn="আনুমানিক সময়:">Estimated time:</span> <strong id="estimatedTime">
                                 {% if status.estimated_time > 60 %}
                                 {% set minutes = (status.estimated_time // 60) %}
                                 {% set seconds = (status.estimated_time % 60) %}
-                                {{ minutes }} min{{ 's' if minutes != 1 else '' }} {{ seconds }} sec{{ 's' if seconds !=
-                                1 else '' }}
+                                {{ minutes }} <span class="translatable" data-bn="মিনিট">min</span>{{ 's' if minutes != 1 else '' }} {{ seconds }} <span class="translatable" data-bn="সেকেন্ড">sec</span>{{ 's' if seconds != 1 else '' }}
                                 {% else %}
-                                {{ status.estimated_time }} sec{{ 's' if status.estimated_time != 1 else '' }}
+                                {{ status.estimated_time }} <span class="translatable" data-bn="সেকেন্ড">sec</span>{{ 's' if status.estimated_time != 1 else '' }}
                                 {% endif %}
-                            </strong></span>
+                            </strong>
                         {% else %}
                             <span></span>
                             <span></span>
@@ -68,11 +69,11 @@
                 <div class="queue-timer">
                     <i class="fas fa-clock"></i> <span id="timerCounter">0</span>
                 </div>
-                <p class="note">
+                <p class="note translatable-html" data-bn='<i class="fas fa-info-circle"></i> অনুগ্রহ করে অপেক্ষা করুন, আমরা আসন খুঁজে দেখছি। এই পেজটি রিফ্রেশ করবেন না।'>
                     <i class="fas fa-info-circle"></i> Please wait while we check for available seats. Do not refresh this page.
                 </p>
             </div>
-            <button onclick="cancelRequest()" class="cancel-btn">
+            <button onclick="cancelRequest()" class="cancel-btn translatable" data-bn="বাতিল করুন এবং ফিরে যান">
                 <i class="fas fa-arrow-left"></i> Cancel and Go Back
             </button>
         </div>
@@ -258,6 +259,34 @@
             } catch (error) {
                 console.log('Heartbeat failed:', error);
             }
+        }
+
+        // Language toggle functionality
+        const langToggleBtn = document.getElementById('langToggleBtn');
+        const langToggleText = document.getElementById('langToggleText');
+
+        langToggleBtn.addEventListener('click', () => {
+            const currentLang = langToggleText.innerText.trim();
+            if (currentLang === 'বাংলা') {
+                // Switch to English
+                langToggleText.innerText = 'বাংলা';
+                document.documentElement.setAttribute('lang', 'en');
+                // Update translatable text to English
+                updateTranslatableText('en');
+            } else {
+                // Switch to Bengali
+                langToggleText.innerText = 'English';
+                document.documentElement.setAttribute('lang', 'bn');
+                // Update translatable text to Bengali
+                updateTranslatableText('bn');
+            }
+        });
+
+        function updateTranslatableText(lang) {
+            const translatableElements = document.querySelectorAll('[data-bn]');
+            translatableElements.forEach(el => {
+                el.innerHTML = el.getAttribute(`data-${lang}`);
+            });
         }
     </script>
 </body>
