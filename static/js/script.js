@@ -566,42 +566,6 @@ function setupCalendarClickOutside() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-    await loadTrains();
-    initMaterialCalendar();
-    setupCalendarBlurClose();
-    setupCalendarClickOutside();
-    setupTrainDropdown();
-    const matrixForm = document.getElementById("matrixForm");
-    if (matrixForm) matrixForm.addEventListener("submit", validateForm);
-
-    const fields = [
-        { id: 'train_model', errorId: 'train_model-error' },
-        { id: 'date', errorId: 'date-error' }
-    ];
-
-    fields.forEach(field => {
-        const inputField = document.getElementById(field.id);
-        const errorField = document.getElementById(field.errorId);
-        const textInput = field.id === 'train_model' ? document.getElementById('train-model-input') : null;
-        if (inputField && errorField) {
-            const fieldElement = textInput || inputField;
-            fieldElement.addEventListener('input', function () {
-                if (errorField.classList.contains('show')) {
-                    errorField.classList.remove('show');
-                    errorField.classList.add('hide');
-                    fieldElement.classList.remove('error-input');
-                }
-            });
-            errorField.addEventListener('animationend', function (event) {
-                if (event.animationName === 'fadeOutScale') {
-                    errorField.style.display = 'none';
-                }
-            });
-        }
-    });
-});
-
 let trainBnMap = {};
 
 async function loadTrainBnMap() {
@@ -730,11 +694,43 @@ async function setupLanguageToggle() {
     setLanguage(localStorage.getItem('siteLang') || 'en');
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    // ...existing code...
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadTrains();
     setupLanguageToggle();
-    // ...existing code...
+    initMaterialCalendar();
+    setupCalendarBlurClose();
+    setupCalendarClickOutside();
+    setupTrainDropdown();
+    const matrixForm = document.getElementById("matrixForm");
+    if (matrixForm) matrixForm.addEventListener("submit", validateForm);
+
+    const fields = [
+        { id: 'train_model', errorId: 'train_model-error' },
+        { id: 'date', errorId: 'date-error' }
+    ];
+
+    fields.forEach(field => {
+        const inputField = document.getElementById(field.id);
+        const errorField = document.getElementById(field.errorId);
+        const textInput = field.id === 'train_model' ? document.getElementById('train-model-input') : null;
+        if (inputField && errorField) {
+            const fieldElement = textInput || inputField;
+            fieldElement.addEventListener('input', function () {
+                if (errorField.classList.contains('show')) {
+                    errorField.classList.remove('show');
+                    errorField.classList.add('hide');
+                    fieldElement.classList.remove('error-input');
+                }
+            });
+            errorField.addEventListener('animationend', function (event) {
+                if (event.animationName === 'fadeOutScale') {
+                    errorField.style.display = 'none';
+                }
+            });
+        }
+    });
 });
+
 
 function showLoaderAndSubmit(event) {
     event.preventDefault();
