@@ -285,6 +285,640 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
     <script src="/static/js/scripts.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const tables = document.querySelectorAll(".table-responsive");
+
+            tables.forEach(table => {
+                let isDown = false;
+                let startX;
+                let startY;
+                let scrollLeft;
+                let scrollTop;
+
+                table.addEventListener("mousedown", (e) => {
+                    isDown = true;
+                    table.classList.add("dragging");
+                    startX = e.pageX - table.offsetLeft;
+                    startY = e.pageY - table.offsetTop;
+                    scrollLeft = table.scrollLeft;
+                    scrollTop = table.scrollTop;
+                    e.preventDefault();
+                });
+
+                table.addEventListener("mouseleave", () => {
+                    isDown = false;
+                    table.classList.remove("dragging");
+                });
+
+                table.addEventListener("mouseup", () => {
+                    isDown = false;
+                    table.classList.remove("dragging");
+                });
+
+                table.addEventListener("mousemove", (e) => {
+                    if (!isDown) return;
+                    e.preventDefault();
+                    const x = e.pageX - table.offsetLeft;
+                    const y = e.pageY - table.offsetTop;
+                    const walkX = (x - startX);
+                    const walkY = (y - startY);
+                    table.scrollLeft = scrollLeft - walkX;
+                    table.scrollTop = scrollTop - walkY;
+                });
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const details = document.querySelector(".route-collapse");
+            const textSpan = details.querySelector(".route-toggle-text");
+            const icon = details.querySelector(".toggle-arrow");
+
+            const updateText = () => {
+                if (details.open) {
+                    textSpan.innerHTML = '<i class="fas fa-route"></i> Collapse to hide Train Route';
+                    icon.style.transform = "rotate(180deg)";
+                } else {
+                    textSpan.innerHTML = '<i class="fas fa-route"></i> Expand to view Train Route';
+                    icon.style.transform = "rotate(0deg)";
+                }
+            };
+
+            updateText();
+
+            details.addEventListener("toggle", updateText);
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const detailsElements = document.querySelectorAll('.route-visualization-card details');
+
+            detailsElements.forEach(details => {
+                const toggleBtn = details.querySelector('.route-toggle-btn');
+                const routeBody = details.querySelector('.route-body');
+
+                const updateContentHeight = () => {
+                    routeBody.style.height = 'auto';
+                    const height = routeBody.scrollHeight;
+                    routeBody.style.height = details.open ? `${height}px` : '0';
+                    return height;
+                };
+
+                requestAnimationFrame(() => {
+                    if (details.open) {
+                        routeBody.style.height = `${updateContentHeight()}px`;
+                        routeBody.style.opacity = '1';
+                    }
+                });
+
+                toggleBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+
+                    if (details.hasAttribute('open')) {
+                        routeBody.style.height = `${routeBody.scrollHeight}px`;
+                        requestAnimationFrame(() => {
+                            routeBody.style.height = '0';
+                            routeBody.style.opacity = '0';
+                        });
+                        setTimeout(() => {
+                            details.removeAttribute('open');
+                        }, 400);
+                    } else {
+                        details.setAttribute('open', '');
+                        routeBody.style.height = '0';
+                        routeBody.style.opacity = '0';
+                        requestAnimationFrame(() => {
+                            const height = routeBody.scrollHeight;
+                            routeBody.style.height = `${height}px`;
+                            routeBody.style.opacity = '1';
+                        });
+                        setTimeout(() => {
+                            routeBody.style.height = 'auto';
+                        }, 400);
+                    }
+                });
+                window.addEventListener('resize', () => {
+                    if (details.open) {
+                        routeBody.style.height = 'auto';
+                        routeBody.style.height = `${routeBody.scrollHeight}px`;
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        setTimeout(function() {
+            window.location.href = '/';
+        }, 300000);
+    </script>
+    <script>
+        function setupAvailabilityDropdowns() {
+            ['origin', 'destination'].forEach(type => {
+                const dropdown = document.getElementById(`ca-${type}-station-dropdown`);
+                const textInput = document.getElementById(`ca-${type}-station-input`);
+                const dropdownMenu = document.getElementById(`ca-${type}-station-menu`);
+                const optionsContainer = document.getElementById(`ca-${type}-station-options`);
+                const hiddenInput = document.getElementById(`ca-${type}-station`);
+                const errorField = document.getElementById(`ca-${type}-station-error`);
+                let allOptions = Array.from(optionsContainer.querySelectorAll('.ca-dropdown-option'));
+
+                function updateDropdownOptions() {
+                    const otherInput = type === 'origin' ? document.getElementById('ca-destination-station') : document.getElementById('ca-origin-station');
+                    const otherValue = otherInput.value.trim();
+                    allOptions.forEach(option => {
+                        const isHidden = otherValue && option.dataset.value === otherValue;
+                        option.style.display = isHidden ? 'none' : 'block';
+                    });
+                    focusedOptionIndex = -1;
+                    updateFocusedOption();
+                }
+
+                function openDropdown() {
+                    dropdownMenu.style.display = 'block';
+                    updateDropdownOptions();
+                    focusedOptionIndex = -1;
+                }
+
+                function closeDropdown() {
+                    dropdownMenu.classList.add('fade-out');
+                    setTimeout(() => {
+                        dropdownMenu.style.display = 'none';
+                        dropdownMenu.classList.remove('fade-out');
+                        focusedOptionIndex = -1;
+                        updateFocusedOption();
+                    }, 200);
+                }
+
+                function selectOption(option) {
+                    const value = option.dataset.value;
+                    textInput.value = value;
+                    hiddenInput.value = value;
+                    allOptions.forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    closeDropdown();
+
+                    if (errorField.classList.contains('show')) {
+                        errorField.classList.remove('show');
+                        errorField.classList.add('hide');
+                        textInput.classList.remove('error-input');
+                    }
+
+                    updateDropdownOptions();
+                    const otherDropdown = type === 'origin' ? document.getElementById('ca-destination-station-dropdown') : document.getElementById('ca-origin-station-dropdown');
+                    const otherMenu = otherDropdown.querySelector('.ca-dropdown-menu');
+                    if (otherMenu.style.display === 'block') {
+                        updateDropdownOptions();
+                    }
+                }
+
+                function updateFocusedOption() {
+                    allOptions.forEach(opt => opt.classList.remove('selected'));
+                    const visibleOptions = allOptions.filter(opt => opt.style.display !== 'none');
+                    if (focusedOptionIndex >= 0 && focusedOptionIndex < visibleOptions.length) {
+                        visibleOptions[focusedOptionIndex].classList.add('selected');
+                        visibleOptions[focusedOptionIndex].scrollIntoView({ block: 'nearest' });
+                    }
+                }
+
+                textInput.addEventListener('click', openDropdown);
+
+                textInput.addEventListener('keydown', (e) => {
+                    const visibleOptions = allOptions.filter(opt => opt.style.display !== 'none');
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        if (focusedOptionIndex < visibleOptions.length - 1) {
+                            focusedOptionIndex++;
+                            updateFocusedOption();
+                        }
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        if (focusedOptionIndex > 0) {
+                            focusedOptionIndex--;
+                            updateFocusedOption();
+                        }
+                    } else if (e.key === 'Enter' && focusedOptionIndex >= 0) {
+                        e.preventDefault();
+                        selectOption(visibleOptions[focusedOptionIndex]);
+                    } else if (e.key === 'Escape') {
+                        e.preventDefault();
+                        closeDropdown();
+                    }
+                });
+
+                allOptions.forEach(option => {
+                    option.addEventListener('click', () => {
+                        selectOption(option);
+                    });
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!dropdown.contains(e.target)) closeDropdown();
+                });
+            });
+
+            const swapButton = document.getElementById('ca-swap-button');
+            swapButton.addEventListener('click', () => {
+                const originInput = document.getElementById('ca-origin-station-input');
+                const destinationInput = document.getElementById('ca-destination-station-input');
+                const originHidden = document.getElementById('ca-origin-station');
+                const destinationHidden = document.getElementById('ca-destination-station');
+
+                const tempValue = originInput.value;
+                const tempHiddenValue = originHidden.value;
+
+                originInput.value = destinationInput.value;
+                originHidden.value = destinationHidden.value;
+                destinationInput.value = tempValue;
+                destinationHidden.value = tempHiddenValue;
+
+                ['origin', 'destination'].forEach(type => {
+                    const textInput = document.getElementById(`ca-${type}-station-input`);
+                    const hiddenInput = document.getElementById(`ca-${type}-station`);
+                    const optionsContainer = document.getElementById(`ca-${type}-station-options`);
+                    const allOptions = Array.from(optionsContainer.querySelectorAll('.ca-dropdown-option'));
+                    allOptions.forEach(opt => opt.classList.remove('selected'));
+                    if (hiddenInput.value) {
+                        const selectedOption = allOptions.find(opt => opt.dataset.value === hiddenInput.value);
+                        if (selectedOption) selectedOption.classList.add('selected');
+                    }
+                });
+
+                const resultsContainer = document.getElementById('ca-route-results');
+                resultsContainer.style.display = 'none';
+                resultsContainer.innerHTML = '';
+
+                swapButton.classList.add('rotate');
+                setTimeout(() => {
+                    swapButton.classList.remove('rotate');
+                }, 400);
+            });
+        }
+
+        function findRoutes(origin, destination, seatType, stations, fareMatrices) {
+            const queue = [[origin, [], 0]];
+            const visited = new Set();
+
+            while (queue.length) {
+                const [currentStation, path, totalFare] = queue.shift();
+
+                if (visited.has(currentStation)) continue;
+                visited.add(currentStation);
+
+                if (currentStation === destination) return [path, totalFare];
+
+                const currentIndex = stations.indexOf(currentStation);
+                for (let i = currentIndex + 1; i < stations.length; i++) {
+                    const nextStation = stations[i];
+                    const seatInfo = fareMatrices[seatType][currentStation][nextStation];
+                    if (seatInfo && seatInfo.online > 0) {
+                        const nextFare = parseFloat(seatInfo.fare);
+                        const vatAmount = parseFloat(seatInfo.vat_amount || 0);
+                        const charge = 20;
+                        const totalCost = nextFare + vatAmount + charge;
+                        const newPath = [...path, {
+                            from: currentStation,
+                            to: nextStation,
+                            base: nextFare,
+                            vat: vatAmount,
+                            charge: charge,
+                            total: totalCost,
+                            seats: seatInfo.online + seatInfo.offline,
+                            date: window.stationDates[currentStation]
+                        }];
+                        queue.push([nextStation, newPath, totalFare + totalCost]);
+                    }
+                }
+            }
+            return null;
+        }
+
+        function findMixedRoutes(origin, destination, stations, fareMatrices, seatTypes) {
+            const queue = [[origin, [], 0]];
+            const visited = new Set();
+
+            while (queue.length) {
+                const [currentStation, path, totalFare] = queue.shift();
+
+                if (visited.has(currentStation)) continue;
+                visited.add(currentStation);
+
+                if (currentStation === destination) return [path, totalFare];
+
+                const currentIndex = stations.indexOf(currentStation);
+                for (let i = currentIndex + 1; i < stations.length; i++) {
+                    const nextStation = stations[i];
+                    let bestSegment = null;
+                    for (const seatType of seatTypes) {
+                        const seatInfo = fareMatrices[seatType][currentStation][nextStation];
+                        if (seatInfo && seatInfo.online > 0) {
+                            bestSegment = { seatType, seatInfo };
+                            break;
+                        }
+                    }
+
+                    if (bestSegment) {
+                        const { seatType, seatInfo } = bestSegment;
+                        const base = parseFloat(seatInfo.fare);
+                        const vat = parseFloat(seatInfo.vat_amount || 0);
+                        const charge = 20;
+                        const total = base + vat + charge;
+                        const seg = {
+                            from: currentStation,
+                            to: nextStation,
+                            seatType: seatType,
+                            base: base,
+                            vat: vat,
+                            charge: charge,
+                            total: total,
+                            seats: seatInfo.online + seatInfo.offline,
+                            date: window.stationDates[currentStation]
+                        };
+                        queue.push([nextStation, [...path, seg], totalFare + total]);
+                    }
+                }
+            }
+            return null;
+        }
+
+        function validateAvailabilityForm(event) {
+            event.preventDefault();
+            let isValid = true;
+            let firstEmptyField = null;
+            const validations = [
+                { id: 'ca-origin-station', errorId: 'ca-origin-station-error', inputId: 'ca-origin-station-input', message: 'From station is required' },
+                { id: 'ca-destination-station', errorId: 'ca-destination-station-error', inputId: 'ca-destination-station-input', message: 'To station is required' }
+            ];
+
+            validations.forEach(validation => {
+                const inputField = document.getElementById(validation.id);
+                const textInput = document.getElementById(validation.inputId);
+                const errorField = document.getElementById(validation.errorId);
+                if (inputField.value.trim() === "") {
+                    errorField.textContent = validation.message;
+                    errorField.style.display = "block";
+                    errorField.classList.remove('hide');
+                    errorField.classList.add('show');
+                    textInput.classList.add('error-input');
+                    if (!firstEmptyField) firstEmptyField = textInput;
+                    isValid = false;
+                } else {
+                    errorField.classList.remove('show');
+                    errorField.classList.add('hide');
+                    textInput.classList.remove('error-input');
+                }
+            });
+
+            if (!isValid) {
+                firstEmptyField.focus();
+                return false;
+            }
+
+            const origin = document.getElementById('ca-origin-station').value;
+            const destination = document.getElementById('ca-destination-station').value;
+            const resultsContainer = document.getElementById('ca-route-results');
+
+            if (origin === destination) {
+                resultsContainer.style.display = 'block';
+                resultsContainer.innerHTML = `
+                    <div class="ca-invalid-route-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Origin and destination stations cannot be the same.
+                    </div>
+                `;
+                document.querySelector('.ca-check-availability-section').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                return false;
+            }
+
+            if (stations.indexOf(origin) >= stations.indexOf(destination)) {
+                resultsContainer.style.display = 'block';
+                resultsContainer.innerHTML = `
+                    <div class="ca-invalid-route-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        The 'From' station must be earlier than the 'To' station in the train's route.
+                    </div>
+                `;
+                document.querySelector('.ca-check-availability-section').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                return false;
+            }
+
+            return true;
+        }
+
+        function displayAvailabilityResults() {
+            const form = document.getElementById('ca-availability-form');
+            const resultsContainer = document.getElementById('ca-route-results');
+            const origin = document.getElementById('ca-origin-station').value;
+            const destination = document.getElementById('ca-destination-station').value;
+
+            resultsContainer.innerHTML = '';
+            resultsContainer.style.display = 'block';
+
+            let hasResults = false;
+            const seatTypes = window.seatTypes;
+            const fareMatrices = window.fareMatrices;
+            const stations = window.stations;
+
+            seatTypes.forEach(seatType => {
+                const hasSeats = Object.keys(fareMatrices[seatType]).some(from =>
+                    Object.values(fareMatrices[seatType][from]).some(info => (info.online + info.offline) > 0)
+                );
+                if (!hasSeats) return;
+
+                const directRoute = fareMatrices[seatType][origin][destination];
+                if (directRoute && directRoute.online > 0) {
+                    const base = parseInt(directRoute.fare);
+                    const vat = parseInt(directRoute.vat_amount || 0);
+                    const charge = 20;
+                    const total = base + vat + charge;
+                    const seats = directRoute.online + directRoute.offline;
+                    const date = window.stationDatesFormatted[origin] || window.date;
+
+                    resultsContainer.innerHTML += `
+                        <div class="ca-route-result-card">
+                            <div class="ca-route-badge direct">Direct Ticket <span class="ca-seat-type-label">${seatType}</span></div>
+                            <div class="ca-route-segment">
+                                <div class="ca-route-segment-header">${origin} to ${destination}</div>
+                                <div class="ca-fare-breakdown">
+                                    <div class="ca-fare-item"><i class="fas fa-coins"></i> <strong>Base Fare:</strong> ${base} <span class="bdt">BDT</span></div>
+                                    ${vat ? `<div class="ca-fare-item"><i class="fas fa-receipt"></i> <strong>VAT:</strong> ${vat} <span class="bdt">BDT</span></div>` : ''}
+                                    <div class="ca-fare-item"><i class="fas fa-money-bill"></i> <strong>Charge:</strong> ${charge} <span class="bdt">BDT</span></div>
+                                    <div class="ca-fare-item ca-fare-item-total"><i class="fas fa-calculator"></i> <strong>Total:</strong> ${total} <span class="bdt">BDT</span></div>
+                                </div>
+                                <div class="ca-ticket-action">
+                                    <div class="ca-ticket-availability"><i class="fas fa-ticket-alt"></i> Available Tickets: <span>${seats}</span></div>
+                                    <a href="https://eticket.railway.gov.bd/booking/train/search?fromcity=${origin}&tocity=${destination}&doj=${date}&class=${seatType}" class="ca-btn-primary buy-link" target="_blank">
+                                        <i class="fas fa-external-link-alt"></i> Buy
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ca-grand-total"><i class="fas fa-wallet"></i> Grand Total: ${total} BDT</div>
+                        </div>
+                    `;
+                    hasResults = true;
+                } else {
+                    const result = findRoutes(origin, destination, seatType, stations, fareMatrices);
+                    if (result) {
+                        const [segments, totalFare] = result;
+                        const allSameDay = new Set(segments.map(seg => seg.date)).size === 1;
+                        let segmentHtml = '';
+                        segments.forEach(seg => {
+                            segmentHtml += `
+                                <div class="ca-route-segment">
+                                    <div class="ca-route-segment-header">
+                                        ${seg.from} → ${seg.to}
+                                        ${!allSameDay ? `<span class="ca-route-segment-date">${new Date(seg.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-')}</span>` : ''}
+                                    </div>
+                                    <div class="ca-fare-breakdown">
+                                        <div class="ca-fare-item"><i class="fas fa-coins"></i> <strong>Base Fare:</strong> ${seg.base} <span class="bdt">BDT</span></div>
+                                        ${seg.vat ? `<div class="ca-fare-item"><i class="fas fa-receipt"></i> <strong>VAT:</strong> ${seg.vat} <span class="bdt">BDT</span></div>` : ''}
+                                        <div class="ca-fare-item"><i class="fas fa-money-bill"></i> <strong>Charge:</strong> ${seg.charge} <span class="bdt">BDT</span></div>
+                                        <div class="ca-fare-item ca-fare-item-total"><i class="fas fa-calculator"></i> <strong>Total:</strong> ${seg.total} <span class="bdt">BDT</span></div>
+                                    </div>
+                                    <div class="ca-ticket-action">
+                                        <div class="ca-ticket-availability"><i class="fas fa-ticket-alt"></i> Available Tickets: <span>${seg.seats}</span></div>
+                                        <a href="https://eticket.railway.gov.bd/booking/train/search?fromcity=${seg.from}&tocity=${seg.to}&doj=${new Date(seg.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-')}&class=${seatType}" class="ca-btn-primary buy-link" target="_blank">
+                                            <i class="fas fa-external-link-alt"></i> Buy
+                                        </a>
+                                    </div>
+                                </div>
+                            `;
+                        });
+
+                        resultsContainer.innerHTML += `
+                            <div class="ca-route-result-card">
+                                <div class="ca-route-badge segmented">Segmented Tickets <span class="ca-seat-type-label">${seatType}</span></div>
+                                ${segmentHtml}
+                                <div class="ca-grand-total"><i class="fas fa-wallet"></i> Grand Total: ${totalFare} BDT</div>
+                            </div>
+                        `;
+                        hasResults = true;
+                    }
+                }
+            });
+
+            if (!hasResults) {
+                const mixedResult = findMixedRoutes(origin, destination, stations, fareMatrices, seatTypes);
+                if (mixedResult) {
+                    const [segments, totalFare] = mixedResult;
+                    const allSameDay = new Set(segments.map(seg => seg.date)).size === 1;
+                    let segmentHtml = '';
+                    segments.forEach(seg => {
+                        segmentHtml += `
+                            <div class="ca-route-segment">
+                                <div class="ca-route-segment-header">
+                                    ${seg.from} → ${seg.to} [${seg.seatType}]
+                                    ${!allSameDay ? `<span class="ca-route-segment-date">starts ${new Date(seg.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-')}</span>` : ''}
+                                </div>
+                                <div class="ca-fare-breakdown">
+                                    <div class="ca-fare-item"><i class="fas fa-coins"></i> <strong>Base Fare:</strong> ${seg.base} <span class="bdt">BDT</span></div>
+                                    ${seg.vat ? `<div class="ca-fare-item"><i class="fas fa-receipt"></i> <strong>VAT:</strong> ${seg.vat} <span class="bdt">BDT</span></div>` : ''}
+                                    <div class="ca-fare-item"><i class="fas fa-money-bill"></i> <strong>Charge:</strong> ${seg.charge} <span class="bdt">BDT</span></div>
+                                    <div class="ca-fare-item ca-fare-item-total"><i class="fas fa-calculator"></i> <strong>Total:</strong> ${seg.total} <span class="bdt">BDT</span></div>
+                                </div>
+                                <div class="ca-ticket-action">
+                                    <div class="ca-ticket-availability"><i class="fas fa-ticket-alt"></i> Available Tickets: <span>${seg.seats}</span></div>
+                                    <a href="https://eticket.railway.gov.bd/booking/train/search?fromcity=${seg.from}&tocity=${seg.to}&doj=${new Date(seg.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-')}&class=${seg.seatType}" class="ca-btn-primary buy-link" target="_blank">
+                                        <i class="fas fa-external-link-alt"></i> Buy
+                                    </a>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    const seatTypeLabels = [...new Set(segments.map(seg => seg.seatType))].join(', ');
+                    resultsContainer.innerHTML += `
+                        <div class="ca-route-result-card">
+                            <div class="ca-route-badge mixed">Mixed Segmented Tickets <span class="ca-seat-type-label">${seatTypeLabels}</span></div>
+                            ${segmentHtml}
+                            <div class="ca-grand-total"><i class="fas fa-wallet"></i> Grand Total: ${totalFare} BDT</div>
+                        </div>
+                    `;
+                    hasResults = true;
+                }
+            }
+
+            if (!hasResults) {
+                resultsContainer.innerHTML = `
+                    <div class="ca-no-route-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        No direct, segmented, or mixed-seat-type tickets are available between ${origin} and ${destination}.
+                    </div>
+                `;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupAvailabilityDropdowns();
+            const availabilityForm = document.getElementById('ca-availability-form');
+            if (availabilityForm) {
+                availabilityForm.addEventListener('submit', (event) => {
+                    if (validateAvailabilityForm(event)) {
+                        displayAvailabilityResults();
+                        document.querySelector('.ca-check-availability-section').scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            }
+
+            document.querySelectorAll('.ca-error-message').forEach(function(errorField) {
+                errorField.addEventListener('animationend', function(event) {
+                    if (event.animationName === 'fadeOutScale' && errorField.classList.contains('hide')) {
+                        errorField.style.display = 'none';
+                        errorField.classList.remove('hide');
+                    }
+                });
+            });
+
+            window.stations = {{ stations | tojson }};
+            window.seatTypes = {{ seat_types | tojson }};
+            window.fareMatrices = {{ fare_matrices | tojson }};
+            window.stationDates = {{ station_dates | tojson }};
+            window.stationDatesFormatted = {{ station_dates_formatted | tojson }};
+            window.date = {{ date | tojson }};
+        });
+    </script>
+    <script>
+        (function setupBackToTopButton() {
+            const btn = document.getElementById('backToTopBtn');
+            if (!btn) return;
+
+            let hideTimeout;
+            let lastScrollY = window.scrollY;
+
+            function showButton() {
+                btn.classList.add('visible');
+                clearTimeout(hideTimeout);
+                hideTimeout = setTimeout(() => {
+                    btn.classList.remove('visible');
+                }, 5000);
+            }
+
+            function handleScroll() {
+                const scrollY = window.scrollY;
+                if (scrollY > 300) {
+                    if (scrollY !== lastScrollY) showButton();
+                } else {
+                    btn.classList.remove('visible');
+                }
+                lastScrollY = scrollY;
+            }
+
+            btn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            window.addEventListener('scroll', handleScroll);
+        })();
+    </script>
 </body>
 
 </html>
