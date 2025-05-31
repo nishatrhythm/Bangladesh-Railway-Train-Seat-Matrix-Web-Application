@@ -51,7 +51,7 @@ function validateForm(event) {
     let isValid = true;
     let firstEmptyField = null;
     const validations = [
-        { id: 'train_model', errorId: 'train_model-error', message: 'Train Model is required' },
+        { id: 'train_model', errorId: 'train_model-error', message: 'Train Name is required' },
         { id: 'date', errorId: 'date-error', message: 'Date of Journey is required' }
     ];
 
@@ -435,7 +435,14 @@ function updateCalendarDates() {
     const todayBST = getBSTDate();
     calendarMinDate = new Date(todayBST);
     calendarMaxDate = addDays(todayBST, DATE_LIMIT_DAYS - 1);
-    calendarCurrentMonth = new Date(calendarMinDate.getFullYear(), calendarMinDate.getMonth(), 1);
+    
+    const selectedDate = input.value ? parseDate(input.value) : null;
+    if (selectedDate && selectedDate >= calendarMinDate && selectedDate <= calendarMaxDate) {
+        calendarCurrentMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
+    } else {
+        calendarCurrentMonth = new Date(calendarMinDate.getFullYear(), calendarMinDate.getMonth(), 1);
+    }
+    
     const calendar = document.getElementById("materialCalendar");
     if (calendar && calendar.style.display === "block") {
         generateMaterialCalendar();
