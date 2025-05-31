@@ -59,10 +59,12 @@ A comprehensive web application to **visualize segmented seat availability and f
 ├── config.json                   # Dynamic config: maintenance, queue settings, app version
 ├── matrixCalculator.py           # Core matrix computation, API calls, fare calculations
 ├── request_queue.py              # Advanced queue system for managing concurrent requests
+├── requirements.txt              # Python dependencies
+├── trains_bn.json                # Dictonary of train's Bangla names
 ├── trains_en.json                # Complete list of 120+ Bangladesh Railway trains
 ├── LICENSE                       # Project license
 ├── README.md                     # Project documentation (this file)
-├── requirements.txt              # Python dependencies
+├── .gitignore                    # List of common files to be ingnored while commiting
 ├── images/
 │   ├── link_share_image.png      # Social sharing preview image
 │   ├── Screenshot_1.png          # Interface screenshots
