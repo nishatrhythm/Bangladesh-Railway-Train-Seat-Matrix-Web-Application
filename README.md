@@ -35,6 +35,22 @@ A comprehensive web application to **visualize segmented seat availability and f
 
 ---
 
+## 📱 Desktop & Mobile Apps
+
+**Desktop & Android Applications:** A junior from my university department has developed desktop and Android applications based on this project. Check out the repository and see the releases section for specific releases:
+
+👉 **Repository:** [RailwayMatrixBD](https://github.com/AhmedTrooper/RailwayMatrixBD)
+
+---
+
+## 📝 Development Article
+
+**Behind the Scenes:** Read the detailed development journey and technical insights in this LinkedIn article:
+
+👉 **Article:** [How the Train Seat Availability and the Train Seat Matrix Web Applications were Built](https://www.linkedin.com/pulse/bangladesh-railway-train-seat-availability-web-nishat-mahmud-u6hcc)
+
+---
+
 ## 📚 Table of Contents
 
 1. [Project Structure](#-project-structure)  
