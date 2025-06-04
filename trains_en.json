@@ -1,140 +1,956 @@
 {
     "trains": [
-        "AGHNIBINA EXPRESS (735)",
-        "AGHNIBINA EXPRESS (736)",
-        "BANALATA EXPRESS (791)",
-        "BANALATA EXPRESS (792)",
-        "BANGLABANDHA EXPRESS (803)",
-        "BANGLABANDHA EXPRESS (804)",
-        "BARENDRA EXPRESS (731)",
-        "BARENDRA EXPRESS (732)",
-        "BENAPOLE EXPRESS (795)",
-        "BENAPOLE EXPRESS (796)",
-        "BIJOY EXPRESS (785)",
-        "BIJOY EXPRESS (786)",
-        "BHRAMMAPUTRA EXPRESS (743)",
-        "BHRAMMAPUTRA EXPRESS (744)",
-        "BURIMARI EID SHUTTLE 1 (19)",
-        "BURIMARI EID SHUTTLE 2 (20)",
-        "BURIMARI EXPRESS (809)",
-        "BURIMARI EXPRESS (810)",
-        "CHANDPUR EID SPL 1 (01)",
-        "CHANDPUR EID SPL 2 (02)",
-        "CHAPAINAWABGANJ SHUTTLE (109)",
-        "CHAPAINAWABGANJ SHUTTLE (110)",
-        "CHATTALA EXPRESS (801)",
-        "CHATTALA EXPRESS (802)",
-        "CHILAHATI EXPRESS (805)",
-        "CHILAHATI EXPRESS (806)",
-        "CHITRA EXPRESS (763)",
-        "CHITRA EXPRESS (764)",
-        "COXS BAZAR EXPRESS (813)",
-        "COXS BAZAR EXPRESS (814)",
-        "DHUMKETU EXPRESS (769)",
-        "DHUMKETU EXPRESS (770)",
-        "DHALARCHAR EXPRESS (779)",
-        "DHALARCHAR EXPRESS (780)",
-        "DOLONCHAPA EXPRESS (767)",
-        "DOLONCHAPA EXPRESS (768)",
-        "DRUTOJAN EXPRESS (757)",
-        "DRUTOJAN EXPRESS (758)",
-        "EGAROSINDHUR GODHULI (749)",
-        "EGAROSINDHUR GODHULI (750)",
-        "EGAROSINDHUR PROVATI (737)",
-        "EGAROSINDHUR PROVATI (738)",
-        "EKOTA EXPRESS (705)",
-        "EKOTA EXPRESS (706)",
-        "HAWR EXPRESS (777)",
-        "HAWR EXPRESS (778)",
-        "JAHANABAD EXPRESS (825)",
-        "JAHANABAD EXPRESS (826)",
-        "JAMALPUR EXPRESS (799)",
-        "JAMALPUR EXPRESS (800)",
-        "JAMUNA EXPRESS (745)",
-        "JAMUNA EXPRESS (746)",
-        "JAYENTIKA EXPRESS (717)",
-        "JAYENTIKA EXPRESS (718)",
-        "KALNI EXPRESS (773)",
-        "KALNI EXPRESS (774)",
-        "KANCHON INTERCITY COMMUTER (41)",
-        "KANCHON INTERCITY COMMUTER (42)",
-        "KAPOTAKSHA EXPRESS (715)",
-        "KAPOTAKSHA EXPRESS (716)",
-        "KISHORGANJ EXPRESS (781)",
-        "KISHORGANJ EXPRESS (782)",
-        "KOROTOA EXPRESS (713)",
-        "KOROTOA EXPRESS (714)",
-        "KURIGRAM EXPRESS (797)",
-        "KURIGRAM EXPRESS (798)",
-        "LALMONI EXPRESS (751)",
-        "LALMONI EXPRESS (752)",
-        "MADHUMATI EXPRESS (755)",
-        "MADHUMATI EXPRESS (756)",
-        "MAHANAGAR GODHULI (703)",
-        "MAHANAGAR PROVATI (704)",
-        "MEGHNA EXPRESS (729)",
-        "MEGHNA EXPRESS (730)",
-        "MOHANAGAR EXPRESS (721)",
-        "MOHANAGAR EXPRESS (722)",
-        "MOHONGANJ EXPRESS (789)",
-        "MOHONGANJ EXPRESS (790)",
-        "NILSAGAR EXPRESS (765)",
-        "NILSAGAR EXPRESS (766)",
-        "PADMA EXPRESS (759)",
-        "PADMA EXPRESS (760)",
-        "PAHARIKA EXPRESS (719)",
-        "PAHARIKA EXPRESS (720)",
-        "PANCHAGARH EXPRESS (793)",
-        "PANCHAGARH EXPRESS (794)",
-        "PARABAT EXPRESS (709)",
-        "PARABAT EXPRESS (710)",
-        "PARBATIPUR EID SPL 9 (09)",
-        "PARBATIPUR EID SPL 10 (10)",
-        "PARJOTAK EXPRESS (815)",
-        "PARJOTAK EXPRESS (816)",
-        "PROBAL EXPRESS (822)",
-        "PROBAL EXPRESS (823)",
-        "RAJSHAHI COMMUTER (57)",
-        "RAJSHAHI COMMUTER (58)",
-        "RAJSHAHI COMMUTER (77)",
-        "RAJSHAHI COMMUTER (78)",
-        "RANGPUR EXPRESS (771)",
-        "RANGPUR EXPRESS (772)",
-        "RUPOSHI BANGLA EXPRESS (827)",
-        "RUPOSHI BANGLA EXPRESS (828)",
-        "RUPSHA EXPRESS (727)",
-        "RUPSHA EXPRESS (728)",
-        "SAGARDARI EXPRESS (761)",
-        "SAGARDARI EXPRESS (762)",
-        "SHAIKAT EXPRESS (821)",
-        "SHAIKAT EXPRESS (824)",
-        "SILKCITY EXPRESS (753)",
-        "SILKCITY EXPRESS (754)",
-        "SIMANTA EXPRESS (747)",
-        "SIMANTA EXPRESS (748)",
-        "SIRAJGANJ EXPRESS (775)",
-        "SIRAJGANJ EXPRESS (776)",
-        "SONAR BANGLA EXPRESS (787)",
-        "SONAR BANGLA EXPRESS (788)",
-        "SUBORNO EXPRESS (701)",
-        "SUBORNO EXPRESS (702)",
-        "SUNDARBAN EXPRESS (725)",
-        "SUNDARBAN EXPRESS (726)",
-        "TISTA EID SPL 3 (03)",
-        "TISTA EID SPL 4 (04)",
-        "TISTA EXPRESS (707)",
-        "TISTA EXPRESS (708)",
-        "TITUMIR EXPRESS (733)",
-        "TITUMIR EXPRESS (734)",
-        "TUNGIPARA EXPRESS (783)",
-        "TUNGIPARA EXPRESS (784)",
-        "TURNA (741)",
-        "TURNA (742)",
-        "UDAYAN EXPRESS (723)",
-        "UDAYAN EXPRESS (724)",
-        "UPABAN EXPRESS (739)",
-        "UPABAN EXPRESS (740)",
-        "UPAKUL EXPRESS (711)",
-        "UPAKUL EXPRESS (712)"
+        {
+            "train_name": "AGHNIBINA EXPRESS (735)",
+            "train_number": "735",
+            "origin_city": "Dhaka",
+            "destination_city": "Tarakandi",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "AGHNIBINA EXPRESS (736)",
+            "train_number": "736",
+            "origin_city": "Tarakandi",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "BANALATA EXPRESS (791)",
+            "train_number": "791",
+            "origin_city": "Dhaka",
+            "destination_city": "Chapainawabganj",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "BANALATA EXPRESS (792)",
+            "train_number": "792",
+            "origin_city": "Chapainawabganj",
+            "destination_city": "Dhaka",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "BANGLABANDHA EXPRESS (803)",
+            "train_number": "803",
+            "origin_city": "Rajshahi",
+            "destination_city": "Panchagarh",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "BANGLABANDHA EXPRESS (804)",
+            "train_number": "804",
+            "origin_city": "Panchagarh",
+            "destination_city": "Rajshahi",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "BARENDRA EXPRESS (731)",
+            "train_number": "731",
+            "origin_city": "Rajshahi",
+            "destination_city": "Chilahati",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "BARENDRA EXPRESS (732)",
+            "train_number": "732",
+            "origin_city": "Chilahati",
+            "destination_city": "Rajshahi",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "BENAPOLE EXPRESS (795)",
+            "train_number": "795",
+            "origin_city": "Benapole",
+            "destination_city": "Dhaka",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "BENAPOLE EXPRESS (796)",
+            "train_number": "796",
+            "origin_city": "Dhaka",
+            "destination_city": "Benapole",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "BHRAMMAPUTRA EXPRESS (743)",
+            "train_number": "743",
+            "origin_city": "Dhaka",
+            "destination_city": "Dewanganj_Bazar",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "BHRAMMAPUTRA EXPRESS (744)",
+            "train_number": "744",
+            "origin_city": "Dewanganj_Bazar",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "BIJOY EXPRESS (785)",
+            "train_number": "785",
+            "origin_city": "Chattogram",
+            "destination_city": "Jamalpur_Town",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "BIJOY EXPRESS (786)",
+            "train_number": "786",
+            "origin_city": "Jamalpur_Town",
+            "destination_city": "Chattogram",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "BURIMARI EID SHUTTLE 1 (19)",
+            "train_number": "19",
+            "origin_city": "Lalmonirhat",
+            "destination_city": "Burimari",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "BURIMARI EID SHUTTLE 2 (20)",
+            "train_number": "20",
+            "origin_city": "Burimari",
+            "destination_city": "Lalmonirhat",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "BURIMARI EXPRESS (809)",
+            "train_number": "809",
+            "origin_city": "Dhaka",
+            "destination_city": "Lalmonirhat",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "BURIMARI EXPRESS (810)",
+            "train_number": "810",
+            "origin_city": "Lalmonirhat",
+            "destination_city": "Dhaka",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "CHANDPUR EID SPL 1 (01)",
+            "train_number": "01",
+            "origin_city": "Chattogram",
+            "destination_city": "Chandpur",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "CHANDPUR EID SPL 2 (02)",
+            "train_number": "02",
+            "origin_city": "Chandpur",
+            "destination_city": "Chattogram",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "CHAPAINAWABGANJ SHUTTLE (109)",
+            "train_number": "109",
+            "origin_city": "Rajshahi",
+            "destination_city": "Chapainawabganj",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "CHAPAINAWABGANJ SHUTTLE (110)",
+            "train_number": "110",
+            "origin_city": "Chapainawabganj",
+            "destination_city": "Rajshahi",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "CHATTALA EXPRESS (801)",
+            "train_number": "801",
+            "origin_city": "Chattogram",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "CHATTALA EXPRESS (802)",
+            "train_number": "802",
+            "origin_city": "Dhaka",
+            "destination_city": "Chattogram",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "CHILAHATI EXPRESS (805)",
+            "train_number": "805",
+            "origin_city": "Dhaka",
+            "destination_city": "Chilahati",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "CHILAHATI EXPRESS (806)",
+            "train_number": "806",
+            "origin_city": "Chilahati",
+            "destination_city": "Dhaka",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "CHITRA EXPRESS (763)",
+            "train_number": "763",
+            "origin_city": "Khulna",
+            "destination_city": "Dhaka",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "CHITRA EXPRESS (764)",
+            "train_number": "764",
+            "origin_city": "Dhaka",
+            "destination_city": "Khulna",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "COXS BAZAR EXPRESS (813)",
+            "train_number": "813",
+            "origin_city": "Cox's Bazar",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "COXS BAZAR EXPRESS (814)",
+            "train_number": "814",
+            "origin_city": "Dhaka",
+            "destination_city": "Cox's Bazar",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "DHALARCHAR EXPRESS (779)",
+            "train_number": "779",
+            "origin_city": "Dhalarchar",
+            "destination_city": "Rajshahi",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "DHALARCHAR EXPRESS (780)",
+            "train_number": "780",
+            "origin_city": "Rajshahi",
+            "destination_city": "Dhalarchar",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "DHUMKETU EXPRESS (769)",
+            "train_number": "769",
+            "origin_city": "Dhaka",
+            "destination_city": "Rajshahi",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "DHUMKETU EXPRESS (770)",
+            "train_number": "770",
+            "origin_city": "Rajshahi",
+            "destination_city": "Dhaka",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "DOLONCHAPA EXPRESS (767)",
+            "train_number": "767",
+            "origin_city": "Santahar",
+            "destination_city": "Panchagarh",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "DOLONCHAPA EXPRESS (768)",
+            "train_number": "768",
+            "origin_city": "Panchagarh",
+            "destination_city": "Santahar",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "DRUTOJAN EXPRESS (757)",
+            "train_number": "757",
+            "origin_city": "Dhaka",
+            "destination_city": "Panchagarh",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "DRUTOJAN EXPRESS (758)",
+            "train_number": "758",
+            "origin_city": "Panchagarh",
+            "destination_city": "Dhaka",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "EGAROSINDHUR GODHULI (749)",
+            "train_number": "749",
+            "origin_city": "Dhaka",
+            "destination_city": "Kishorganj",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "EGAROSINDHUR GODHULI (750)",
+            "train_number": "750",
+            "origin_city": "Kishorganj",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "EGAROSINDHUR PROVATI (737)",
+            "train_number": "737",
+            "origin_city": "Dhaka",
+            "destination_city": "Kishorganj",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "EGAROSINDHUR PROVATI (738)",
+            "train_number": "738",
+            "origin_city": "Kishorganj",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "EKOTA EXPRESS (705)",
+            "train_number": "705",
+            "origin_city": "Dhaka",
+            "destination_city": "Panchagarh",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "EKOTA EXPRESS (706)",
+            "train_number": "706",
+            "origin_city": "Panchagarh",
+            "destination_city": "Dhaka",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "HAWR EXPRESS (777)",
+            "train_number": "777",
+            "origin_city": "Dhaka",
+            "destination_city": "Mohanganj",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "HAWR EXPRESS (778)",
+            "train_number": "778",
+            "origin_city": "Mohanganj",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "JAHANABAD EXPRESS (825)",
+            "train_number": "825",
+            "origin_city": "Khulna",
+            "destination_city": "Dhaka",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "JAHANABAD EXPRESS (826)",
+            "train_number": "826",
+            "origin_city": "Dhaka",
+            "destination_city": "Khulna",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "JAMALPUR EXPRESS (799)",
+            "train_number": "799",
+            "origin_city": "Dhaka",
+            "destination_city": "Bhuapur",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "JAMALPUR EXPRESS (800)",
+            "train_number": "800",
+            "origin_city": "Bhuapur",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "JAMUNA EXPRESS (745)",
+            "train_number": "745",
+            "origin_city": "Dhaka",
+            "destination_city": "Tarakandi",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "JAMUNA EXPRESS (746)",
+            "train_number": "746",
+            "origin_city": "Tarakandi",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "JAYENTIKA EXPRESS (717)",
+            "train_number": "717",
+            "origin_city": "Dhaka",
+            "destination_city": "Sylhet",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "JAYENTIKA EXPRESS (718)",
+            "train_number": "718",
+            "origin_city": "Sylhet",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "KALNI EXPRESS (773)",
+            "train_number": "773",
+            "origin_city": "Dhaka",
+            "destination_city": "Sylhet",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "KALNI EXPRESS (774)",
+            "train_number": "774",
+            "origin_city": "Sylhet",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "KANCHON INTERCITY COMMUTER (41)",
+            "train_number": "41",
+            "origin_city": "Parbatipur",
+            "destination_city": "Panchagarh",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "KANCHON INTERCITY COMMUTER (42)",
+            "train_number": "42",
+            "origin_city": "Panchagarh",
+            "destination_city": "Parbatipur",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "KAPOTAKSHA EXPRESS (715)",
+            "train_number": "715",
+            "origin_city": "Khulna",
+            "destination_city": "Rajshahi",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "KAPOTAKSHA EXPRESS (716)",
+            "train_number": "716",
+            "origin_city": "Rajshahi",
+            "destination_city": "Khulna",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "KISHORGANJ EXPRESS (781)",
+            "train_number": "781",
+            "origin_city": "Dhaka",
+            "destination_city": "Kishorganj",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "KISHORGANJ EXPRESS (782)",
+            "train_number": "782",
+            "origin_city": "Kishorganj",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "KOROTOA EXPRESS (713)",
+            "train_number": "713",
+            "origin_city": "Santahar",
+            "destination_city": "Burimari",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "KOROTOA EXPRESS (714)",
+            "train_number": "714",
+            "origin_city": "Burimari",
+            "destination_city": "Santahar",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "KURIGRAM EXPRESS (797)",
+            "train_number": "797",
+            "origin_city": "Dhaka",
+            "destination_city": "Kurigram",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "KURIGRAM EXPRESS (798)",
+            "train_number": "798",
+            "origin_city": "Kurigram",
+            "destination_city": "Dhaka",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "LALMONI EXPRESS (751)",
+            "train_number": "751",
+            "origin_city": "Dhaka",
+            "destination_city": "Lalmonirhat",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "LALMONI EXPRESS (752)",
+            "train_number": "752",
+            "origin_city": "Lalmonirhat",
+            "destination_city": "Dhaka",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "MADHUMATI EXPRESS (755)",
+            "train_number": "755",
+            "origin_city": "Dhaka",
+            "destination_city": "Rajshahi",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "MADHUMATI EXPRESS (756)",
+            "train_number": "756",
+            "origin_city": "Rajshahi",
+            "destination_city": "Dhaka",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "MAHANAGAR GODHULI (703)",
+            "train_number": "703",
+            "origin_city": "Chattogram",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "MAHANAGAR PROVATI (704)",
+            "train_number": "704",
+            "origin_city": "Dhaka",
+            "destination_city": "Chattogram",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "MEGHNA EXPRESS (729)",
+            "train_number": "729",
+            "origin_city": "Chattogram",
+            "destination_city": "Chandpur",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "MEGHNA EXPRESS (730)",
+            "train_number": "730",
+            "origin_city": "Chandpur",
+            "destination_city": "Chattogram",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "MOHANAGAR EXPRESS (721)",
+            "train_number": "721",
+            "origin_city": "Chattogram",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "MOHANAGAR EXPRESS (722)",
+            "train_number": "722",
+            "origin_city": "Dhaka",
+            "destination_city": "Chattogram",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "MOHONGANJ EXPRESS (789)",
+            "train_number": "789",
+            "origin_city": "Dhaka",
+            "destination_city": "Mohanganj",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "MOHONGANJ EXPRESS (790)",
+            "train_number": "790",
+            "origin_city": "Mohanganj",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "NILSAGAR EXPRESS (765)",
+            "train_number": "765",
+            "origin_city": "Dhaka",
+            "destination_city": "Chilahati",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "NILSAGAR EXPRESS (766)",
+            "train_number": "766",
+            "origin_city": "Chilahati",
+            "destination_city": "Dhaka",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "PADMA EXPRESS (759)",
+            "train_number": "759",
+            "origin_city": "Dhaka",
+            "destination_city": "Rajshahi",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "PADMA EXPRESS (760)",
+            "train_number": "760",
+            "origin_city": "Rajshahi",
+            "destination_city": "Dhaka",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "PAHARIKA EXPRESS (719)",
+            "train_number": "719",
+            "origin_city": "Chattogram",
+            "destination_city": "Sylhet",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "PAHARIKA EXPRESS (720)",
+            "train_number": "720",
+            "origin_city": "Sylhet",
+            "destination_city": "Chattogram",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "PANCHAGARH EXPRESS (793)",
+            "train_number": "793",
+            "origin_city": "Dhaka",
+            "destination_city": "Panchagarh",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "PANCHAGARH EXPRESS (794)",
+            "train_number": "794",
+            "origin_city": "Panchagarh",
+            "destination_city": "Dhaka",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "PARABAT EXPRESS (709)",
+            "train_number": "709",
+            "origin_city": "Dhaka",
+            "destination_city": "Sylhet",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "PARABAT EXPRESS (710)",
+            "train_number": "710",
+            "origin_city": "Sylhet",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "PARBATIPUR EID SPL 9 (09)",
+            "train_number": "09",
+            "origin_city": "Joydebpur",
+            "destination_city": "Parbatipur",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "PARBATIPUR EID SPL 10 (10)",
+            "train_number": "10",
+            "origin_city": "Parbatipur",
+            "destination_city": "Joydebpur",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "PARJOTAK EXPRESS (815)",
+            "train_number": "815",
+            "origin_city": "Cox's Bazar",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "PARJOTAK EXPRESS (816)",
+            "train_number": "816",
+            "origin_city": "Dhaka",
+            "destination_city": "Cox's Bazar",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "PROBAL EXPRESS (822)",
+            "train_number": "822",
+            "origin_city": "Cox's Bazar",
+            "destination_city": "Chattogram",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "PROBAL EXPRESS (823)",
+            "train_number": "823",
+            "origin_city": "Chattogram",
+            "destination_city": "Cox's Bazar",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "RAJSHAHI COMMUTER (57)",
+            "train_number": "57",
+            "origin_city": "Ishwardi",
+            "destination_city": "Rohanpur",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "RAJSHAHI COMMUTER (58)",
+            "train_number": "58",
+            "origin_city": "Rohanpur",
+            "destination_city": "Ishwardi",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "RAJSHAHI COMMUTER (77)",
+            "train_number": "77",
+            "origin_city": "Rajshahi",
+            "destination_city": "Rohanpur",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "RAJSHAHI COMMUTER (78)",
+            "train_number": "78",
+            "origin_city": "Rohanpur",
+            "destination_city": "Rajshahi",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "RANGPUR EXPRESS (771)",
+            "train_number": "771",
+            "origin_city": "Dhaka",
+            "destination_city": "Rangpur",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "RANGPUR EXPRESS (772)",
+            "train_number": "772",
+            "origin_city": "Rangpur",
+            "destination_city": "Dhaka",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "RUPOSHI BANGLA EXPRESS (827)",
+            "train_number": "827",
+            "origin_city": "Benapole",
+            "destination_city": "Dhaka",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "RUPOSHI BANGLA EXPRESS (828)",
+            "train_number": "828",
+            "origin_city": "Dhaka",
+            "destination_city": "Benapole",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "RUPSHA EXPRESS (727)",
+            "train_number": "727",
+            "origin_city": "Khulna",
+            "destination_city": "Chilahati",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "RUPSHA EXPRESS (728)",
+            "train_number": "728",
+            "origin_city": "Chilahati",
+            "destination_city": "Khulna",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "SAGARDARI EXPRESS (761)",
+            "train_number": "761",
+            "origin_city": "Khulna",
+            "destination_city": "Rajshahi",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "SAGARDARI EXPRESS (762)",
+            "train_number": "762",
+            "origin_city": "Rajshahi",
+            "destination_city": "Khulna",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "SHAIKAT EXPRESS (821)",
+            "train_number": "821",
+            "origin_city": "Chattogram",
+            "destination_city": "Cox's Bazar",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "SHAIKAT EXPRESS (824)",
+            "train_number": "824",
+            "origin_city": "Cox's Bazar",
+            "destination_city": "Chattogram",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "SILKCITY EXPRESS (753)",
+            "train_number": "753",
+            "origin_city": "Dhaka",
+            "destination_city": "Rajshahi",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "SILKCITY EXPRESS (754)",
+            "train_number": "754",
+            "origin_city": "Rajshahi",
+            "destination_city": "Dhaka",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "SIMANTA EXPRESS (747)",
+            "train_number": "747",
+            "origin_city": "Khulna",
+            "destination_city": "Chilahati",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "SIMANTA EXPRESS (748)",
+            "train_number": "748",
+            "origin_city": "Chilahati",
+            "destination_city": "Khulna",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "SIRAJGANJ EXPRESS (775)",
+            "train_number": "775",
+            "origin_city": "Sirajganj_Bazar",
+            "destination_city": "Dhaka",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "SIRAJGANJ EXPRESS (776)",
+            "train_number": "776",
+            "origin_city": "Dhaka",
+            "destination_city": "Sirajganj_Bazar",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "SONAR BANGLA EXPRESS (787)",
+            "train_number": "787",
+            "origin_city": "Chattogram",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "SONAR BANGLA EXPRESS (788)",
+            "train_number": "788",
+            "origin_city": "Dhaka",
+            "destination_city": "Chattogram",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "SUBORNO EXPRESS (701)",
+            "train_number": "701",
+            "origin_city": "Chattogram",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "SUBORNO EXPRESS (702)",
+            "train_number": "702",
+            "origin_city": "Dhaka",
+            "destination_city": "Chattogram",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "SUNDARBAN EXPRESS (725)",
+            "train_number": "725",
+            "origin_city": "Khulna",
+            "destination_city": "Dhaka",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "SUNDARBAN EXPRESS (726)",
+            "train_number": "726",
+            "origin_city": "Dhaka",
+            "destination_city": "Khulna",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "TISTA EID SPL 3 (03)",
+            "train_number": "03",
+            "origin_city": "Dhaka",
+            "destination_city": "Dewanganj_Bazar",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "TISTA EID SPL 4 (04)",
+            "train_number": "04",
+            "origin_city": "Dewanganj_Bazar",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "TISTA EXPRESS (707)",
+            "train_number": "707",
+            "origin_city": "Dhaka",
+            "destination_city": "Dewanganj_Bazar",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "TISTA EXPRESS (708)",
+            "train_number": "708",
+            "origin_city": "Dewanganj_Bazar",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "TITUMIR EXPRESS (733)",
+            "train_number": "733",
+            "origin_city": "Rajshahi",
+            "destination_city": "Chilahati",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "TITUMIR EXPRESS (734)",
+            "train_number": "734",
+            "origin_city": "Chilahati",
+            "destination_city": "Rajshahi",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "TUNGIPARA EXPRESS (783)",
+            "train_number": "783",
+            "origin_city": "Gobra",
+            "destination_city": "Rajshahi",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "TUNGIPARA EXPRESS (784)",
+            "train_number": "784",
+            "origin_city": "Rajshahi",
+            "destination_city": "Gobra",
+            "zone": "WEST"
+        },
+        {
+            "train_name": "TURNA (741)",
+            "train_number": "741",
+            "origin_city": "Chattogram",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "TURNA (742)",
+            "train_number": "742",
+            "origin_city": "Dhaka",
+            "destination_city": "Chattogram",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "UDAYAN EXPRESS (723)",
+            "train_number": "723",
+            "origin_city": "Chattogram",
+            "destination_city": "Sylhet",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "UDAYAN EXPRESS (724)",
+            "train_number": "724",
+            "origin_city": "Sylhet",
+            "destination_city": "Chattogram",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "UPABAN EXPRESS (739)",
+            "train_number": "739",
+            "origin_city": "Dhaka",
+            "destination_city": "Sylhet",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "UPABAN EXPRESS (740)",
+            "train_number": "740",
+            "origin_city": "Sylhet",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "UPAKUL EXPRESS (711)",
+            "train_number": "711",
+            "origin_city": "Noakhali",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "UPAKUL EXPRESS (712)",
+            "train_number": "712",
+            "origin_city": "Dhaka",
+            "destination_city": "Noakhali",
+            "zone": "EAST"
+        }
     ]
 }

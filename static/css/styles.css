@@ -267,17 +267,25 @@ input[readonly].error-input {
 }
 
 .dropdown-options {
-    max-height: 180px;
+    max-height: 270px;
     overflow-y: auto;
 }
 
 .dropdown-option {
-    padding: 10px 45px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    padding-left: 45px;
+    padding-right: 12px;
     font-size: 16px;
     color: #006747;
     cursor: pointer;
     text-align: left;
     transition: background-color 0.2s ease;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.dropdown-option:last-child {
+    border-bottom: none;
 }
 
 .dropdown-option:hover,
@@ -288,6 +296,47 @@ input[readonly].error-input {
 .dropdown-option.selected {
     font-weight: 600;
     color: #006747;
+    background-color: #d4edda;
+}
+
+.train-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.train-name {
+    font-weight: 600;
+    font-size: 16px;
+    color: #006747;
+    line-height: 1.2;
+}
+
+.train-route-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.train-route {
+    font-size: 14px;
+    color: #777;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.train-zone {
+    font-size: 12px;
+    color: #777;
+    font-weight: 400;
+    background-color: #f8f9fa;
+    padding: 2px 8px;
+    border-radius: 12px;
+    display: inline-block;
+    width: fit-content;
 }
 
 .submit-btn button {
@@ -3397,6 +3446,22 @@ details[open] .route-body {
 
     .btn-primary {
         padding: 10px 12px;
+    }
+
+    .train-name {
+        font-size: 15px;
+    }
+
+    .train-route {
+        font-size: 13px;
+    }
+
+    .train-zone {
+        font-size: 11px;
+    }
+
+    .dropdown-options {
+        max-height: 255px;
     }
 
     .calendar-dialog {

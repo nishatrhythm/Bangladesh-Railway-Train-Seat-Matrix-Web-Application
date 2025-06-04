@@ -33,7 +33,7 @@
     </script>
     <!-- Trains Data with App Version -->
     <script id="trains-data" type="application/json">
-        {"trains": {{ trains | tojson | safe }}, "version": "{{ app_version }}"}
+        {"trains": {{ trains | tojson | safe }}, "trains_full": {{ trains_full | tojson | safe }}, "version": "{{ app_version }}"}
     </script>
 </head>
 
@@ -81,8 +81,19 @@
                             value="{{ form_values.train_model if form_values else '' }}">
                         <div class="dropdown-menu" id="train-model-menu" style="display: none;">
                             <div class="dropdown-options" id="train-model-options">
-                                {% for train in trains %}
-                                <div class="dropdown-option" data-value="{{ train }}">{{ train }}</div>
+                                {% for train in trains_full %}
+                                <div class="dropdown-option" data-value="{{ train.train_name }}"
+                                    data-origin="{{ train.origin_city }}"
+                                    data-destination="{{ train.destination_city }}" data-zone="{{ train.zone }}">
+                                    <div class="train-info">
+                                        <div class="train-name">{{ train.train_name }}</div>
+                                        <div class="train-route-container">
+                                            <div class="train-route">{{ train.origin_city }} → {{ train.destination_city
+                                                }}</div>
+                                            <div class="train-zone">Zone: {{ train.zone }}</div>
+                                        </div>
+                                    </div>
+                                </div>
                                 {% endfor %}
                             </div>
                         </div>

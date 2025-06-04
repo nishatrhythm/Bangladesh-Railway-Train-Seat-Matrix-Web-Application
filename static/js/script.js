@@ -3,6 +3,7 @@ document.documentElement.classList.add('js-enabled');
 let focusDueToValidation = false;
 let suppressEvents = false;
 let trainData = [];
+let trainDataFull = [];
 
 function loadTrains() {
     return new Promise((resolve) => {
@@ -13,9 +14,11 @@ function loadTrains() {
         if (trainsElement) {
             const data = JSON.parse(trainsElement.textContent);
             serverTrains = data.trains;
+            trainDataFull = data.trains_full || [];
             serverVersion = data.version || "1.0.0";
         } else {
             serverTrains = [];
+            trainDataFull = [];
             serverVersion = "1.0.0";
         }
 
@@ -136,11 +139,22 @@ function setupTrainDropdown() {
 
     function populateTrainOptions() {
         optionsContainer.innerHTML = '';
-        trainData.forEach(train => {
+        trainDataFull.forEach(train => {
             const option = document.createElement('div');
             option.className = 'dropdown-option';
-            option.setAttribute('data-value', train);
-            option.textContent = train;
+            option.setAttribute('data-value', train.train_name);
+            option.setAttribute('data-origin', train.origin_city);
+            option.setAttribute('data-destination', train.destination_city);
+            option.setAttribute('data-zone', train.zone);
+            option.innerHTML = `
+                <div class="train-info">
+                    <div class="train-name">${train.train_name}</div>
+                    <div class="train-route-container">
+                        <div class="train-route">${train.origin_city} → ${train.destination_city}</div>
+                        <div class="train-zone">Zone: ${train.zone}</div>
+                    </div>
+                </div>
+            `;
             optionsContainer.appendChild(option);
         });
         allOptions = Array.from(optionsContainer.querySelectorAll('.dropdown-option'));
@@ -167,8 +181,16 @@ function setupTrainDropdown() {
         const lowerQuery = query.toLowerCase();
         let visibleOptions = [];
         allOptions.forEach(option => {
-            const text = option.textContent.toLowerCase();
-            const isVisible = text.includes(lowerQuery);
+            const trainName = option.dataset.value.toLowerCase();
+            const origin = option.dataset.origin.toLowerCase();
+            const destination = option.dataset.destination.toLowerCase();
+            const zone = option.dataset.zone.toLowerCase();
+            
+            const isVisible = trainName.includes(lowerQuery) || 
+                             origin.includes(lowerQuery) || 
+                             destination.includes(lowerQuery) || 
+                             zone.includes(lowerQuery);
+            
             option.style.display = isVisible ? 'block' : 'none';
             if (isVisible) visibleOptions.push(option);
         });
@@ -261,9 +283,7 @@ function setupTrainDropdown() {
         textInput.value = hiddenInput.value;
         const selectedOption = allOptions.find(opt => opt.dataset.value === hiddenInput.value);
         if (selectedOption) selectedOption.classList.add('selected');
-    }
-
-    if (trainData.length > 0) {
+    }    if (trainDataFull.length > 0) {
         populateTrainOptions();
     }
 }

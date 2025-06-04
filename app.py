@@ -46,7 +46,8 @@ request_queue = configure_request_queue()
 
 with open('trains_en.json', 'r') as f:
     trains_data = json.load(f)
-    trains = trains_data['trains']
+    trains_full = trains_data['trains']
+    trains = [train['train_name'] for train in trains_data['trains']]
 
 def check_maintenance():
     if CONFIG.get("is_maintenance", 0):
@@ -113,6 +114,7 @@ def home():
         show_disclaimer=True,
         form_values=form_values,
         trains=trains,
+        trains_full=trains_full,
         styles_css=STYLES_CSS_CONTENT,
         script_js=SCRIPT_JS_CONTENT
     )
