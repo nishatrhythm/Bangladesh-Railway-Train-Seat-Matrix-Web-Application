@@ -89,10 +89,58 @@ def get_seat_availability(train_model: str, journey_date: str, from_city: str, t
                 raise Exception("Rate limit exceeded. Please try again later.")
             return (from_city, to_city, None)
 
+def clean_halt_times(routes):
+    for stop in routes:
+        arrival_time = stop.get("arrival_time")
+        departure_time = stop.get("departure_time")
+        halt = stop.get("halt")
+        
+        if arrival_time and departure_time and halt:
+            try:
+                arrival_clean = arrival_time.replace(" BST", "").strip()
+                arr_hour_min, arr_am_pm = arrival_clean.split(' ')
+                arr_hour, arr_minute = map(int, arr_hour_min.split(':'))
+                arr_am_pm = arr_am_pm.lower()
+                
+                if arr_am_pm == "pm" and arr_hour != 12:
+                    arr_hour += 12
+                elif arr_am_pm == "am" and arr_hour == 12:
+                    arr_hour = 0
+                
+                departure_clean = departure_time.replace(" BST", "").strip()
+                dep_hour_min, dep_am_pm = departure_clean.split(' ')
+                dep_hour, dep_minute = map(int, dep_hour_min.split(':'))
+                dep_am_pm = dep_am_pm.lower()
+                
+                if dep_am_pm == "pm" and dep_hour != 12:
+                    dep_hour += 12
+                elif dep_am_pm == "am" and dep_hour == 12:
+                    dep_hour = 0
+                
+                arrival_minutes = arr_hour * 60 + arr_minute
+                departure_minutes = dep_hour * 60 + dep_minute
+                
+                if departure_minutes < arrival_minutes:
+                    departure_minutes += 24 * 60
+                
+                halt_minutes = departure_minutes - arrival_minutes
+                
+                try:
+                    halt_int = int(halt)
+                    if halt_int > 120 or halt_int < 0:
+                        stop["halt"] = str(halt_minutes)
+                except (ValueError, TypeError):
+                    stop["halt"] = str(halt_minutes)
+                    
+            except Exception:
+                continue
+
 def compute_matrix(train_model: str, journey_date_str: str, api_date_format: str) -> dict:
     train_data = fetch_train_data(train_model, api_date_format)
     if not train_data or not train_data.get("train_name") or not train_data.get("routes"):
         raise Exception("No information found for this train. Please try another train or date.")
+
+    clean_halt_times(train_data['routes'])
 
     stations = [r['city'] for r in train_data['routes']]
     days = train_data['days']
