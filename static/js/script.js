@@ -151,7 +151,7 @@ function setupTrainDropdown() {
                     <div class="train-name">${train.train_name}</div>
                     <div class="train-route-container">
                         <div class="train-route">${train.origin_city} → ${train.destination_city}</div>
-                        <div class="train-zone">Zone: ${train.zone}</div>
+                        <div class="train-zone">${train.zone}</div>
                     </div>
                 </div>
             `;
