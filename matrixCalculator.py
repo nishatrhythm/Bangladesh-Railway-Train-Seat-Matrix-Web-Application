@@ -194,9 +194,9 @@ def compute_matrix(train_model: str, journey_date_str: str, api_date_format: str
     weekday_short = datetime.strptime(journey_date_str, "%d-%b-%Y").strftime("%a")
     weekday_full = datetime.strptime(journey_date_str, "%d-%b-%Y").strftime("%A")
     
-    # trains run every day temporarily on EID journey
-    # if weekday_short not in days:
-    #     raise Exception(f"{train_name} does not run on {weekday_full}.")
+    # Comment out these two lines below as trains run every day temporarily on EID journey
+    if weekday_short not in days:
+        raise Exception(f"{train_name} does not run on {weekday_full}.")
 
     fare_matrices = {
         seat_type: {from_city: {} for from_city in stations} for seat_type in SEAT_TYPES
