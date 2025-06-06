@@ -156,19 +156,30 @@ def matrix():
         session['form_values'] = form_values
         session['form_submitted'] = True
 
-        request_id = request_queue.add_request(
-            process_matrix_request,
-            {
-                'train_model': train_model,
-                'journey_date_str': journey_date_str,
-                'api_date_format': api_date_format,
-                'form_values': form_values
-            }
-        )
-        
-        session['queue_request_id'] = request_id
-        
-        return redirect(url_for('queue_wait'))
+        if CONFIG.get("queue_enabled", True):
+            request_id = request_queue.add_request(
+                process_matrix_request,
+                {
+                    'train_model': train_model,
+                    'journey_date_str': journey_date_str,
+                    'api_date_format': api_date_format,
+                    'form_values': form_values
+                }
+            )
+            
+            session['queue_request_id'] = request_id
+            return redirect(url_for('queue_wait'))
+        else:
+            result = process_matrix_request(train_model, journey_date_str, api_date_format, form_values)
+            
+            if "error" in result:
+                session['error'] = result["error"]
+                return redirect(url_for('home'))
+            
+            result_id = str(uuid.uuid4())
+            RESULT_CACHE[result_id] = result["result"]
+            session['result_id'] = result_id
+            return redirect(url_for('matrix_result'))
     except Exception as e:
         session['error'] = f"{str(e)}"
         return redirect(url_for('home'))
