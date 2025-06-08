@@ -140,6 +140,12 @@
             <a href="https://bdrailway.vercel.app" target="_blank">Train Fare</a>
             <span class="dot">•</span>
             <a href="https://forms.gle/NV72PC1z75sq77tg7" target="_blank">Feedback</a>
+            <br><br>
+            <div class="legal-links">
+                <a href="#" onclick="openModal('termsModal')">Terms and Conditions</a>
+                <span class="dot">|</span>
+                <a href="#" onclick="openModal('privacyModal')">Privacy Policy</a>
+            </div>
         </div>
 
         {% if is_banner_enabled %}
@@ -157,6 +163,145 @@
             </div>
         </div>
         {% endif %}
+
+        <!-- Terms and Conditions Modal -->
+        <div id="termsModal" class="legal-modal">
+            <div class="legal-modal-content">
+                <span class="legal-close" onclick="closeModal('termsModal')">&times;</span>
+                <div class="legal-modal-body">
+                    <h2>Terms and Conditions</h2>
+                    <p><strong>Effective Date:</strong> May 13, 2025</p>
+                    <hr>
+                    
+                    <h3>1. Introduction</h3>
+                    <p>Welcome to the Bangladesh Railway Train Seat Matrix Web Application. By accessing or using our Service, you agree to be bound by these Terms.</p>
+                    
+                    <h3>2. Description of Service</h3>
+                    <p>The Bangladesh Railway Train Seat Matrix Web Application provides:</p>
+                    <ul>
+                        <li><strong>Segmented Seat Matrix Visualization:</strong> Complete seat availability matrices for Bangladesh Railway trains</li>
+                        <li><strong>Real-time Data Access:</strong> Live seat availability and fare information</li>
+                        <li><strong>Route Analysis:</strong> Smart route finding with direct, segmented, and mixed-class ticketing options</li>
+                        <li><strong>Interactive Interface:</strong> User-friendly tools for journey planning and seat selection</li>
+                        <li><strong>No Authentication Required:</strong> Open access to basic functionality without user registration</li>
+                    </ul>
+                    
+                    <h3>3. Acceptable Use</h3>
+                    <p><strong>Permitted Uses:</strong></p>
+                    <ul>
+                        <li>Personal travel planning and research</li>
+                        <li>Educational purposes</li>
+                        <li>Non-commercial information gathering</li>
+                        <li>Checking train seat availability and fares</li>
+                    </ul>
+                    
+                    <p><strong>Prohibited Uses:</strong></p>
+                    <ul>
+                        <li>Any unlawful purpose or to solicit others to perform unlawful acts</li>
+                        <li>Violating any international, federal, provincial, or state regulations</li>
+                        <li>Transmitting advertising or promotional material without written consent</li>
+                        <li>Impersonating the company, employees, or other users</li>
+                        <li>Automated scraping or bulk data extraction</li>
+                        <li>Commercial use of API data without explicit permission</li>
+                    </ul>
+                    
+                    <h3>4. Data Sources and Third-Party Services</h3>
+                    <p>Our Service utilizes publicly accessible APIs provided by:</p>
+                    <ul>
+                        <li>Bangladesh Railway's official e-ticketing platform</li>
+                        <li>Shohoz e-ticketing system (railspaapi.shohoz.com)</li>
+                    </ul>
+                    
+                    <h3>5. Disclaimer of Warranties</h3>
+                    <p>This Service is provided "as is" without any representations or warranties. We do not guarantee:</p>
+                    <ul>
+                        <li>Accuracy, completeness, or timeliness of information</li>
+                        <li>Uninterrupted or error-free operation</li>
+                        <li>Compatibility with all devices or browsers</li>
+                        <li>Availability of third-party API services</li>
+                    </ul>
+                    
+                    <h3>6. Limitation of Liability</h3>
+                    <p>We shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of the Service.</p>
+                      <h3>7. Contact Information</h3>
+                    <p>For questions about these Terms, please contact us through our <a href="https://forms.gle/NV72PC1z75sq77tg7" target="_blank">feedback form</a>.</p>
+                    
+                    <hr>
+                    <p><strong>By using this website, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Privacy Policy Modal -->
+        <div id="privacyModal" class="legal-modal">
+            <div class="legal-modal-content">
+                <span class="legal-close" onclick="closeModal('privacyModal')">&times;</span>
+                <div class="legal-modal-body">
+                    <h2>Privacy Policy</h2>
+                    <p><strong>Effective Date:</strong> May 13, 2025</p>
+                    <hr>
+                    
+                    <h3>1. Introduction</h3>
+                    <p>This Privacy Policy describes how the Bangladesh Railway Train Seat Matrix Web Application collects, uses, and protects your information.</p>
+                    
+                    <h3>2. Information We Do NOT Collect</h3>
+                    <p><strong>No Personal Data Collection:</strong></p>
+                    <ul>
+                        <li>No user registration or account creation required</li>
+                        <li>No personal identification information collected</li>
+                        <li>No email addresses, phone numbers, or contact details stored</li>
+                        <li>No payment or financial information processed</li>
+                        <li>No location tracking or GPS data collected</li>
+                        <li>No biometric or sensitive personal data gathered</li>
+                    </ul>
+                    
+                    <h3>3. Technical Information</h3>
+                    <p><strong>Minimal Technical Data:</strong></p>
+                    <ul>
+                        <li><strong>Search Queries:</strong> Temporary processing of station names and dates for API requests</li>
+                        <li><strong>Server Logs:</strong> Basic access logs for debugging and performance monitoring</li>
+                        <li><strong>Session Data:</strong> Temporary data stored in browser session (not persistent)</li>
+                        <li><strong>Error Tracking:</strong> Anonymous error logs to improve service stability</li>
+                    </ul>
+                    
+                    <h3>4. Third-Party Services</h3>
+                    <p><strong>External API Integration:</strong></p>
+                    <ul>
+                        <li><strong>Bangladesh Railway API:</strong> Your search queries are sent to official railway servers</li>
+                        <li><strong>Shohoz API:</strong> Seat availability requests processed through railspaapi.shohoz.com</li>
+                        <li><strong>CDN Services:</strong> Static assets loaded from public content delivery networks</li>
+                    </ul>
+                    
+                    <h3>5. Local Storage</h3>
+                    <p><strong>Browser-Based Storage:</strong></p>
+                    <ul>
+                        <li><strong>Session Storage:</strong> Temporary form data and search preferences</li>
+                        <li><strong>Local Storage:</strong> User interface preferences and notification settings</li>
+                        <li><strong>Cookies:</strong> Essential cookies only for basic functionality</li>
+                    </ul>
+                    
+                    <h3>6. Data Security</h3>
+                    <p><strong>Security Measures:</strong></p>
+                    <ul>
+                        <li>All data transmission over HTTPS encryption</li>
+                        <li>No permanent storage of user queries or personal data</li>
+                        <li>Rate limiting to prevent abuse and protect user privacy</li>
+                        <li>Regular security updates and monitoring</li>
+                    </ul>
+                    
+                    <h3>7. Open Source Transparency</h3>
+                    <p>This application is open source. You can review our code and privacy practices on <a href="https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application" target="_blank">GitHub</a>.</p>
+                    
+                    <h3>8. Changes to This Policy</h3>
+                    <p>We may update this Privacy Policy from time to time. Changes will be reflected by updating the "Effective Date" at the top of this policy.</p>
+                      <h3>9. Contact Us</h3>
+                    <p>If you have questions about this Privacy Policy, please contact us through our <a href="https://forms.gle/NV72PC1z75sq77tg7" target="_blank">feedback form</a>.</p>
+                    
+                    <hr>
+                    <p><strong>By using this website, you acknowledge that you have read, understood, and agree to abide by this Privacy Policy.</strong></p>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="/static/js/script.js"></script>
     <script>

@@ -43,7 +43,7 @@
                     <i class="fas fa-exclamation-triangle"></i>
                     <h3>Date Selection for Overnight Journey</h3>
                 </div>
-                <p>This train departs from its origin station on {{ date }}, but reaches certain stations after midnight
+                <p>This train departs from {{ stations[0] }} on {{ date }}, but reaches certain stations after midnight
                     — in the early hours of {{ next_day_str }}. Ticket availability for those post-midnight arrivals may
                     appear under {{ next_day_str }}.</p>
                 <div class="alert-tip">
