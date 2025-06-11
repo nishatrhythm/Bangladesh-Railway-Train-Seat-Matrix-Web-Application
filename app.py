@@ -412,7 +412,7 @@ def fetch_trains_for_date(origin, destination, date_str):
         'seat_class': 'S_CHAIR'
     }
     
-    max_retries = 3
+    max_retries = 2
     retry_count = 0
     
     while retry_count < max_retries:

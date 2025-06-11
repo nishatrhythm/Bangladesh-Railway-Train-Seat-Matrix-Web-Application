@@ -15,7 +15,7 @@ def fetch_train_data(model: str, api_date: str) -> dict:
     }
     headers = {'Content-Type': 'application/json'}
 
-    max_retries = 3
+    max_retries = 2
     retry_count = 0
 
     while retry_count < max_retries:
@@ -46,7 +46,7 @@ def get_seat_availability(train_model: str, journey_date: str, from_city: str, t
         "seat_class": "SHULOV"
     }
 
-    max_retries = 3
+    max_retries = 2
     retry_count = 0
 
     while retry_count < max_retries:

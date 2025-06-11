@@ -2683,7 +2683,12 @@ details[open] .route-body {
     color: #006747;
     text-align: left;
     cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
     transition: background 0.2s ease, color 0.2s ease;
+}
+
+.ca-dropdown-option:last-child {
+    border-bottom: none;
 }
 
 .ca-dropdown-option:hover,
@@ -4370,7 +4375,8 @@ details[open] .route-body {
     }
 
     .ca-dropdown-option {
-        font-size: 14px;
+        font-size: 15px;
+        padding: 10px 42px;
     }
 
     .ca-route-results {
