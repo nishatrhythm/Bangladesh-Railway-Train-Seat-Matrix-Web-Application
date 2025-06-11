@@ -35,6 +35,10 @@
     <script id="trains-data" type="application/json">
         {"trains": {{ trains | tojson | safe }}, "trains_full": {{ trains_full | tojson | safe }}, "version": "{{ app_version }}"}
     </script>
+    <!-- Stations Data with App Version -->
+    <script id="stations-data" type="application/json">
+        {"stations": {{ stations | tojson | safe }}, "version": "{{ app_version }}"}
+    </script>
 </head>
 
 <body>
@@ -53,20 +57,73 @@
             </div>
         </div>
     </noscript>
-    
+
     <div class="container main-content">
         <h1><i class="fas fa-subway"></i> BR Train Seat Matrix</h1><br>
 
         <!-- <p class="note bengali">
-            <span class="note-bold highlight">লক্ষ্য করুনঃ </span> আপনি আপনার নিজের কম্পিউটার থেকেই পুরো প্রজেক্টটি চালাতে পারবেন। এ সম্পর্কিত প্রয়োজনীয় দিকনির্দেশনা <a href="https://youtu.be/zG55QW73N0c" target="_blank">এই ইউটিউব ভিডিওতে</a> পাওয়া যাবে। সরাসরি ডেস্কটপ এবং মোবাইল এপ্লিকেশন হিসেবে ব্যবহার করতে চাইলে <a href="https://github.com/AhmedTrooper/RailwayMatrixBD" target="_blank">এই গিটহাব লিংক</a> থেকে প্রয়োজনীয় ফাইল ডাউনলোড করে নিতে পারেন।
+            <span class="note-bold highlight">লক্ষ্য করুনঃ </span> আপনি আপনার নিজের কম্পিউটার থেকেই পুরো প্রজেক্টটি চালাতে পারবেন। এ সম্পর্কিত প্রয়োজনীয় দিকনির্দেশনা <a href="https://youtu.be/zG55QW73N0c" target="_blank">এই ইউটিউব ভিডিওতে</a> পাওয়া যাবে।
         </p><br> -->
-        
+
         {% if error %}
         <div class="error shake">
             <i class="fas fa-exclamation-circle error-icon"></i> {{ error }}
         </div>
         {% endif %}
-        
+
+        <!-- Train Search Collapsible Section -->
+        <div class="collapsible-section">
+            <button type="button" class="collapsible-toggle" data-target="trainSearchContent">
+                <i class="fas fa-chevron-down"></i> Expand to view Train Search
+            </button>
+            <div class="collapsible-content" id="trainSearchContent">
+                <div class="train-search-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="searchOrigin">Origin Station</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-train input-icon"></i>
+                                <input type="text" id="searchOrigin" name="searchOrigin"
+                                    placeholder="Enter an origin station" autocomplete="off">
+                                <div id="searchOriginDropdown" class="custom-dropdown"></div>
+                            </div>
+                            <span class="error-message" id="searchOrigin-error">Origin station is required</span>
+                        </div>
+                        <div class="home-swap-icon-wrapper" id="trainSearchSwapIcon">
+                            <i class="fas fa-exchange-alt swap-icon"></i>
+                        </div>
+                        <div class="form-group">
+                            <label for="searchDestination">Destination Station</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-train input-icon"></i>
+                                <input type="text" id="searchDestination" name="searchDestination"
+                                    placeholder="Enter a destination station" autocomplete="off">
+                                <div id="searchDestinationDropdown" class="custom-dropdown"></div>
+                            </div>
+                            <span class="error-message" id="searchDestination-error">Destination station is
+                                required</span>
+                        </div>
+                    </div>
+                    <div class="form-group submit-btn">
+                        <button type="button" class="btn-primary" id="seeTrainListBtn">
+                            <i class="fas fa-list"></i> See Train List
+                        </button>
+                    </div>
+                    <div id="trainSearchError" class="train-search-error" style="display: none;">
+                        <!-- Error messages from search_trains route will be displayed here -->
+                    </div>
+                    <div id="trainSearchResults" class="train-results" style="display: none;">
+                        <div class="train-results-header">
+                            <h3><i class="fas fa-train"></i> Available Trains</h3>
+                            <p class="train-instruction-text"><i class="fas fa-hand-pointer"></i> Click or tap on a
+                                train name to insert it into the train name field</p>
+                        </div>
+                        <div id="trainList" class="train-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <form action="/matrix" method="POST" id="matrixForm">
             <div class="form-row">
                 <div class="form-group">
@@ -142,9 +199,9 @@
             <a href="https://forms.gle/NV72PC1z75sq77tg7" target="_blank">Feedback</a>
             <br><br>
             <div class="legal-links">
-                <a href="#" onclick="openModal('termsModal')">Terms and Conditions</a>
+                <a href="#" onclick="openModal('termsModal', event)">Terms and Conditions</a>
                 <span class="dot">|</span>
-                <a href="#" onclick="openModal('privacyModal')">Privacy Policy</a>
+                <a href="#" onclick="openModal('privacyModal', event)">Privacy Policy</a>
             </div>
         </div>
 
@@ -172,20 +229,25 @@
                     <h2>Terms and Conditions</h2>
                     <p><strong>Effective Date:</strong> May 13, 2025</p>
                     <hr>
-                    
+
                     <h3>1. Introduction</h3>
-                    <p>Welcome to the Bangladesh Railway Train Seat Matrix Web Application. By accessing or using our Service, you agree to be bound by these Terms.</p>
-                    
+                    <p>Welcome to the Bangladesh Railway Train Seat Matrix Web Application. By accessing or using our
+                        Service, you agree to be bound by these Terms.</p>
+
                     <h3>2. Description of Service</h3>
                     <p>The Bangladesh Railway Train Seat Matrix Web Application provides:</p>
                     <ul>
-                        <li><strong>Segmented Seat Matrix Visualization:</strong> Complete seat availability matrices for Bangladesh Railway trains</li>
+                        <li><strong>Segmented Seat Matrix Visualization:</strong> Complete seat availability matrices
+                            for Bangladesh Railway trains</li>
                         <li><strong>Real-time Data Access:</strong> Live seat availability and fare information</li>
-                        <li><strong>Route Analysis:</strong> Smart route finding with direct, segmented, and mixed-class ticketing options</li>
-                        <li><strong>Interactive Interface:</strong> User-friendly tools for journey planning and seat selection</li>
-                        <li><strong>No Authentication Required:</strong> Open access to basic functionality without user registration</li>
+                        <li><strong>Route Analysis:</strong> Smart route finding with direct, segmented, and mixed-class
+                            ticketing options</li>
+                        <li><strong>Interactive Interface:</strong> User-friendly tools for journey planning and seat
+                            selection</li>
+                        <li><strong>No Authentication Required:</strong> Open access to basic functionality without user
+                            registration</li>
                     </ul>
-                    
+
                     <h3>3. Acceptable Use</h3>
                     <p><strong>Permitted Uses:</strong></p>
                     <ul>
@@ -194,7 +256,7 @@
                         <li>Non-commercial information gathering</li>
                         <li>Checking train seat availability and fares</li>
                     </ul>
-                    
+
                     <p><strong>Prohibited Uses:</strong></p>
                     <ul>
                         <li>Any unlawful purpose or to solicit others to perform unlawful acts</li>
@@ -204,30 +266,34 @@
                         <li>Automated scraping or bulk data extraction</li>
                         <li>Commercial use of API data without explicit permission</li>
                     </ul>
-                    
+
                     <h3>4. Data Sources and Third-Party Services</h3>
                     <p>Our Service utilizes publicly accessible APIs provided by:</p>
                     <ul>
                         <li>Bangladesh Railway's official e-ticketing platform</li>
                         <li>Shohoz e-ticketing system (railspaapi.shohoz.com)</li>
                     </ul>
-                    
+
                     <h3>5. Disclaimer of Warranties</h3>
-                    <p>This Service is provided "as is" without any representations or warranties. We do not guarantee:</p>
+                    <p>This Service is provided "as is" without any representations or warranties. We do not guarantee:
+                    </p>
                     <ul>
                         <li>Accuracy, completeness, or timeliness of information</li>
                         <li>Uninterrupted or error-free operation</li>
                         <li>Compatibility with all devices or browsers</li>
                         <li>Availability of third-party API services</li>
                     </ul>
-                    
+
                     <h3>6. Limitation of Liability</h3>
-                    <p>We shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of the Service.</p>
-                      <h3>7. Contact Information</h3>
-                    <p>For questions about these Terms, please contact us through our <a href="https://forms.gle/NV72PC1z75sq77tg7" target="_blank">feedback form</a>.</p>
-                    
+                    <p>We shall not be liable for any indirect, incidental, special, consequential, or punitive damages
+                        resulting from your use of the Service.</p>
+                    <h3>7. Contact Information</h3>
+                    <p>For questions about these Terms, please contact us through our <a
+                            href="https://forms.gle/NV72PC1z75sq77tg7" target="_blank">feedback form</a>.</p>
+
                     <hr>
-                    <p><strong>By using this website, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions.</strong></p>
+                    <p><strong>By using this website, you acknowledge that you have read, understood, and agree to be
+                            bound by these Terms and Conditions.</strong></p>
                 </div>
             </div>
         </div>
@@ -240,10 +306,11 @@
                     <h2>Privacy Policy</h2>
                     <p><strong>Effective Date:</strong> May 13, 2025</p>
                     <hr>
-                    
+
                     <h3>1. Introduction</h3>
-                    <p>This Privacy Policy describes how the Bangladesh Railway Train Seat Matrix Web Application collects, uses, and protects your information.</p>
-                    
+                    <p>This Privacy Policy describes how the Bangladesh Railway Train Seat Matrix Web Application
+                        collects, uses, and protects your information.</p>
+
                     <h3>2. Information We Do NOT Collect</h3>
                     <p><strong>No Personal Data Collection:</strong></p>
                     <ul>
@@ -254,24 +321,30 @@
                         <li>No location tracking or GPS data collected</li>
                         <li>No biometric or sensitive personal data gathered</li>
                     </ul>
-                    
+
                     <h3>3. Technical Information</h3>
                     <p><strong>Minimal Technical Data:</strong></p>
                     <ul>
-                        <li><strong>Search Queries:</strong> Temporary processing of station names and dates for API requests</li>
-                        <li><strong>Server Logs:</strong> Basic access logs for debugging and performance monitoring</li>
-                        <li><strong>Session Data:</strong> Temporary data stored in browser session (not persistent)</li>
+                        <li><strong>Search Queries:</strong> Temporary processing of station names and dates for API
+                            requests</li>
+                        <li><strong>Server Logs:</strong> Basic access logs for debugging and performance monitoring
+                        </li>
+                        <li><strong>Session Data:</strong> Temporary data stored in browser session (not persistent)
+                        </li>
                         <li><strong>Error Tracking:</strong> Anonymous error logs to improve service stability</li>
                     </ul>
-                    
+
                     <h3>4. Third-Party Services</h3>
                     <p><strong>External API Integration:</strong></p>
                     <ul>
-                        <li><strong>Bangladesh Railway API:</strong> Your search queries are sent to official railway servers</li>
-                        <li><strong>Shohoz API:</strong> Seat availability requests processed through railspaapi.shohoz.com</li>
-                        <li><strong>CDN Services:</strong> Static assets loaded from public content delivery networks</li>
+                        <li><strong>Bangladesh Railway API:</strong> Your search queries are sent to official railway
+                            servers</li>
+                        <li><strong>Shohoz API:</strong> Seat availability requests processed through
+                            railspaapi.shohoz.com</li>
+                        <li><strong>CDN Services:</strong> Static assets loaded from public content delivery networks
+                        </li>
                     </ul>
-                    
+
                     <h3>5. Local Storage</h3>
                     <p><strong>Browser-Based Storage:</strong></p>
                     <ul>
@@ -279,7 +352,7 @@
                         <li><strong>Local Storage:</strong> User interface preferences and notification settings</li>
                         <li><strong>Cookies:</strong> Essential cookies only for basic functionality</li>
                     </ul>
-                    
+
                     <h3>6. Data Security</h3>
                     <p><strong>Security Measures:</strong></p>
                     <ul>
@@ -288,17 +361,22 @@
                         <li>Rate limiting to prevent abuse and protect user privacy</li>
                         <li>Regular security updates and monitoring</li>
                     </ul>
-                    
+
                     <h3>7. Open Source Transparency</h3>
-                    <p>This application is open source. You can review our code and privacy practices on <a href="https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application" target="_blank">GitHub</a>.</p>
-                    
+                    <p>This application is open source. You can review our code and privacy practices on <a
+                            href="https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application"
+                            target="_blank">GitHub</a>.</p>
+
                     <h3>8. Changes to This Policy</h3>
-                    <p>We may update this Privacy Policy from time to time. Changes will be reflected by updating the "Effective Date" at the top of this policy.</p>
-                      <h3>9. Contact Us</h3>
-                    <p>If you have questions about this Privacy Policy, please contact us through our <a href="https://forms.gle/NV72PC1z75sq77tg7" target="_blank">feedback form</a>.</p>
-                    
+                    <p>We may update this Privacy Policy from time to time. Changes will be reflected by updating the
+                        "Effective Date" at the top of this policy.</p>
+                    <h3>9. Contact Us</h3>
+                    <p>If you have questions about this Privacy Policy, please contact us through our <a
+                            href="https://forms.gle/NV72PC1z75sq77tg7" target="_blank">feedback form</a>.</p>
+
                     <hr>
-                    <p><strong>By using this website, you acknowledge that you have read, understood, and agree to abide by this Privacy Policy.</strong></p>
+                    <p><strong>By using this website, you acknowledge that you have read, understood, and agree to abide
+                            by this Privacy Policy.</strong></p>
                 </div>
             </div>
         </div>

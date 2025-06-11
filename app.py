@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, abort
 from datetime import datetime, timedelta
-import json, pytz, os, re, uuid, base64
+import json, pytz, os, re, uuid, base64, requests
 from matrixCalculator import compute_matrix
 from request_queue import RequestQueue
 
@@ -8,6 +8,7 @@ app = Flask(__name__)
 app.secret_key = "super_secret_key"
 
 RESULT_CACHE = {}
+STATION_NAME_MAPPING = {"Coxs Bazar": "Cox's Bazar"}
 
 with open('config.json', 'r', encoding='utf-8') as config_file:
     CONFIG = json.load(config_file)
@@ -48,6 +49,10 @@ with open('trains_en.json', 'r') as f:
     trains_data = json.load(f)
     trains_full = trains_data['trains']
     trains = [train['train_name'] for train in trains_data['trains']]
+
+with open('stations_en.json', 'r') as f:
+    stations_data = json.load(f)
+    stations = stations_data['stations']
 
 def check_maintenance():
     if CONFIG.get("is_maintenance", 0):
@@ -115,6 +120,7 @@ def home():
         form_values=form_values,
         trains=trains,
         trains_full=trains_full,
+        stations=stations,
         styles_css=STYLES_CSS_CONTENT,
         script_js=SCRIPT_JS_CONTENT
     )
@@ -355,6 +361,151 @@ def queue_cleanup():
         return jsonify({"status": "success", "message": "Cleanup completed", "stats": stats})
     except Exception as e:
         return jsonify({"status": "error", "error": str(e)}), 500
+
+@app.route('/search_trains', methods=['GET', 'POST'])
+def search_trains():
+    maintenance_response = check_maintenance()
+    if maintenance_response:
+        return jsonify({"error": "Service under maintenance"}), 503
+    
+    if request.method == 'GET':
+        abort(404)
+    
+    try:
+        data = request.get_json()
+        origin = data.get('origin', '').strip()
+        destination = data.get('destination', '').strip()
+        
+        if not origin or not destination:
+            return jsonify({"error": "Both origin and destination are required"}), 400
+        
+        origin = STATION_NAME_MAPPING.get(origin, origin)
+        destination = STATION_NAME_MAPPING.get(destination, destination)
+        
+        today = datetime.now()
+        date1 = today + timedelta(days=8)
+        date2 = today + timedelta(days=9)
+        
+        date1_str = date1.strftime('%d-%b-%Y')
+        date2_str = date2.strftime('%d-%b-%Y')
+        
+        trains_day1 = fetch_trains_for_date(origin, destination, date1_str)
+        trains_day2 = fetch_trains_for_date(origin, destination, date2_str)
+        
+        common_trains = get_common_trains(trains_day1, trains_day2)
+        
+        return jsonify({
+            "success": True,
+            "trains": common_trains,
+            "dates": [date1_str, date2_str]
+        })
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+def fetch_trains_for_date(origin, destination, date_str):
+    url = "https://railspaapi.shohoz.com/v1.0/web/bookings/search-trips-v2"
+    params = {
+        'from_city': origin,
+        'to_city': destination,
+        'date_of_journey': date_str,
+        'seat_class': 'S_CHAIR'
+    }
+    
+    max_retries = 3
+    retry_count = 0
+    
+    while retry_count < max_retries:
+        try:
+            response = requests.get(url, params=params, timeout=10)
+            if response.status_code == 403:
+                raise Exception("Rate limit exceeded. Please try again later.")
+                
+            if response.status_code >= 500:
+                retry_count += 1
+                if retry_count == max_retries:
+                    raise Exception("We're unable to connect to the Bangladesh Railway website right now. Please try again in a few minutes.")
+                continue
+                
+            response.raise_for_status()
+            
+            data = response.json()
+            trains = data.get('data', {}).get('trains', [])
+            
+            return trains
+            
+        except requests.RequestException as e:
+            if hasattr(e, 'response') and e.response and e.response.status_code == 403:
+                raise Exception("Rate limit exceeded. Please try again later.")
+            retry_count += 1
+            if retry_count == max_retries:
+                return []
+    
+    return []
+
+def get_common_trains(trains_day1, trains_day2):
+    all_trains = {}
+    
+    for train in trains_day1:
+        trip_number = train.get('trip_number', '')
+        if trip_number and trip_number not in all_trains:
+            all_trains[trip_number] = {
+                'trip_number': trip_number,
+                'departure_time': train.get('departure_date_time', ''),
+                'arrival_time': train.get('arrival_date_time', ''),
+                'travel_time': train.get('travel_time', ''),
+                'origin_city': train.get('origin_city_name', ''),
+                'destination_city': train.get('destination_city_name', ''),
+                'sort_time': extract_time_for_sorting(train.get('departure_date_time', ''))
+            }
+    
+    for train in trains_day2:
+        trip_number = train.get('trip_number', '')
+        if trip_number and trip_number not in all_trains:
+            all_trains[trip_number] = {
+                'trip_number': trip_number,
+                'departure_time': train.get('departure_date_time', ''),
+                'arrival_time': train.get('arrival_date_time', ''),
+                'travel_time': train.get('travel_time', ''),
+                'origin_city': train.get('origin_city_name', ''),
+                'destination_city': train.get('destination_city_name', ''),
+                'sort_time': extract_time_for_sorting(train.get('departure_date_time', ''))
+            }
+    
+    trains_list = list(all_trains.values())
+    trains_list.sort(key=lambda x: x.get('sort_time', ''))
+    
+    for train in trains_list:
+        train.pop('sort_time', None)
+    
+    return trains_list
+
+def extract_time_for_sorting(departure_time_str):
+    try:
+        if not departure_time_str:
+            return "99:99"
+            
+        time_part = departure_time_str.split(',')[-1].strip()
+        
+        if 'am' in time_part.lower():
+            time_clean = time_part.lower().replace('am', '').strip()
+            hour, minute = time_clean.split(':')
+            hour = int(hour)
+            if hour == 12:
+                hour = 0
+        elif 'pm' in time_part.lower():
+            time_clean = time_part.lower().replace('pm', '').strip()
+            hour, minute = time_clean.split(':')
+            hour = int(hour)
+            if hour != 12:
+                hour += 12
+        else:
+            return "99:99"
+            
+        return f"{hour:02d}:{minute}"
+        
+    except Exception:
+        return "99:99"
 
 @app.errorhandler(404)
 def page_not_found(e):

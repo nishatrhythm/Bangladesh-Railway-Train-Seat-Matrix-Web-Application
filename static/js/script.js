@@ -159,9 +159,22 @@ function setupTrainDropdown() {
         });
         allOptions = Array.from(optionsContainer.querySelectorAll('.dropdown-option'));
         setupOptionEventListeners();
-    }
+    } function openDropdown() {
+        const isInCollapsible = dropdown.closest('.collapsible-content') !== null;
 
-    function openDropdown() {
+        if (isInCollapsible) {
+            const inputRect = textInput.getBoundingClientRect();
+            dropdownMenu.style.position = 'fixed';
+            dropdownMenu.style.top = (inputRect.bottom + 6) + 'px';
+            dropdownMenu.style.left = inputRect.left + 'px';
+            dropdownMenu.style.width = inputRect.width + 'px';
+        } else {
+            dropdownMenu.style.position = '';
+            dropdownMenu.style.top = '';
+            dropdownMenu.style.left = '';
+            dropdownMenu.style.width = '';
+        }
+
         dropdownMenu.style.display = 'block';
         filterOptions(textInput.value);
         focusedOptionIndex = -1;
@@ -185,12 +198,12 @@ function setupTrainDropdown() {
             const origin = option.dataset.origin.toLowerCase();
             const destination = option.dataset.destination.toLowerCase();
             const zone = option.dataset.zone.toLowerCase();
-            
-            const isVisible = trainName.includes(lowerQuery) || 
-                             origin.includes(lowerQuery) || 
-                             destination.includes(lowerQuery) || 
-                             zone.includes(lowerQuery);
-            
+
+            const isVisible = trainName.includes(lowerQuery) ||
+                origin.includes(lowerQuery) ||
+                destination.includes(lowerQuery) ||
+                zone.includes(lowerQuery);
+
             option.style.display = isVisible ? 'block' : 'none';
             if (isVisible) visibleOptions.push(option);
         });
@@ -261,7 +274,7 @@ function setupTrainDropdown() {
             e.preventDefault();
             closeDropdown();
         }
-    });    allOptions.forEach(option => {
+    }); allOptions.forEach(option => {
         option.addEventListener('click', () => {
             selectOption(option);
         });
@@ -283,7 +296,7 @@ function setupTrainDropdown() {
         textInput.value = hiddenInput.value;
         const selectedOption = allOptions.find(opt => opt.dataset.value === hiddenInput.value);
         if (selectedOption) selectedOption.classList.add('selected');
-    }    if (trainDataFull.length > 0) {
+    } if (trainDataFull.length > 0) {
         populateTrainOptions();
     }
 }
@@ -416,15 +429,15 @@ let calendarClickHandlerAdded = false;
 function openMaterialCalendar() {
     const calendar = document.getElementById("materialCalendar");
     if (!calendar) return;
-    
+
     if (calendar.style.display === "block") return;
-    
+
     updateCalendarDates();
     calendar.style.display = "block";
     generateMaterialCalendar();
 
     suppressEvents = true;
-    
+
     if (!calendarClickHandlerAdded) {
         calendar.addEventListener("mousedown", (e) => {
             e.stopPropagation();
@@ -455,14 +468,14 @@ function updateCalendarDates() {
     const todayBST = getBSTDate();
     calendarMinDate = new Date(todayBST);
     calendarMaxDate = addDays(todayBST, DATE_LIMIT_DAYS - 1);
-    
+
     const selectedDate = input.value ? parseDate(input.value) : null;
     if (selectedDate && selectedDate >= calendarMinDate && selectedDate <= calendarMaxDate) {
         calendarCurrentMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
     } else {
         calendarCurrentMonth = new Date(calendarMinDate.getFullYear(), calendarMinDate.getMonth(), 1);
     }
-    
+
     const calendar = document.getElementById("materialCalendar");
     if (calendar && calendar.style.display === "block") {
         generateMaterialCalendar();
@@ -481,12 +494,12 @@ function initMaterialCalendar() {
     input.addEventListener("click", openMaterialCalendar);
 
     const prevBtn = document.getElementById("prevMonthBtn");
-    const nextBtn = document.getElementById("nextMonthBtn");    if (prevBtn) {
+    const nextBtn = document.getElementById("nextMonthBtn"); if (prevBtn) {
         ['mousedown', 'mouseup', 'click'].forEach(eventType => {
             prevBtn.addEventListener(eventType, (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                
+
                 if (eventType === 'click') {
                     const prevMonth = new Date(calendarCurrentMonth.getFullYear(), calendarCurrentMonth.getMonth() - 1, 1);
                     if (prevMonth >= new Date(calendarMinDate.getFullYear(), calendarMinDate.getMonth(), 1)) {
@@ -494,7 +507,7 @@ function initMaterialCalendar() {
                         generateMaterialCalendar();
                     }
                 }
-                
+
                 setTimeout(() => {
                     const calendar = document.getElementById("materialCalendar");
                     if (calendar) calendar.focus();
@@ -508,7 +521,7 @@ function initMaterialCalendar() {
             nextBtn.addEventListener(eventType, (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                
+
                 if (eventType === 'click') {
                     const nextMonth = new Date(calendarCurrentMonth.getFullYear(), calendarCurrentMonth.getMonth() + 1, 1);
                     if (nextMonth <= new Date(calendarMaxDate.getFullYear(), calendarMaxDate.getMonth(), 1)) {
@@ -516,7 +529,7 @@ function initMaterialCalendar() {
                         generateMaterialCalendar();
                     }
                 }
-                
+
                 setTimeout(() => {
                     const calendar = document.getElementById("materialCalendar");
                     if (calendar) calendar.focus();
@@ -540,35 +553,35 @@ function setupCalendarBlurClose() {
     const nextBtn = document.getElementById("nextMonthBtn");
 
     if (!calendar || !dateInput) return;
-    
+
     let isInteractingWithCalendar = false;
-    
+
     if (prevBtn) {
-        prevBtn.addEventListener("mousedown", () => { 
-            isInteractingWithCalendar = true; 
+        prevBtn.addEventListener("mousedown", () => {
+            isInteractingWithCalendar = true;
         });
     }
-    
+
     if (nextBtn) {
-        nextBtn.addEventListener("mousedown", () => { 
-            isInteractingWithCalendar = true; 
+        nextBtn.addEventListener("mousedown", () => {
+            isInteractingWithCalendar = true;
         });
     }
-    
+
     calendar.addEventListener("mousedown", () => {
         isInteractingWithCalendar = true;
     });
 
     document.addEventListener("mouseup", () => {
-        setTimeout(() => { 
-            isInteractingWithCalendar = false; 
+        setTimeout(() => {
+            isInteractingWithCalendar = false;
         }, 100);
-    });    function handleFocusOut(e) {
+    }); function handleFocusOut(e) {
         if (calendarJustOpened) return;
-        
+
         setTimeout(() => {
             if (calendarJustOpened || isInteractingWithCalendar) return;
-            
+
             if (!calendar.contains(document.activeElement) && document.activeElement !== dateInput) {
                 closeMaterialCalendar();
             }
@@ -580,15 +593,15 @@ function setupCalendarBlurClose() {
 function setupCalendarClickOutside() {
     const calendar = document.getElementById("materialCalendar");
     const dateInput = document.getElementById("date");
-    
+
     document.addEventListener("mousedown", (e) => {
         if (suppressEvents) {
             return;
         }
 
-        if (calendar && 
-            calendar.style.display === "block" && 
-            !calendar.contains(e.target) && 
+        if (calendar &&
+            calendar.style.display === "block" &&
+            !calendar.contains(e.target) &&
             e.target !== dateInput) {
             closeMaterialCalendar();
         }
@@ -597,10 +610,12 @@ function setupCalendarClickOutside() {
 
 document.addEventListener('DOMContentLoaded', async () => {
     await loadTrains();
+    await loadStations();
     initMaterialCalendar();
     setupCalendarBlurClose();
     setupCalendarClickOutside();
     setupTrainDropdown();
+    initializeTrainSearch();
     const matrixForm = document.getElementById("matrixForm");
     if (matrixForm) matrixForm.addEventListener("submit", validateForm);
 
@@ -651,8 +666,9 @@ function showLoaderAndSubmit(event) {
             loader.appendChild(segment);
         }
         submitButton.prepend(loader);
+        submitButton.innerHTML = loader.outerHTML + ' Generating Matrix...';
     }
-    
+
     setTimeout(() => form.submit(), 50);
 }
 
@@ -796,10 +812,10 @@ function loadBannerImage() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', async function () {
     if (document.getElementById('bannerModal')) {
         await loadBannerImage();
-        
+
         const configData = JSON.parse(document.getElementById('app-config').textContent);
         const forceBanner = configData.force_banner || 0;
         const appVersion = configData.version || "1.0.0";
@@ -836,7 +852,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 });
 
-function openModal(modalId) {
+function openModal(modalId, event) {
+    if (event) {
+        event.preventDefault();
+    }
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.style.display = 'block';
@@ -852,14 +871,14 @@ function closeModal(modalId) {
     }
 }
 
-document.addEventListener('click', function(event) {
+document.addEventListener('click', function (event) {
     if (event.target.classList.contains('legal-modal')) {
         const modalId = event.target.id;
         closeModal(modalId);
     }
 });
 
-document.addEventListener('keydown', function(event) {
+document.addEventListener('keydown', function (event) {
     if (event.key === 'Escape') {
         const activeModals = document.querySelectorAll('.legal-modal[style*="display: block"]');
         activeModals.forEach(modal => {
@@ -867,3 +886,524 @@ document.addEventListener('keydown', function(event) {
         });
     }
 });
+
+let stationData = [];
+let trainSearchSuppressDropdown = false;
+let trainHighlightTimeout = null;
+let originalTrainInputBg = null;
+
+function loadStations() {
+    return new Promise((resolve) => {
+        const cachedStations = localStorage.getItem('railwayStations');
+        const stationsElement = document.getElementById('stations-data');
+        let serverStations, serverVersion;
+
+        if (stationsElement) {
+            try {
+                const data = JSON.parse(stationsElement.textContent);
+                serverStations = data.stations;
+                serverVersion = data.version || "1.0.0";
+            } catch (e) {
+                serverStations = [];
+                serverVersion = "1.0.0";
+            }
+        } else {
+            serverStations = [];
+            serverVersion = "1.0.0";
+        }
+
+        if (cachedStations) {
+            const cachedData = JSON.parse(cachedStations);
+            const cachedVersion = cachedData.version || "0.0.0";
+            if (cachedVersion === serverVersion) {
+                stationData = cachedData.stations;
+                resolve();
+            } else {
+                stationData = serverStations;
+                localStorage.setItem('railwayStations', JSON.stringify({
+                    stations: serverStations,
+                    version: serverVersion
+                }));
+                resolve();
+            }
+        } else {
+            stationData = serverStations;
+            localStorage.setItem('railwayStations', JSON.stringify({
+                stations: serverStations,
+                version: serverVersion
+            }));
+            resolve();
+        }
+    });
+}
+
+function initializeTrainSearch() {
+    const collapsibleToggle = document.querySelector('.collapsible-toggle');
+    const searchOrigin = document.getElementById('searchOrigin');
+    const searchDestination = document.getElementById('searchDestination');
+    const swapIcon = document.getElementById('trainSearchSwapIcon');
+    const seeTrainListBtn = document.getElementById('seeTrainListBtn');
+
+    if (collapsibleToggle) {
+        collapsibleToggle.addEventListener('click', () => {
+            const targetId = collapsibleToggle.getAttribute('data-target');
+            const content = document.getElementById(targetId);
+            const icon = collapsibleToggle.querySelector('i');
+
+            if (!content.style.maxHeight || content.style.maxHeight === "0px") {
+                content.style.display = "block";
+                setTimeout(() => {
+                    content.style.marginTop = "10px";
+                    const targetHeight = content.scrollHeight;
+                    content.style.maxHeight = targetHeight + "px";
+                }, 10);
+                collapsibleToggle.innerHTML = `<i class="fas fa-chevron-up"></i> Collapse to hide Train Search`;
+            } else {
+                content.style.maxHeight = "0px";
+                content.style.marginTop = "0px";
+                collapsibleToggle.innerHTML = `<i class="fas fa-chevron-down"></i> Expand to view Train Search`;
+                setTimeout(() => {
+                    content.style.display = "none";
+                }, 300);
+            }
+        });
+
+        const content = document.getElementById('trainSearchContent'); if (content) {
+            let updateInProgress = false;
+            const observer = new MutationObserver(() => {
+                if (content.style.maxHeight && content.style.maxHeight !== "0px" && !updateInProgress) {
+                    updateInProgress = true;
+                    updateCollapsibleHeight();
+                    setTimeout(() => {
+                        updateInProgress = false;
+                    }, 10);
+                }
+            });
+
+            observer.observe(content, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['style']
+            });
+        }
+    } if (searchOrigin) {
+        searchOrigin.addEventListener("keyup", () => filterTrainSearchDropdown("searchOrigin", "searchOriginDropdown"));
+        searchOrigin.addEventListener("blur", () => setTimeout(() => hideTrainSearchDropdown("searchOriginDropdown"), 200));
+
+        searchOrigin.addEventListener('input', function () {
+            const errorField = document.getElementById('searchOrigin-error');
+            if (errorField && errorField.classList.contains('show')) {
+                errorField.classList.remove('show');
+                errorField.classList.add('hide');
+                searchOrigin.classList.remove('error-input');
+            }
+        });
+
+        const searchOriginErrorField = document.getElementById('searchOrigin-error');
+        if (searchOriginErrorField) {
+            searchOriginErrorField.addEventListener('animationend', function (event) {
+                if (event.animationName === 'fadeOutScale') {
+                    searchOriginErrorField.style.display = 'none';
+                }
+            });
+        }
+    }
+
+    if (searchDestination) {
+        searchDestination.addEventListener("keyup", () => filterTrainSearchDropdown("searchDestination", "searchDestinationDropdown"));
+        searchDestination.addEventListener("blur", () => setTimeout(() => hideTrainSearchDropdown("searchDestinationDropdown"), 200));
+
+        searchDestination.addEventListener('input', function () {
+            const errorField = document.getElementById('searchDestination-error');
+            if (errorField && errorField.classList.contains('show')) {
+                errorField.classList.remove('show');
+                errorField.classList.add('hide');
+                searchDestination.classList.remove('error-input');
+            }
+        });
+
+        const searchDestinationErrorField = document.getElementById('searchDestination-error');
+        if (searchDestinationErrorField) {
+            searchDestinationErrorField.addEventListener('animationend', function (event) {
+                if (event.animationName === 'fadeOutScale') {
+                    searchDestinationErrorField.style.display = 'none';
+                }
+            });
+        }
+    }
+
+    if (swapIcon) {
+        swapIcon.addEventListener("click", function () {
+            swapTrainSearchStations();
+            swapIcon.classList.add("rotate");
+            setTimeout(() => {
+                swapIcon.classList.remove("rotate");
+            }, 400);
+        });
+    }
+
+    if (seeTrainListBtn) {
+        seeTrainListBtn.addEventListener('click', searchTrainsBetweenStations);
+    }
+}
+
+function filterTrainSearchDropdown(inputId, dropdownId) {
+    if (trainSearchSuppressDropdown || !stationData) return;
+    const input = document.getElementById(inputId);
+    const dropdown = document.getElementById(dropdownId);
+    if (!input || !dropdown) return;
+
+    const filter = input.value.toLowerCase();
+    const otherInputId = inputId === 'searchOrigin' ? 'searchDestination' : 'searchOrigin';
+    const otherInput = document.getElementById(otherInputId);
+    const excludeStation = otherInput ? otherInput.value.trim() : '';
+
+    dropdown.innerHTML = '';
+
+    if (filter.length < 2 || input !== document.activeElement) {
+        dropdown.style.display = "none";
+        return;
+    } else {
+        dropdown.style.display = "block";
+    }
+
+    const filteredStations = stationData
+        .filter(station => station.toLowerCase().includes(filter) && station !== excludeStation)
+        .slice(0, 5);
+
+    filteredStations.forEach(station => {
+        const option = document.createElement('div');
+        option.textContent = station;
+        option.classList.add('dropdown-option');
+        option.addEventListener('mousedown', () => selectTrainSearchOption(inputId, dropdownId, station));
+        dropdown.appendChild(option);
+    });
+
+    if (filteredStations.length === 0) {
+        dropdown.style.display = "none";
+    }
+}
+
+function selectTrainSearchOption(inputId, dropdownId, value) {
+    const input = document.getElementById(inputId);
+    const dropdown = document.getElementById(dropdownId);
+    if (!input || !dropdown) return;
+
+    input.value = value;
+    dropdown.style.display = "none";
+
+    const errorField = document.getElementById(inputId + '-error');
+    if (errorField && errorField.classList.contains('show')) {
+        errorField.classList.remove('show');
+        errorField.classList.add('hide');
+        input.classList.remove('error-input');
+    }
+
+    setTimeout(() => {
+        focusNextTrainSearchField(inputId);
+    }, 100);
+}
+
+function focusNextTrainSearchField(currentInputId) {
+    const trainSearchFields = [
+        'searchOrigin',
+        'searchDestination'
+    ];
+
+    const currentIndex = trainSearchFields.indexOf(currentInputId);
+    if (currentIndex === -1) return;
+
+    if (currentIndex === 0) {
+        const nextField = document.getElementById('searchDestination');
+        if (nextField && nextField.value.trim() === "") {
+            trainSearchSuppressDropdown = true;
+            nextField.focus();
+            setTimeout(() => trainSearchSuppressDropdown = false, 300);
+        }
+    }
+    else if (currentIndex === 1) {
+        const originField = document.getElementById('searchOrigin');
+
+        if (originField && originField.value.trim() === "") {
+            trainSearchSuppressDropdown = true;
+            originField.focus();
+            setTimeout(() => trainSearchSuppressDropdown = false, 300);
+        }
+    }
+}
+
+function hideTrainSearchDropdown(dropdownId) {
+    const dropdown = document.getElementById(dropdownId);
+    if (dropdown) dropdown.style.display = "none";
+}
+
+function swapTrainSearchStations() {
+    trainSearchSuppressDropdown = true;
+    const originInput = document.getElementById('searchOrigin');
+    const destinationInput = document.getElementById('searchDestination');
+    if (originInput && destinationInput) {
+        const tempValue = originInput.value;
+        originInput.value = destinationInput.value;
+        destinationInput.value = tempValue;
+    }
+    setTimeout(() => trainSearchSuppressDropdown = false, 300);
+}
+
+async function searchTrainsBetweenStations() {
+    const origin = document.getElementById('searchOrigin').value.trim();
+    const destination = document.getElementById('searchDestination').value.trim();
+    const resultsDiv = document.getElementById('trainSearchResults');
+    const trainListDiv = document.getElementById('trainList');
+    const button = document.getElementById('seeTrainListBtn');
+
+    clearTrainSearchErrors();
+    hideTrainSearchNetworkError();
+
+    let hasErrors = false;
+    let firstErrorField = null;
+
+    if (!origin) {
+        showTrainSearchError('searchOrigin', 'Origin station is required');
+        hasErrors = true;
+        if (!firstErrorField) firstErrorField = document.getElementById('searchOrigin');
+    }
+
+    if (!destination) {
+        showTrainSearchError('searchDestination', 'Destination station is required');
+        hasErrors = true;
+        if (!firstErrorField) firstErrorField = document.getElementById('searchDestination');
+    }
+
+    if (origin && destination && origin === destination) {
+        showTrainSearchError('searchDestination', 'Origin and destination stations cannot be the same');
+        hasErrors = true;
+        if (!firstErrorField) firstErrorField = document.getElementById('searchDestination');
+    }
+
+    if (hasErrors) {
+        if (firstErrorField) {
+            firstErrorField.focus();
+            firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+    }
+    button.disabled = true;
+    button.style.opacity = '0.6';
+    button.style.cursor = 'not-allowed';
+    resultsDiv.style.display = 'none';
+    const listIcon = button.querySelector('.fa-list');
+    if (listIcon) {
+        listIcon.remove();
+        const loader = document.createElement('span');
+        loader.className = 'button-loader';
+        for (let i = 0; i < 8; i++) {
+            const segment = document.createElement('span');
+            segment.className = 'loader-segment';
+            loader.appendChild(segment);
+        }
+        button.prepend(loader);
+        button.innerHTML = loader.outerHTML + ' Searching Trains...';
+    }
+
+    try {
+        const response = await fetch('/search_trains', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                origin: origin,
+                destination: destination
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            const errorMessage = data.error || `Server error (${response.status})`;
+            showTrainSearchNetworkError(errorMessage);
+            return;
+        } if (data.success && data.trains && data.trains.length > 0) {
+            hideTrainSearchNetworkError();
+            displayTrainResults(data.trains, origin, destination);
+            resultsDiv.style.display = 'block';
+            updateCollapsibleHeight();
+            setTimeout(() => {
+                const rect = resultsDiv.getBoundingClientRect();
+                if (rect.top < 0 || rect.bottom > window.innerHeight) {
+                    resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+        } else if (data.error) {
+            showTrainSearchNetworkError(data.error);
+        } else {
+            showTrainSearchNetworkError('No trains found for this route');
+        }
+    } catch (error) {
+        showTrainSearchNetworkError('Unable to connect to the server. Please check your internet connection and try again.');
+    } finally {
+        button.disabled = false;
+        button.style.opacity = '1';
+        button.style.cursor = 'pointer';
+
+        const loader = button.querySelector('.button-loader');
+        if (loader) {
+            loader.remove();
+        }
+
+        const existingIcon = button.querySelector('.fa-list');
+        if (!existingIcon) {
+            const listIcon = document.createElement('i');
+            listIcon.className = 'fas fa-list';
+            button.innerHTML = '';
+            button.appendChild(listIcon);
+            button.appendChild(document.createTextNode(' See Train List'));
+        }
+    }
+}
+
+function displayTrainResults(trains, origin, destination) {
+    const trainListDiv = document.getElementById('trainList');
+
+    if (trains.length === 0) {
+        showTrainSearchNetworkError('No trains found for this route');
+        return;
+    }
+
+    const trainElements = trains.map(train => {
+        const departureMatch = train.departure_time.match(/(\d{1,2}:\d{2}\s*[ap]m)/i);
+        const arrivalMatch = train.arrival_time.match(/(\d{1,2}:\d{2}\s*[ap]m)/i);
+
+        const depTime = departureMatch ? departureMatch[1] : train.departure_time;
+        const arrTime = arrivalMatch ? arrivalMatch[1] : train.arrival_time;
+
+        return `
+            <div class="train-item" onclick="selectTrainFromList('${train.trip_number}')">
+                <div class="train-item-header">${train.trip_number}</div>
+                <div class="train-item-details">
+                    <div class="train-route"><strong>${origin}&nbsp;&nbsp;→&nbsp;&nbsp;${destination}</strong></div>
+                    <div class="train-time"><strong>Dep:</strong> ${depTime} &nbsp;&nbsp;&nbsp;<strong>|</strong>&nbsp;&nbsp;&nbsp; <strong>Arr:</strong> ${arrTime}</div>
+                </div>
+            </div>
+        `;
+    }).join(''); trainListDiv.innerHTML = trainElements;
+
+    updateCollapsibleHeight();
+    setTimeout(() => {
+        const resultsDiv = document.getElementById('trainSearchResults');
+        if (resultsDiv) {
+            const rect = resultsDiv.getBoundingClientRect();
+            if (rect.top < 0 || rect.bottom > window.innerHeight) {
+                resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+    }, 150);
+}
+
+function updateCollapsibleHeight() {
+    const content = document.getElementById('trainSearchContent');
+    if (content && content.style.maxHeight && content.style.maxHeight !== "0px") {
+        const newHeight = content.scrollHeight;
+        content.style.maxHeight = newHeight + "px";
+    }
+}
+
+window.addEventListener('resize', () => {
+    const content = document.getElementById('trainSearchContent');
+    if (content && content.style.maxHeight && content.style.maxHeight !== "0px") {
+        updateCollapsibleHeight();
+    }
+});
+
+function selectTrainFromList(trainName) {
+    const trainModelInput = document.getElementById('train-model-input');
+    const trainModelHidden = document.getElementById('train_model');
+
+    if (trainModelInput && trainModelHidden) {
+        if (originalTrainInputBg === null) {
+            originalTrainInputBg = window.getComputedStyle(trainModelInput).backgroundColor;
+        }
+
+        trainModelInput.value = trainName;
+        trainModelHidden.value = trainName;
+
+        if (trainHighlightTimeout) {
+            clearTimeout(trainHighlightTimeout);
+            trainHighlightTimeout = null;
+        }
+
+        trainModelInput.style.backgroundColor = originalTrainInputBg;
+
+        setTimeout(() => {
+            trainModelInput.style.backgroundColor = '#d4edda';
+
+            trainHighlightTimeout = setTimeout(() => {
+                trainModelInput.style.backgroundColor = originalTrainInputBg;
+                trainHighlightTimeout = null;
+            }, 1000);
+        }, 50);
+
+        setTimeout(() => {
+            trainModelInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 200);
+    }
+}
+
+function showTrainSearchError(fieldId, message) {
+    const errorField = document.getElementById(fieldId + '-error');
+    const inputField = document.getElementById(fieldId);
+
+    if (errorField && inputField) {
+        errorField.textContent = message;
+        errorField.style.display = 'block';
+        errorField.classList.remove('hide');
+        errorField.classList.add('show');
+        inputField.classList.add('error-input');
+    }
+}
+
+function clearTrainSearchErrors() {
+    const errorFields = ['searchOrigin-error', 'searchDestination-error'];
+    const inputFields = ['searchOrigin', 'searchDestination'];
+
+    errorFields.forEach((errorId, index) => {
+        const errorField = document.getElementById(errorId);
+        const inputField = document.getElementById(inputFields[index]);
+
+        if (errorField) {
+            errorField.classList.remove('show');
+            errorField.classList.add('hide');
+        }
+
+        if (inputField) {
+            inputField.classList.remove('error-input');
+        }
+    });
+}
+
+function showTrainSearchNetworkError(message) {
+    const errorSection = document.getElementById('trainSearchError');
+    if (errorSection) {
+        errorSection.innerHTML = `<div class="train-search-error-message">
+            <i class="fas fa-exclamation-circle error-icon"></i> ${message}
+        </div>`;
+        errorSection.style.display = 'block';
+        updateCollapsibleHeight();
+        setTimeout(() => {
+            const rect = errorSection.getBoundingClientRect();
+            if (rect.top < 0 || rect.bottom > window.innerHeight) {
+                errorSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);
+    }
+}
+
+function hideTrainSearchNetworkError() {
+    const errorSection = document.getElementById('trainSearchError');
+    if (errorSection) {
+        errorSection.style.display = 'none';
+        errorSection.innerHTML = '';
+        updateCollapsibleHeight();
+    }
+}

@@ -35,14 +35,6 @@ A comprehensive web application to **visualize segmented seat availability and f
 
 ---
 
-## 📱 Desktop & Mobile Apps
-
-**Desktop & Android Applications:** A junior from my university department has developed desktop and Android applications based on this project. Check out the repository and see the releases section for specific releases:
-
-👉 **Repository:** [RailwayMatrixBD](https://github.com/AhmedTrooper/RailwayMatrixBD)
-
----
-
 ## 📝 Development Article
 
 **Behind the Scenes:** Read the detailed development journey and technical insights in this LinkedIn article:
@@ -75,6 +67,7 @@ A comprehensive web application to **visualize segmented seat availability and f
 ├── config.json                   # Dynamic config: maintenance, queue settings, app version
 ├── matrixCalculator.py           # Core matrix computation, API calls, fare calculations
 ├── request_queue.py              # Advanced queue system for managing concurrent requests
+├── stations_en.json              # Complete list of Bangladesh Railway stations
 ├── trains_en.json                # Complete list of 120+ Bangladesh Railway trains
 ├── LICENSE                       # Project license
 ├── README.md                     # Project documentation (this file)
@@ -113,6 +106,7 @@ A comprehensive web application to **visualize segmented seat availability and f
 | Advanced Queue Management               | ✅        | Prevents API overload with intelligent queuing |
 | Responsive Matrix Tables                | ✅        | Mobile-optimized data visualization |
 | Train Route Visualization              | ✅        | Complete route maps with timing information |
+| Train Search by Route                  | ✅        | Collapsible interface for finding trains between stations |
 | Maintenance Mode Support               | ✅        | Configurable site-wide notices |
 | Session-based Form State              | ✅        | Preserves user input across requests |
 | Custom Error Handling                 | ✅        | Graceful fallbacks for API failures |
@@ -213,11 +207,19 @@ fare_matrices = {
 - **Autocomplete Dropdown**: 120+ trains with fuzzy search
 - **Model Extraction**: Automatically extracts train numbers from names
 - **Validation**: Ensures valid train selection before submission
+- **Train Search by Route**: Collapsible section for finding trains between specific stations
 
 ### 2. Matrix Interaction
 - **Expandable Route View**: Collapsible train route with station timings
 - **Availability Checker**: Interactive origin/destination selector within matrix
 - **Real-time Calculations**: Dynamic fare computation for route segments
+
+### 3. Train Search Feature
+- **Collapsible Interface**: Expandable section for route-based train search
+- **Station Autocomplete**: Smart dropdown with station name suggestions
+- **Bidirectional Search**: Swap origin/destination with single click
+- **Live Train Discovery**: Real-time API calls to find available trains
+- **Click-to-Select**: Direct integration with main train selection field
 
 ### 3. Mobile Optimization
 - **Responsive Tables**: Horizontal scroll with sticky headers
@@ -230,6 +232,16 @@ fare_matrices = {
 const hasSegmentedDates = stations.some(station => 
     stationDates[station] !== date
 );
+```
+
+### 5. Train Discovery System
+```javascript
+// API endpoint for finding trains between stations
+const response = await fetch('/search_trains', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ origin: origin, destination: destination })
+});
 ```
 
 ---
@@ -283,6 +295,16 @@ Content-Type: application/json
 ```http
 GET https://railspaapi.shohoz.com/v1.0/web/bookings/search-trips-v2
 Params: from_city, to_city, date_of_journey, seat_class
+```
+
+#### 3. Train Search Between Stations
+```http
+POST /search_trains
+Content-Type: application/json
+{
+    "origin": "STATION_NAME",
+    "destination": "STATION_NAME"
+}
 ```
 
 ### Error Handling

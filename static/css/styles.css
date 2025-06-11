@@ -32,7 +32,7 @@ h1 {
     color: rgb(0, 103, 71);
     font-weight: 800;
     line-height: 1;
-    margin: 50px 0px 50px;
+    margin: 30px 0px 20px;
     animation: fadeInTranslate 0.8s ease-out;
 }
 
@@ -50,6 +50,237 @@ h1 {
 
 h1 i {
     margin-right: 10px;
+}
+
+.collapsible-section {
+    margin: 20px 0;
+    text-align: left;
+    border: 1px dashed #e0b000;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #fffef5;
+    -webkit-tap-highlight-color: transparent;
+    animation: fadeInUp 0.8s ease-in-out;
+}
+
+.collapsible-toggle {
+    background-color: #e0eddf;
+    color: #006747;
+    border: 1px solid #b5d1be;
+    padding: 12px 16px;
+    width: 100%;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.collapsible-toggle:hover {
+    background-color: #d1e7ce;
+}
+
+.collapsible-toggle i {
+    margin-right: 10px;
+    transition: transform 0.3s ease;
+}
+
+.collapsible-content {
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    box-shadow: none;
+    border: none;
+    background-color: transparent;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.2s ease-out, margin-top 0.2s ease-out;
+}
+
+.animated-fade-in {
+    animation: fadeInUp 0.5s ease-in-out;
+}
+
+.train-search-section {
+    margin: 20px 0;
+    background-color: #f8fffe;
+    border-radius: 12px;
+    border: 1px solid #e8f5f2;
+    overflow: hidden;
+    animation: fadeInUp 0.8s ease-in-out;
+}
+
+.train-search-form {
+    padding-top: 20px;
+}
+
+.train-search-form .form-row {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+    animation: fadeInUp 0.8s ease-in-out;
+}
+
+.train-search-form .form-group {
+    flex: 1;
+}
+
+.train-search-form .custom-dropdown {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #bdc3c7;
+    border-radius: 8px;
+    max-height: 160px;
+    overflow-y: auto;
+    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
+    top: calc(100% + 2px);
+    left: 0;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.train-search-form .custom-dropdown .dropdown-option {
+    padding: 10px 10px 10px 45px;
+    cursor: pointer;
+    color: #006747;
+    transition: background-color 0.2s;
+}
+
+.train-search-form .custom-dropdown .dropdown-option:hover {
+    background-color: #f1f8f3;
+}
+
+#searchDestinationDropdown {
+    bottom: calc(100% + 2px);
+    top: auto;
+}
+
+.train-results {
+    margin-top: 20px;
+    padding: 15px 0;
+    border-radius: 8px;
+}
+
+.train-results-header h3 {
+    color: rgb(0, 103, 71);
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    font-weight: 700;
+    animation: fadeInUp 1s ease-in-out;
+    padding: 4px 10px;
+    background-color: rgba(0, 103, 71, 0.1);
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.train-results-header h3 i {
+    margin-right: 5px;
+}
+
+.train-instruction-text {
+    color: #666;
+    font-size: 12px;
+    font-weight: 500;
+    margin: 10px 0 15px 0;
+    text-align: center;
+    animation: fadeInUp 1s ease-in-out;
+    border: 1px solid #e8ecef;
+    border-radius: 6px;
+    padding: 8px 6px;
+    background-color: #f8f9fa;
+    line-height: 1.5;
+}
+
+.train-instruction-text i {
+    color: #006747;
+    margin-right: 6px;
+    font-size: 12px;
+}
+
+.train-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 8px 0;
+    animation: fadeInUp 1.2s ease-in-out;
+}
+
+.train-item {
+    background: linear-gradient(135deg, #ffffff, #fdfdfd);
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid #e3e8ef;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 103, 71, 0.08);
+}
+
+.train-item:hover {
+    background: linear-gradient(135deg, #f9fcff, #f0f7ff);
+    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.12);
+    border-color: #c8daf5;
+    transform: translateY(-1px);
+}
+
+.train-item-header {
+    font-weight: 700;
+    color: rgb(0, 103, 71);
+    font-size: 16px;
+    margin-bottom: 6px;
+    padding: 2px 0;
+}
+
+.train-item-details {
+    color: #555;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+}
+
+.train-route {
+    font-weight: 600;
+}
+
+.train-time {
+    color: #777;
+    font-size: 13px;
+    font-weight: 500;
+    background-color: #f8f9fa;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 form {
@@ -2495,6 +2726,22 @@ details[open] .route-body {
     -webkit-tap-highlight-color: transparent;
 }
 
+.home-swap-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(0, 103, 71);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s;
+    margin: 10px auto;
+    flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+    transform: rotate(90deg);
+}
+
 .swap-icon {
     font-size: 20px;
     color: #ffffff;
@@ -2502,6 +2749,11 @@ details[open] .route-body {
 
 .swap-icon-wrapper.rotate {
     transform: rotate(180deg) scale(1.1);
+    background-color: rgb(0, 85, 58);
+}
+
+.home-swap-icon-wrapper.rotate {
+    transform: rotate(270deg) scale(1.1);
     background-color: rgb(0, 85, 58);
 }
 
@@ -2771,7 +3023,8 @@ details[open] .route-body {
 }
 
 .ca-no-route-message,
-.ca-invalid-route-message {
+.ca-invalid-route-message,
+.train-search-error-message {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2790,7 +3043,8 @@ details[open] .route-body {
 }
 
 .ca-no-route-message i,
-.ca-invalid-route-message i {
+.ca-invalid-route-message i,
+.train-search-error-message i {
     color: #e74c3c;
     font-size: 18px;
     margin-right: 6px;
@@ -2810,7 +3064,7 @@ details[open] .route-body {
     gap: 8px;
     line-height: 1.5;
     font-weight: 400;
-    box-shadow: 0 2px 8px rgba(33,103,71,0.04);
+    box-shadow: 0 2px 8px rgba(33, 103, 71, 0.04);
 }
 
 .ca-info-text i {
@@ -2993,7 +3247,29 @@ details[open] .route-body {
 
     h1 {
         font-size: 24px;
-        margin: 45px 0px 45px;
+    }
+
+    .train-search-form .form-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .train-item-details {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .train-instruction-text {
+        font-size: 11px;
+        margin: 8px 0 12px 0;
+        padding: 6px 10px;
+    }
+
+    .train-instruction-text i {
+        font-size: 11px;
+        margin-right: 4px;
     }
 
     .form-row {
@@ -3531,12 +3807,6 @@ details[open] .route-body {
         font-size: 15px;
     }
 
-    .ca-no-route-message,
-    .ca-invalid-route-message {
-        font-size: 14px;
-        padding: 16px;
-    }
-
     .queue-container {
         padding: 15px;
     }
@@ -3569,22 +3839,22 @@ details[open] .route-body {
     .legal-modal {
         padding: 10px;
     }
-    
+
     .legal-modal-content {
         max-width: 100%;
         margin: 10px auto;
         max-height: 95vh;
     }
-    
+
     .legal-modal-body {
         padding: 40px 20px 20px;
         max-height: calc(95vh - 50px);
     }
-    
+
     .legal-modal-body h2 {
         font-size: 24px;
     }
-    
+
     .legal-modal-body h3 {
         font-size: 16px;
     }
@@ -3596,7 +3866,7 @@ details[open] .route-body {
     .legal-modal-body li {
         font-size: 14px;
     }
-    
+
     .legal-close {
         top: 10px;
         right: 15px;
@@ -3611,7 +3881,42 @@ details[open] .route-body {
 
     h1 {
         font-size: 22px;
-        margin: 30px 0px 20px;
+    }
+
+    .collapsible-toggle {
+        padding: 12px 15px;
+        font-size: 14px;
+    }
+
+    .train-search-form .custom-dropdown .dropdown-option {
+        font-size: 15px;
+    }
+
+    .train-results-header h3 {
+        font-size: 16px;
+    }
+
+    .train-item {
+        padding: 12px;
+    }
+
+    .train-item-header {
+        font-size: 14px;
+    }
+
+    .train-item-details {
+        font-size: 13px;
+    }
+
+    .train-instruction-text {
+        font-size: 10px;
+        margin: 6px 0 10px 0;
+        padding: 5px 8px;
+    }
+
+    .train-instruction-text i {
+        font-size: 10px;
+        margin-right: 3px;
     }
 
     button {
@@ -4083,8 +4388,9 @@ details[open] .route-body {
     }
 
     .ca-no-route-message,
-    .ca-invalid-route-message {
-        font-size: 13px;
+    .ca-invalid-route-message,
+    .train-search-error-message {
+        font-size: 14px;
         padding: 14px;
     }
 
@@ -4128,16 +4434,16 @@ details[open] .route-body {
     .legal-modal-body {
         padding: 35px 15px 15px;
     }
-    
+
     .legal-modal-body h2 {
         font-size: 20px;
         margin-bottom: 15px;
     }
-    
+
     .legal-modal-body h3 {
         margin: 20px 0 10px;
     }
-    
+
     .legal-modal-body ul,
     .legal-modal-body ol {
         padding-left: 20px;
