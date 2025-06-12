@@ -173,7 +173,7 @@ def matrix():
     journey_date_str = request.form.get('date', '').strip()
     
     device_type, browser = get_user_device_info()
-    logger.info(f"[USER SUBMISSION] Train Matrix Request - Train: '{train_model_full}', Date: '{journey_date_str}' | Device: {device_type}, Browser: {browser}")
+    logger.info(f"Train Matrix Request - Train: '{train_model_full}', Date: '{journey_date_str}' | Device: {device_type}, Browser: {browser}")
 
     if not train_model_full or not journey_date_str:
         session['error'] = "Both Train Name and Journey Date are required."
@@ -415,7 +415,7 @@ def search_trains():
         destination = data.get('destination', '').strip()
         
         device_type, browser = get_user_device_info()
-        logger.info(f"[USER SUBMISSION] Train Search Request - From: '{origin}', To: '{destination}' | Device: {device_type}, Browser: {browser}")
+        logger.info(f"Train Search Request - From: '{origin}', To: '{destination}' | Device: {device_type}, Browser: {browser}")
         
         if not origin or not destination:
             return jsonify({"error": "Both origin and destination are required"}), 400

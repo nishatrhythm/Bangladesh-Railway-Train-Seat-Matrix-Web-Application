@@ -70,6 +70,7 @@ A comprehensive web application to **visualize segmented seat availability and f
 ├── stations_en.json              # Complete list of Bangladesh Railway stations
 ├── trains_en.json                # Complete list of 120+ Bangladesh Railway trains
 ├── LICENSE                       # Project license
+├── Procfile                      # Heroku/Render deployment configuration
 ├── README.md                     # Project documentation (this file)
 ├── requirements.txt              # Python dependencies
 ├── images/
@@ -80,6 +81,7 @@ A comprehensive web application to **visualize segmented seat availability and f
 │   ├── css/
 │   │   └── styles.css            # Responsive UI with matrix visualizations
 │   ├── images/
+│   │   ├── eid-al-adha-2025.png  # Event-specific banner image
 │   │   └── sample_banner.png     # Default banner image
 │   └── js/
 │       └── script.js             # Frontend logic, validations, dropdowns
@@ -112,6 +114,7 @@ A comprehensive web application to **visualize segmented seat availability and f
 | Custom Error Handling                 | ✅        | Graceful fallbacks for API failures |
 | Social Media Integration              | ✅        | Open Graph tags for sharing |
 | Cache-Control Headers                 | ✅        | Ensures fresh data on every request |
+| User Activity Logging                 | ✅        | Comprehensive logging of user interactions and system events |
 
 ---
 
@@ -340,6 +343,8 @@ Expires: 0
 - **requests 2.32.3** - HTTP client for API calls
 - **pytz 2025.2** - Timezone handling for BST
 - **colorama 0.4.6** - Terminal color output
+- **gunicorn 23.0.0** - WSGI server for production deployment
+- **Structured Logging** - INFO level logging with timestamp and user activity tracking
 
 ### Frontend
 - **HTML5** with semantic markup
@@ -385,6 +390,20 @@ Edit `config.json` for customization:
 ```bash
 python app.py
 ```
+
+**Production Deployment:**
+```bash
+# With Gunicorn (recommended for production)
+gunicorn app:app --log-level=info --access-logfile=-
+```
+
+**Logging Output:**
+The application will display structured logs including:
+- Timestamp and log level
+- User submissions with device/browser information
+- API request details and response status
+- Queue management and processing events
+- Error tracking and system health monitoring
 
 ### 5. Access Application
 Visit `http://localhost:5000` in your browser
@@ -443,6 +462,30 @@ Visit `http://localhost:5000` in your browser
     }
 }
 ```
+
+### User Activity Logging
+
+The application implements comprehensive logging to track user interactions and system performance:
+
+**Logging Configuration:**
+```python
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+```
+
+**Logged Events:**
+- **Train Matrix Requests**: `Train Matrix Request - Train: 'TRAIN_NAME', Date: 'DATE' | Device: TYPE, Browser: BROWSER`
+- **Train Search Requests**: `Train Search Request - From: 'ORIGIN', To: 'DESTINATION' | Device: TYPE, Browser: BROWSER`
+- **System Events**: Queue status, API failures, and error handling
+- **Production Logs**: Gunicorn access logs with `--log-level=info --access-logfile=-`
+
+**Device & Browser Detection:**
+- Automatically detects user device type (Mobile/PC)
+- Identifies browser (Chrome, Firefox, Safari, Edge, Opera, IE)
+- Logs user agent information for analytics and debugging
 
 ---
 

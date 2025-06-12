@@ -1555,6 +1555,11 @@ button:hover {
     text-decoration-thickness: 2px;
 }
 
+.adjustment {
+    margin: 0;
+    font-style: italic;
+}
+
 .bengali {
     font-family: 'Noto Sans Bengali', sans-serif;
 }
