@@ -17,7 +17,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 RESULT_CACHE = {}
-STATION_NAME_MAPPING = {"Coxs Bazar": "Cox's Bazar"}
 
 def get_user_device_info():
     user_agent = request.headers.get('User-Agent', '')
@@ -419,9 +418,7 @@ def search_trains():
         
         if not origin or not destination:
             return jsonify({"error": "Both origin and destination are required"}), 400
-        
-        origin = STATION_NAME_MAPPING.get(origin, origin)
-        destination = STATION_NAME_MAPPING.get(destination, destination)
+    
         
         today = datetime.now()
         date1 = today + timedelta(days=8)
