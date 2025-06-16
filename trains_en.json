@@ -99,20 +99,6 @@
             "zone": "EAST"
         },
         {
-            "train_name": "BURIMARI EID SHUTTLE 1 (19)",
-            "train_number": "19",
-            "origin_city": "Lalmonirhat",
-            "destination_city": "Burimari",
-            "zone": "WEST"
-        },
-        {
-            "train_name": "BURIMARI EID SHUTTLE 2 (20)",
-            "train_number": "20",
-            "origin_city": "Burimari",
-            "destination_city": "Lalmonirhat",
-            "zone": "WEST"
-        },
-        {
             "train_name": "BURIMARI EXPRESS (809)",
             "train_number": "809",
             "origin_city": "Dhaka",
@@ -125,20 +111,6 @@
             "origin_city": "Lalmonirhat",
             "destination_city": "Dhaka",
             "zone": "WEST"
-        },
-        {
-            "train_name": "CHANDPUR EID SPL 1 (01)",
-            "train_number": "01",
-            "origin_city": "Chattogram",
-            "destination_city": "Chandpur",
-            "zone": "EAST"
-        },
-        {
-            "train_name": "CHANDPUR EID SPL 2 (02)",
-            "train_number": "02",
-            "origin_city": "Chandpur",
-            "destination_city": "Chattogram",
-            "zone": "EAST"
         },
         {
             "train_name": "CHAPAINAWABGANJ SHUTTLE (109)",
@@ -617,20 +589,6 @@
             "zone": "EAST"
         },
         {
-            "train_name": "PARBATIPUR EID SPL 9 (09)",
-            "train_number": "09",
-            "origin_city": "Joydebpur",
-            "destination_city": "Parbatipur",
-            "zone": "WEST"
-        },
-        {
-            "train_name": "PARBATIPUR EID SPL 10 (10)",
-            "train_number": "10",
-            "origin_city": "Parbatipur",
-            "destination_city": "Joydebpur",
-            "zone": "WEST"
-        },
-        {
             "train_name": "PARJOTAK EXPRESS (815)",
             "train_number": "815",
             "origin_city": "Cox's Bazar",
@@ -839,20 +797,6 @@
             "origin_city": "Dhaka",
             "destination_city": "Khulna",
             "zone": "WEST"
-        },
-        {
-            "train_name": "TISTA EID SPL 3 (03)",
-            "train_number": "03",
-            "origin_city": "Dhaka",
-            "destination_city": "Dewanganj_Bazar",
-            "zone": "EAST"
-        },
-        {
-            "train_name": "TISTA EID SPL 4 (04)",
-            "train_number": "04",
-            "origin_city": "Dewanganj_Bazar",
-            "destination_city": "Dhaka",
-            "zone": "EAST"
         },
         {
             "train_name": "TISTA EXPRESS (707)",
