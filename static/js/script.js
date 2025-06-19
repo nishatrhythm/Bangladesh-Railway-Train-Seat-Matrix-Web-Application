@@ -1046,6 +1046,9 @@ function initializeTrainSearch() {
     if (seeTrainListBtn) {
         seeTrainListBtn.addEventListener('click', searchTrainsBetweenStations);
     }
+
+    setupClearButton('searchOrigin', 'searchOriginClear');
+    setupClearButton('searchDestination', 'searchDestinationClear');
 }
 
 function filterTrainSearchDropdown(inputId, dropdownId) {
@@ -1092,6 +1095,12 @@ function selectTrainSearchOption(inputId, dropdownId, value) {
 
     input.value = value;
     dropdown.style.display = "none";
+
+    const clearButtonId = inputId === 'searchOrigin' ? 'searchOriginClear' : 'searchDestinationClear';
+    const clearButton = document.getElementById(clearButtonId);
+    if (clearButton) {
+        updateClearButtonVisibility(input, clearButton);
+    }
 
     const errorField = document.getElementById(inputId + '-error');
     if (errorField && errorField.classList.contains('show')) {
@@ -1355,11 +1364,13 @@ function showTrainSearchError(fieldId, message) {
     const inputField = document.getElementById(fieldId);
 
     if (errorField && inputField) {
-        errorField.textContent = message;
-        errorField.style.display = 'block';
-        errorField.classList.remove('hide');
-        errorField.classList.add('show');
-        inputField.classList.add('error-input');
+        if (!errorField.classList.contains('show') || errorField.textContent !== message) {
+            errorField.textContent = message;
+            errorField.style.display = 'block';
+            errorField.classList.remove('hide');
+            errorField.classList.add('show');
+            inputField.classList.add('error-input');
+        }
     }
 }
 
@@ -1371,12 +1382,9 @@ function clearTrainSearchErrors() {
         const errorField = document.getElementById(errorId);
         const inputField = document.getElementById(inputFields[index]);
 
-        if (errorField) {
+        if (errorField && inputField && inputField.value.trim() !== '') {
             errorField.classList.remove('show');
             errorField.classList.add('hide');
-        }
-
-        if (inputField) {
             inputField.classList.remove('error-input');
         }
     });
@@ -1405,5 +1413,42 @@ function hideTrainSearchNetworkError() {
         errorSection.style.display = 'none';
         errorSection.innerHTML = '';
         updateCollapsibleHeight();
+    }
+}
+
+function setupClearButton(inputId, clearButtonId) {
+    const input = document.getElementById(inputId);
+    const clearButton = document.getElementById(clearButtonId);
+
+    if (!input || !clearButton) return;
+
+    updateClearButtonVisibility(input, clearButton);
+
+    input.addEventListener('input', () => {
+        updateClearButtonVisibility(input, clearButton);
+    });
+
+    clearButton.addEventListener('click', () => {
+        input.value = '';
+        
+        if (inputId === 'searchOrigin') {
+            hideTrainSearchDropdown('searchOriginDropdown');
+        } else if (inputId === 'searchDestination') {
+            hideTrainSearchDropdown('searchDestinationDropdown');
+        }
+        
+        input.focus();
+        updateClearButtonVisibility(input, clearButton);
+
+        const inputEvent = new Event('input', { bubbles: true });
+        input.dispatchEvent(inputEvent);
+    });
+}
+
+function updateClearButtonVisibility(input, clearButton) {
+    if (input.value.trim() !== '') {
+        clearButton.style.display = 'flex';
+    } else {
+        clearButton.style.display = 'none';
     }
 }
