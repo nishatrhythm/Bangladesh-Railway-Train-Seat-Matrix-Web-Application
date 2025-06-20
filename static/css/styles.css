@@ -3287,10 +3287,6 @@ details[open] .route-body {
         padding: 15px;
     }
 
-    h1 {
-        font-size: 24px;
-    }
-
     .train-search-form .form-row {
         flex-direction: column;
         align-items: stretch;
@@ -3922,7 +3918,7 @@ details[open] .route-body {
     }
 
     h1 {
-        font-size: 22px;
+        font-size: 24px;
     }
 
     .collapsible-toggle {

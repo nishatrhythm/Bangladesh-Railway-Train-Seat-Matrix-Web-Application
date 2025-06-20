@@ -138,6 +138,7 @@
                         <i class="fas fa-train input-icon"></i>
                         <input type="text" id="train-model-input" placeholder="Enter train name" autocomplete="off"
                             value="{{ form_values.train_model if form_values else '' }}">
+                        <i class="fas fa-times clear-icon" id="train-model-clear"></i>
                         <input type="hidden" id="train_model" name="train_model"
                             value="{{ form_values.train_model if form_values else '' }}">
                         <div class="dropdown-menu" id="train-model-menu" style="display: none;">

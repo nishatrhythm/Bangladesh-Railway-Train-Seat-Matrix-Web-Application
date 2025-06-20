@@ -175,9 +175,14 @@ function setupTrainDropdown() {
             dropdownMenu.style.width = '';
         }
 
-        dropdownMenu.style.display = 'block';
-        filterOptions(textInput.value);
+        const visibleOptions = filterOptions(textInput.value);
         focusedOptionIndex = -1;
+        
+        if (visibleOptions.length > 0) {
+            dropdownMenu.style.display = 'block';
+        } else {
+            dropdownMenu.style.display = 'none';
+        }
     }
 
     function closeDropdown() {
@@ -226,7 +231,14 @@ function setupTrainDropdown() {
             textInput.classList.remove('error-input');
         }
 
-        focusNextUnfilledField(textInput);
+        const clearButton = document.getElementById('train-model-clear');
+        if (clearButton) {
+            updateClearButtonVisibility(textInput, clearButton);
+        }
+
+        setTimeout(() => {
+            focusNextUnfilledField(textInput);
+        }, 400);
     }
 
     function updateFocusedOption() {
@@ -242,7 +254,9 @@ function setupTrainDropdown() {
         hiddenInput.value = textInput.value;
         if (textInput.value.trim() === "") {
             hiddenInput.value = "";
-            closeDropdown();
+            if (document.activeElement === textInput) {
+                openDropdown();
+            }
             return;
         }
         openDropdown();
@@ -415,7 +429,10 @@ function generateMaterialCalendar() {
                     dateError.classList.add('hide');
                     input.classList.remove('error-input');
                 }
-                focusNextUnfilledField(input);
+
+                setTimeout(() => {
+                    focusNextUnfilledField(input);
+                }, 400);
             }
         });
 
@@ -615,6 +632,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupCalendarBlurClose();
     setupCalendarClickOutside();
     setupTrainDropdown();
+    setupClearButton('train-model-input', 'train-model-clear');
     initializeTrainSearch();
     const matrixForm = document.getElementById("matrixForm");
     if (matrixForm) matrixForm.addEventListener("submit", validateForm);
@@ -1435,6 +1453,18 @@ function setupClearButton(inputId, clearButtonId) {
             hideTrainSearchDropdown('searchOriginDropdown');
         } else if (inputId === 'searchDestination') {
             hideTrainSearchDropdown('searchDestinationDropdown');
+        } else if (inputId === 'train-model-input') {
+            const hiddenInput = document.getElementById('train_model');
+            if (hiddenInput) hiddenInput.value = '';
+            const dropdownMenu = document.getElementById('train-model-menu');
+            if (dropdownMenu) dropdownMenu.style.display = 'none';
+            
+            const errorField = document.getElementById('train_model-error');
+            if (errorField && errorField.classList.contains('show')) {
+                errorField.classList.remove('show');
+                errorField.classList.add('hide');
+                input.classList.remove('error-input');
+            }
         }
         
         input.focus();
