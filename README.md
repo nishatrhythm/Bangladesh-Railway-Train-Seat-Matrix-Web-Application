@@ -47,16 +47,17 @@ A comprehensive web application to **visualize segmented seat availability and f
 
 1. [Project Structure](#-project-structure)  
 2. [Features Overview](#️-features-overview)  
-3. [Core Logic](#-core-logic)  
-4. [Matrix Algorithm](#-matrix-algorithm)  
-5. [Frontend Features](#️-frontend-features)  
-6. [Queue Management](#-queue-management)  
-7. [API Integration](#-api-integration)  
-8. [Cache Control](#-cache-control)  
-9. [Technologies Used](#-technologies-used)  
-10. [Setup Instructions](#-setup-instructions)  
-11. [Configuration](#️-configuration)  
-12. [License](#-license)
+3. [Authentication System](#-authentication-system)
+4. [Core Logic](#-core-logic)  
+5. [Matrix Algorithm](#-matrix-algorithm)  
+6. [Frontend Features](#️-frontend-features)  
+7. [Queue Management](#-queue-management)  
+8. [API Integration](#-api-integration)  
+9. [Cache Control](#-cache-control)  
+10. [Technologies Used](#-technologies-used)  
+11. [Setup Instructions](#-setup-instructions)  
+12. [Configuration](#️-configuration)  
+13. [License](#-license)
 
 ---
 
@@ -115,6 +116,42 @@ A comprehensive web application to **visualize segmented seat availability and f
 | Social Media Integration              | ✅        | Open Graph tags for sharing |
 | Cache-Control Headers                 | ✅        | Ensures fresh data on every request |
 | User Activity Logging                 | ✅        | Comprehensive logging of user interactions and system events |
+| JWT Authentication System             | ✅        | Automated Bearer token management and refresh |
+
+---
+
+## 🔐 Authentication System
+
+### Smart Authentication Management
+
+The application implements an intelligent JWT token system for accessing Bangladesh Railway APIs:
+
+```python
+def fetch_token() -> str
+def set_token(token: str)
+```
+
+**Features:**
+- **Automatic Token Refresh**: Detects expired tokens and refreshes automatically
+- **Bearer Token Authentication**: Uses JWT tokens for all API requests
+- **Secure Credential Management**: Environment-based configuration
+- **Session Persistence**: Maintains authentication across requests
+- **Error Recovery**: Handles invalid credentials gracefully
+- **Rate Limit Handling**: Implements backoff strategies for API limits
+
+### Environment Configuration
+
+**Required Environment Variables:**
+```bash
+FIXED_MOBILE_NUMBER=your_mobile_number
+FIXED_PASSWORD=your_password
+```
+
+### Token Lifecycle Management
+- **Global Token Store**: Maintains active JWT token in memory
+- **Timestamp Tracking**: Monitors token age and validity
+- **Automatic Refresh**: Seamlessly renews expired tokens
+- **Error Handling**: Graceful fallback for authentication failures
 
 ---
 
@@ -284,7 +321,17 @@ const response = await fetch('/search_trains', {
 
 ### Bangladesh Railway API Endpoints
 
-#### 1. Train Route Data
+#### 1. Authentication
+```http
+POST https://railspaapi.shohoz.com/v1.0/web/auth/sign-in
+Content-Type: application/json
+{
+    "mobile_number": "MOBILE_NUMBER",
+    "password": "PASSWORD"
+}
+```
+
+#### 2. Train Route Data
 ```http
 POST https://railspaapi.shohoz.com/v1.0/web/train-routes
 Content-Type: application/json
@@ -294,15 +341,17 @@ Content-Type: application/json
 }
 ```
 
-#### 2. Seat Availability
+#### 3. Seat Availability
 ```http
 GET https://railspaapi.shohoz.com/v1.0/web/bookings/search-trips-v2
+Headers: Authorization: Bearer {jwt_token}
 Params: from_city, to_city, date_of_journey, seat_class
 ```
 
 #### 3. Train Search Between Stations
 ```http
 POST /search_trains
+Headers: Authorization: Bearer {jwt_token}
 Content-Type: application/json
 {
     "origin": "STATION_NAME",
@@ -312,7 +361,9 @@ Content-Type: application/json
 
 ### Error Handling
 - **Network Timeouts**: 30-second request timeout
-- **Rate Limiting**: Built-in cooldown mechanisms
+- **Rate Limiting**: Built-in cooldown mechanisms with 403 error detection
+- **Authentication Refresh**: Automatic JWT token renewal on expiration
+- **Credential Validation**: Environment variable validation and secure error messaging
 - **Fallback Responses**: Graceful degradation on API failures
 - **Retry Logic**: Automatic retries for transient failures
 
@@ -342,6 +393,7 @@ Expires: 0
 - **Flask 3.1.0** - Web framework
 - **requests 2.32.3** - HTTP client for API calls
 - **pytz 2025.2** - Timezone handling for BST
+- **python-dotenv** - Environment variable management for secure authentication
 - **colorama 0.4.6** - Terminal color output
 - **gunicorn 23.0.0** - WSGI server for production deployment
 - **Structured Logging** - INFO level logging with timestamp and user activity tracking
@@ -374,7 +426,14 @@ cd Bangladesh-Railway-Train-Seat-Matrix-Web-Application
 pip install -r requirements.txt
 ```
 
-### 3. Configure Application
+### 3. Configure Environment Variables
+Create a `.env` file or set environment variables for Bangladesh Railway API authentication:
+```bash
+FIXED_MOBILE_NUMBER=your_mobile_number
+FIXED_PASSWORD=your_password
+```
+
+### 4. Configure Application
 Edit `config.json` for customization:
 ```json
 {
@@ -386,7 +445,7 @@ Edit `config.json` for customization:
 }
 ```
 
-### 4. Run Application
+### 5. Run Application
 ```bash
 python app.py
 ```
@@ -405,12 +464,24 @@ The application will display structured logs including:
 - Queue management and processing events
 - Error tracking and system health monitoring
 
-### 5. Access Application
+### 6. Access Application
 Visit `http://localhost:5000` in your browser
 
 ---
 
 ## ⚙️ Configuration
+
+### Authentication Configuration
+Environment variables for Bangladesh Railway API access:
+```bash
+FIXED_MOBILE_NUMBER=your_mobile_number  # Required for JWT token authentication
+FIXED_PASSWORD=your_password            # Required for JWT token authentication
+```
+
+**Security Notes:**
+- Never commit credentials to version control
+- Use environment variables or secure secret management
+- Credentials are loaded from `/etc/secrets/.env` in production environments
 
 ### Queue Settings
 - **max_concurrent**: Number of simultaneous API requests (default: 1)

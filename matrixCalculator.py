@@ -1,11 +1,50 @@
-import requests
+import requests, os
 from datetime import datetime, timedelta
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from dotenv import load_dotenv
+
+load_dotenv('/etc/secrets/.env')
 
 SEAT_TYPES = [
     "S_CHAIR", "SHOVAN", "SNIGDHA", "F_SEAT", "F_CHAIR", "AC_S", "F_BERTH", "AC_B", "SHULOV", "AC_CHAIR"
 ]
+
+TOKEN = None
+TOKEN_TIMESTAMP = None
+
+def set_token(token: str):
+    global TOKEN, TOKEN_TIMESTAMP
+    TOKEN = token
+    TOKEN_TIMESTAMP = datetime.utcnow()
+
+def fetch_token() -> str:
+    mobile_number = os.getenv("FIXED_MOBILE_NUMBER")
+    password = os.getenv("FIXED_PASSWORD")
+    if not mobile_number or not password:
+        raise Exception("Fixed mobile number or password not configured.")
+    url = f"https://railspaapi.shohoz.com/v1.0/web/auth/sign-in"
+    payload = {"mobile_number": mobile_number, "password": password}
+    max_retries = 2
+    retry_count = 0
+    while retry_count < max_retries:
+        try:
+            response = requests.post(url, json=payload)
+            if response.status_code == 422:
+                raise Exception("Server-side Mobile Number or Password is incorrect. Please wait a moment while we resolve this issue.")
+            elif response.status_code >= 500:
+                retry_count += 1
+                if retry_count == max_retries:
+                    raise Exception("We're facing a problem with the Bangladesh Railway website. Please try again in a few minutes.")
+                continue
+            data = response.json()
+            token = data["data"]["token"]
+            return token
+        except requests.RequestException as e:
+            error_str = str(e)
+            if "NameResolutionError" in error_str or "Failed to resolve" in error_str:
+                raise Exception("We couldn't reach the Bangladesh Railway website. Please try again in a few minutes.")
+            raise Exception(f"Failed to fetch token: {error_str}")
 
 def fetch_train_data(model: str, api_date: str) -> dict:
     url = "https://railspaapi.shohoz.com/v1.0/web/train-routes"
@@ -38,6 +77,11 @@ def fetch_train_data(model: str, api_date: str) -> dict:
             raise
 
 def get_seat_availability(train_model: str, journey_date: str, from_city: str, to_city: str) -> tuple:
+    global TOKEN
+    if not TOKEN:
+        TOKEN = fetch_token()
+        set_token(TOKEN)
+
     url = "https://railspaapi.shohoz.com/v1.0/web/bookings/search-trips-v2"
     params = {
         "from_city": from_city,
@@ -45,13 +89,14 @@ def get_seat_availability(train_model: str, journey_date: str, from_city: str, t
         "date_of_journey": journey_date,
         "seat_class": "SHULOV"
     }
+    headers = {"Authorization": f"Bearer {TOKEN}"}
 
     max_retries = 2
     retry_count = 0
 
     while retry_count < max_retries:
         try:
-            response = requests.get(url, params=params)
+            response = requests.get(url, headers=headers, params=params)
             if response.status_code == 403:
                 raise Exception("Rate limit exceeded. Please try again later.")
                 

@@ -3,3 +3,4 @@ requests==2.32.3
 colorama==0.4.6
 pytz==2025.2
 gunicorn==23.0.0
+python-dotenv==1.0.1

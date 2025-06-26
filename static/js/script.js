@@ -668,7 +668,7 @@ function showLoaderAndSubmit(event) {
     event.preventDefault();
     const form = event.target;
     const submitButton = form.querySelector('.btn-primary');
-    const searchIcon = submitButton.querySelector('.fa-calculator');
+    const searchIcon = submitButton.querySelector('.fa-th-list');
 
     submitButton.disabled = true;
     submitButton.style.opacity = '0.6';
@@ -700,10 +700,10 @@ function resetSubmitButton() {
         if (loader) {
             loader.remove();
         }
-        const existingIcon = submitButton.querySelector('.fa-calculator');
+        const existingIcon = submitButton.querySelector('.fa-th-list');
         if (!existingIcon) {
             const calculatorIcon = document.createElement('i');
-            calculatorIcon.className = 'fas fa-calculator';
+            calculatorIcon.className = 'fas fa-th-list';
             submitButton.prepend(calculatorIcon);
         }
     }
