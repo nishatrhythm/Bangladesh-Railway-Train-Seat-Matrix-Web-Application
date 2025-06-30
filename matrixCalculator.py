@@ -93,10 +93,29 @@ def get_seat_availability(train_model: str, journey_date: str, from_city: str, t
 
     max_retries = 2
     retry_count = 0
+    has_retried_with_new_token = False
 
     while retry_count < max_retries:
         try:
             response = requests.get(url, headers=headers, params=params)
+            
+            if response.status_code == 401 and not has_retried_with_new_token:
+                try:
+                    error_data = response.json()
+                    error_messages = error_data.get("error", {}).get("messages", [])
+                    if isinstance(error_messages, list) and any("Invalid User Access Token!" in msg for msg in error_messages):
+                        TOKEN = fetch_token()
+                        set_token(TOKEN)
+                        headers["Authorization"] = f"Bearer {TOKEN}"
+                        has_retried_with_new_token = True
+                        continue
+                except ValueError:
+                    TOKEN = fetch_token()
+                    set_token(TOKEN)
+                    headers["Authorization"] = f"Bearer {TOKEN}"
+                    has_retried_with_new_token = True
+                    continue
+            
             if response.status_code == 403:
                 raise Exception("Rate limit exceeded. Please try again later.")
                 
@@ -130,6 +149,24 @@ def get_seat_availability(train_model: str, journey_date: str, from_city: str, t
             return (from_city, to_city, None)
 
         except requests.RequestException as e:
+            status_code = e.response.status_code if e.response is not None else None
+            if status_code == 401 and not has_retried_with_new_token:
+                try:
+                    error_data = e.response.json()
+                    error_messages = error_data.get("error", {}).get("messages", [])
+                    if isinstance(error_messages, list) and any("Invalid User Access Token!" in msg for msg in error_messages):
+                        TOKEN = fetch_token()
+                        set_token(TOKEN)
+                        headers["Authorization"] = f"Bearer {TOKEN}"
+                        has_retried_with_new_token = True
+                        continue
+                except ValueError:
+                    TOKEN = fetch_token()
+                    set_token(TOKEN)
+                    headers["Authorization"] = f"Bearer {TOKEN}"
+                    has_retried_with_new_token = True
+                    continue
+                    
             if hasattr(e, 'response') and e.response and e.response.status_code == 403:
                 raise Exception("Rate limit exceeded. Please try again later.")
             return (from_city, to_city, None)
