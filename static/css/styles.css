@@ -1067,10 +1067,25 @@ button:hover {
     letter-spacing: 0.01em;
     user-select: none;
     animation: fadeInUp 1.4s ease-in-out;
-    background: rgba(0, 103, 71, 0.08);
     border-radius: 8px;
     padding: 14px 0 12px 0;
-    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.03);
+    position: relative;
+}
+
+.footer-links::before {
+    content: '';
+    position: absolute;
+    top: 0px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(to right, 
+        transparent 0%, 
+        rgba(0, 103, 71, 0.2) 20%, 
+        rgba(0, 103, 71, 0.6) 50%, 
+        rgba(0, 103, 71, 0.2) 80%, 
+        transparent 100%);
+    opacity: 0.8;
 }
 
 .footer-links a {
@@ -1316,6 +1331,7 @@ button:hover {
     transition: top 0.4s ease-in-out, opacity 0.3s ease;
     border-left: 4px solid transparent;
     opacity: 0;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .flyout-notification.active {
@@ -3265,12 +3281,10 @@ details[open] .route-body {
 }
 
 .legal-links {
-    background-color: rgba(0, 103, 71, 0.08);
     padding: 8px 16px;
     border-radius: 8px;
     margin-top: 8px;
     display: inline-block;
-    border: 1px solid rgba(0, 103, 71, 0.15);
 }
 
 @media (max-width: 1100px) {

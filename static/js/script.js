@@ -749,7 +749,7 @@ function checkConnectionSpeed() {
             const duration = performance.now() - startTime;
             if (duration > 2000) {
                 clearTimeout(slowConnectionTimeout);
-                showFlyout('Slow Internet Connection Detected.', 'warning', 7000);
+                showFlyout('Slow Internet Connection.', 'warning', 7000);
                 slowConnectionTimeout = setTimeout(checkConnectionSpeed, 30000);
             } else {
                 slowConnectionTimeout = setTimeout(checkConnectionSpeed, 15000);
