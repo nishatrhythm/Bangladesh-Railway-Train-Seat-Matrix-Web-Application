@@ -422,6 +422,20 @@
         }, 300000);
     </script>
     <script>
+        // Helper function to format date with 3-letter month abbreviations
+        function formatDateWithShortMonth(date) {
+            const monthAbbr = [
+                "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+            ];
+            
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = monthAbbr[date.getMonth()];
+            const year = date.getFullYear();
+            
+            return `${day}-${month}-${year}`;
+        }
+
         function setupAvailabilityDropdowns() {
             ['origin', 'destination'].forEach(type => {
                 const dropdown = document.getElementById(`ca-${type}-station-dropdown`);
@@ -782,7 +796,7 @@
                                 <div class="ca-route-segment">
                                     <div class="ca-route-segment-header">
                                         ${seg.from} → ${seg.to}
-                                        ${!allSameDay ? `<span class="ca-route-segment-date">${new Date(seg.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-')}</span>` : ''}
+                                        ${!allSameDay ? `<span class="ca-route-segment-date">${formatDateWithShortMonth(new Date(seg.date))}</span>` : ''}
                                     </div>
                                     <div class="ca-fare-breakdown">
                                         <div class="ca-fare-item"><i class="fas fa-coins"></i> <strong>Base Fare:</strong> ${seg.base} <span class="bdt">BDT</span></div>
@@ -792,7 +806,7 @@
                                     </div>
                                     <div class="ca-ticket-action">
                                         <div class="ca-ticket-availability"><i class="fas fa-ticket-alt"></i> Available Tickets: <span>${seg.seats}</span></div>
-                                        <a href="https://eticket.railway.gov.bd/booking/train/search?fromcity=${seg.from}&tocity=${seg.to}&doj=${new Date(seg.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-')}&class=${seatType}" class="ca-btn-primary buy-link" target="_blank">
+                                        <a href="https://eticket.railway.gov.bd/booking/train/search?fromcity=${seg.from}&tocity=${seg.to}&doj=${formatDateWithShortMonth(new Date(seg.date))}&class=${seatType}" class="ca-btn-primary buy-link" target="_blank">
                                             <i class="fas fa-external-link-alt"></i> Buy
                                         </a>
                                     </div>
@@ -823,7 +837,7 @@
                             <div class="ca-route-segment">
                                 <div class="ca-route-segment-header">
                                     ${seg.from} → ${seg.to} [${seg.seatType}]
-                                    ${!allSameDay ? `<span class="ca-route-segment-date">starts ${new Date(seg.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-')}</span>` : ''}
+                                    ${!allSameDay ? `<span class="ca-route-segment-date">starts ${formatDateWithShortMonth(new Date(seg.date))}</span>` : ''}
                                 </div>
                                 <div class="ca-fare-breakdown">
                                     <div class="ca-fare-item"><i class="fas fa-coins"></i> <strong>Base Fare:</strong> ${seg.base} <span class="bdt">BDT</span></div>
@@ -833,7 +847,7 @@
                                 </div>
                                 <div class="ca-ticket-action">
                                     <div class="ca-ticket-availability"><i class="fas fa-ticket-alt"></i> Available Tickets: <span>${seg.seats}</span></div>
-                                    <a href="https://eticket.railway.gov.bd/booking/train/search?fromcity=${seg.from}&tocity=${seg.to}&doj=${new Date(seg.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-')}&class=${seg.seatType}" class="ca-btn-primary buy-link" target="_blank">
+                                    <a href="https://eticket.railway.gov.bd/booking/train/search?fromcity=${seg.from}&tocity=${seg.to}&doj=${formatDateWithShortMonth(new Date(seg.date))}&class=${seg.seatType}" class="ca-btn-primary buy-link" target="_blank">
                                         <i class="fas fa-external-link-alt"></i> Buy
                                     </a>
                                 </div>
