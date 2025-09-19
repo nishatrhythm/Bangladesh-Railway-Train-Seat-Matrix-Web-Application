@@ -1561,7 +1561,8 @@ button:hover {
 }
 
 .note {
-    margin-top: 30px;
+    /* margin-top: 30px; */
+    margin: 10px auto 0 auto; /* should be removed this line next time */
     line-height: 1.6;
     color: rgb(0, 103, 71);
     background-color: #f1f8f3;
@@ -1569,7 +1570,7 @@ button:hover {
     border-radius: 8px;
     border: 1px solid rgb(0, 103, 71);
     font-size: 14px;
-    font-style: italic;
+    /* font-style: italic; */
     font-weight: 500;
     text-align: justify;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
