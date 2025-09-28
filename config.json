@@ -5,5 +5,5 @@
     "is_banner_enabled": 1,
     "image_link": "",
     "force_banner": 0,
-    "queue_enabled": true
+    "queue_enabled": false
 }
