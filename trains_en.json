@@ -141,6 +141,13 @@
             "zone": "EAST"
         },
         {
+            "train_name": "CHATTOGRAM SPECIAL (10004)",
+            "train_number": "10004",
+            "origin_city": "Dhaka",
+            "destination_city": "Chattogram",
+            "zone": "EAST"
+        },
+        {
             "train_name": "CHILAHATI EXPRESS (805)",
             "train_number": "805",
             "origin_city": "Dhaka",
@@ -180,6 +187,13 @@
             "train_number": "814",
             "origin_city": "Dhaka",
             "destination_city": "Cox's Bazar",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "DHAKA SPECIAL (10003)",
+            "train_number": "10003",
+            "origin_city": "Chattogram",
+            "destination_city": "Dhaka",
             "zone": "EAST"
         },
         {
@@ -825,6 +839,20 @@
             "origin_city": "Chilahati",
             "destination_city": "Rajshahi",
             "zone": "WEST"
+        },
+        {
+            "train_name": "TOURIST SPECIAL (10001)",
+            "train_number": "10001",
+            "origin_city": "Cox's Bazar",
+            "destination_city": "Dhaka",
+            "zone": "EAST"
+        },
+        {
+            "train_name": "TOURIST SPECIAL (10002)",
+            "train_number": "10002",
+            "origin_city": "Dhaka",
+            "destination_city": "Cox's Bazar",
+            "zone": "EAST"
         },
         {
             "train_name": "TUNGIPARA EXPRESS (783)",
