@@ -21,16 +21,26 @@ RESULT_CACHE = {}
 def is_android_device():
     user_agent = request.headers.get('User-Agent', '').lower()
     
-    android_patterns = ['android', 'mobile', 'tablet']
-    if any(pattern in user_agent for pattern in android_patterns):
+    if any(ios_pattern in user_agent for ios_pattern in ['iphone', 'ipad', 'ipod', 'ios']):
+        return False
+    
+    if 'android' in user_agent:
         logger.info(f"Android detected via User-Agent: {request.headers.get('User-Agent', '')}")
+        return True
+    
+    if ('mobile' in user_agent or 'tablet' in user_agent) and 'safari' not in user_agent:
+        logger.info(f"Android detected via User-Agent (mobile/tablet): {request.headers.get('User-Agent', '')}")
         return True
     
     ua_platform = request.headers.get('Sec-CH-UA-Platform', '').lower()
     ua_mobile = request.headers.get('Sec-CH-UA-Mobile', '').lower()
     
-    if 'android' in ua_platform or ua_mobile == '?1':
+    if 'android' in ua_platform:
         logger.info(f"Android detected via Client Hints - Platform: {ua_platform}, Mobile: {ua_mobile}")
+        return True
+    
+    if ua_mobile == '?1' and 'ios' not in ua_platform and 'safari' not in user_agent:
+        logger.info(f"Android detected via Client Hints - Mobile: {ua_mobile}")
         return True
     
     mobile_headers = [

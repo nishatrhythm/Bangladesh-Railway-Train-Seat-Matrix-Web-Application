@@ -9,6 +9,10 @@ function detectAndroidDevice() {
     const ua = navigator.userAgent.toLowerCase();
     const platform = navigator.platform.toLowerCase();
     
+    if (ua.includes('iphone') || ua.includes('ipad') || ua.includes('ipod') || ua.includes('ios')) {
+        return false;
+    }
+    
     const isAndroidUA = ua.includes("android");
     
     const hasTouch = navigator.maxTouchPoints > 0;
@@ -16,11 +20,11 @@ function detectAndroidDevice() {
     const highDPI = window.devicePixelRatio > 1.5;
     
     const androidHints = [
-        ua.includes("mobile"),
+        ua.includes("mobile") && !ua.includes("safari"),
         ua.includes("wv"),
-        platform.includes("arm"),
-        hasTouch && isMobileScreen,
-        hasTouch && highDPI && window.screen.width < 1200
+        platform.includes("arm") && !ua.includes("safari"),
+        hasTouch && isMobileScreen && !ua.includes("safari"),
+        hasTouch && highDPI && window.screen.width < 1200 && !ua.includes("safari")
     ];
     
     return isAndroidUA || androidHints.filter(Boolean).length >= 2;
