@@ -5,6 +5,54 @@ let suppressEvents = false;
 let trainData = [];
 let trainDataFull = [];
 
+function detectAndroidDevice() {
+    const ua = navigator.userAgent.toLowerCase();
+    const platform = navigator.platform.toLowerCase();
+    
+    const isAndroidUA = ua.includes("android");
+    
+    const hasTouch = navigator.maxTouchPoints > 0;
+    const isMobileScreen = window.screen.width <= 1024;
+    const highDPI = window.devicePixelRatio > 1.5;
+    
+    const androidHints = [
+        ua.includes("mobile"),
+        ua.includes("wv"),
+        platform.includes("arm"),
+        hasTouch && isMobileScreen,
+        hasTouch && highDPI && window.screen.width < 1200
+    ];
+    
+    return isAndroidUA || androidHints.filter(Boolean).length >= 2;
+}
+
+function checkAndroidRedirect() {
+    if (window.location.pathname.includes('/android-notice')) {
+        return false;
+    }
+    
+    if (detectAndroidDevice()) {
+        const redirectAttempted = sessionStorage.getItem('android-redirect-attempted');
+        if (!redirectAttempted) {
+            sessionStorage.setItem('android-redirect-attempted', 'true');
+            
+            fetch('/android-notice', {
+                method: 'HEAD',
+                headers: {
+                    'X-Client-Android-Detection': 'true',
+                    'X-Client-Touch-Points': navigator.maxTouchPoints || 0,
+                    'X-Client-Screen-Size': `${window.screen.width}x${window.screen.height}`,
+                    'X-Client-Pixel-Ratio': window.devicePixelRatio || 1
+                }
+            }).catch(() => {});
+            
+            window.location.href = '/android-notice';
+            return true;
+        }
+    }
+    return false;
+}
+
 function loadTrains() {
     return new Promise((resolve) => {
         const cachedTrains = localStorage.getItem('railwayTrains');
@@ -631,6 +679,10 @@ function setupCalendarClickOutside() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+    if (checkAndroidRedirect()) {
+        return;
+    }
+    
     await loadTrains();
     await loadStations();
     initMaterialCalendar();

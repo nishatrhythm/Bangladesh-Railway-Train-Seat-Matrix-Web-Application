@@ -2,46 +2,16 @@
 <html lang="en">
 
 <head>
-
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home | Train Seat Matrix</title>
-    <!-- SEO Meta Tags -->
-    <meta name="description"
-        content="View segmented seat availability and fare matrix for Bangladesh Railway trains. Quickly check available seats by route and class.">
-    <meta name="keywords"
-        content="Bangladesh Railway, train seat availability, segmented seat matrix, travel, transportation, railway schedule, Bangladesh travel">
-    <meta name="author" content="Nishat Mahmud">
-    <meta name="publish_date" content="2025-05-13" scheme="YYYY-MM-DD">
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Train Seat Matrix with Segmentation for Bangladesh Railway">
-    <meta property="og:description"
-        content="Easily check segmented seat availability and fare matrix for Bangladesh Railway trains.">
-    <meta property="og:image"
-        content="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application/main/images/link_share_image.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:url" content="https://seat.onrender.com">
-    <meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Android Notice | Train Seat Matrix</title>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8782991694211014"
          crossorigin="anonymous"></script>
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="icon"
-        href="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-and-Fare-List-with-Route-Map/main/images/bangladesh-railway.png">
     <link rel="stylesheet" href="/static/css/styles.css">
-    <script id="app-config" type="application/json">
-        {{ CONFIG | tojson | safe }}
-    </script>
-    <!-- Trains Data with App Version -->
-    <script id="trains-data" type="application/json">
-        {"trains": {{ trains | tojson | safe }}, "trains_full": {{ trains_full | tojson | safe }}, "version": "{{ app_version }}"}
-    </script>
-    <!-- Stations Data with App Version -->
-    <script id="stations-data" type="application/json">
-        {"stations": {{ stations | tojson | safe }}, "version": "{{ app_version }}"}
-    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <link rel="icon" href="https://raw.githubusercontent.com/nishatrhythm/Bangladesh-Railway-Train-and-Fare-List-with-Route-Map/main/images/bangladesh-railway.png" type="image/x-icon" sizes="30x30">
 </head>
 
 <body>
@@ -64,152 +34,11 @@
     <div class="container main-content">
         <h1><i class="fas fa-subway"></i> BR Train Seat Matrix</h1><br>
 
-        <!-- General Text Crawler Section -->
-        <!-- <div class="text-crawler light">
-            <div class="crawler-container">
-                <div class="crawler-content speed"> -->
-                    <!-- <i class="fas fa-heart"></i> -->
-                    <!-- We are deeply saddened by the tragic crash of a Bangladesh Air Force training aircraft at Uttara Milestone College in Dhaka. Our heartfelt condolences go out to the victims, their families, and all those affected. May the departed souls rest in peace.
-                </div>
-            </div>
-        </div> -->
-
-        <!-- <p class="note bengali">
-            <span class="note-bold highlight">লক্ষ্য করুনঃ </span> অতিরিক্ত ট্রাফিকের কারণে সাময়িক সময়ের জন্য <span class="note-bold">সিট ম্যাট্রিক্স </span>ওয়েবসাইটের একটি প্রতিলিপি <a href="https://trainreport.onrender.com" target="_self">trainreport.onrender.com</a> এও পাওয়া যাবে। তাই উভয় ওয়েবসাইট সমানভাবে ব্যবহার করার জন্য বিনীতভাবে অনুরোধ করা যাচ্ছে।
-        </p><br> -->
-
         <p class="note bengali">
             সিট ম্যাট্রিক্স ওয়েবসাইটটি এখন অ্যান্ড্রয়েড অ্যাপ সংস্করণে উন্মুক্ত করা হয়েছে। অ্যান্ড্রয়েড ব্যবহারকারীদের অ্যাপটির আপডেটেড ভার্সন ডাউনলোড করে ব্যবহার করার জন্য বিনীতভাবে অনুরোধ করা হচ্ছে। <br> <span class="note-bold">• ডাউনলোড করতে ভিজিট করুনঃ</span> <a href="https://gist.github.com/nishatrhythm/b462e53062f32017fcc0c7c218898cde
             " target="_blank">GitHub Gist</a>
         </p><br>
-
-        <!-- <p class="note adjustment">
-            <span class="note-bold highlight">Notice: </span> The hosting site will undergo scheduled maintenance on <strong>June 15, 2025</strong>, from <strong>9:00 PM</strong> to <strong>10:00 PM BST</strong>. During this time, you may experience interruptions while using this website. Apologies for the inconvenience.
-        </p><br> -->
-
-        {% if error %}
-        <div class="error shake">
-            <i class="fas fa-exclamation-circle error-icon"></i> {{ error }}
-        </div>
-        {% endif %}
-
-        <!-- Train Search Collapsible Section -->
-        <div class="collapsible-section">
-            <button type="button" class="collapsible-toggle" data-target="trainSearchContent">
-                <i class="fas fa-chevron-down"></i> Expand to view Train Search
-            </button>
-            <div class="collapsible-content" id="trainSearchContent">
-                <div class="train-search-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="searchOrigin">Origin Station</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-train input-icon"></i>
-                                <input type="text" id="searchOrigin" name="searchOrigin"
-                                    placeholder="Enter an origin station" autocomplete="off">
-                                <i class="fas fa-times clear-icon" id="searchOriginClear"></i>
-                                <div id="searchOriginDropdown" class="custom-dropdown"></div>
-                            </div>
-                            <span class="error-message" id="searchOrigin-error">Origin station is required</span>
-                        </div>
-                        <div class="home-swap-icon-wrapper" id="trainSearchSwapIcon">
-                            <i class="fas fa-exchange-alt swap-icon"></i>
-                        </div>
-                        <div class="form-group">
-                            <label for="searchDestination">Destination Station</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-train input-icon"></i>
-                                <input type="text" id="searchDestination" name="searchDestination"
-                                    placeholder="Enter a destination station" autocomplete="off">
-                                <i class="fas fa-times clear-icon" id="searchDestinationClear"></i>
-                                <div id="searchDestinationDropdown" class="custom-dropdown"></div>
-                            </div>
-                            <span class="error-message" id="searchDestination-error">Destination station is
-                                required</span>
-                        </div>
-                    </div>
-                    <div class="form-group submit-btn">
-                        <button type="button" class="btn-primary" id="seeTrainListBtn">
-                            <i class="fas fa-list"></i> View Train List
-                        </button>
-                    </div>
-                    <div id="trainSearchError" class="train-search-error" style="display: none;">
-                        <!-- Error messages from search_trains route will be displayed here -->
-                    </div>
-                    <div id="trainSearchResults" class="train-results" style="display: none;">
-                        <div class="train-results-header">
-                            <h3><i class="fas fa-train"></i> Available Trains</h3>
-                            <p class="train-instruction-text"><i class="fas fa-hand-pointer"></i> Click or tap on a
-                                train name to insert it into the train name field</p>
-                        </div>
-                        <div id="trainList" class="train-list"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <form action="/matrix" method="POST" id="matrixForm">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="train_model">Train Name</label>
-                    <div class="input-with-icon custom-dropdown" id="train-model-dropdown">
-                        <i class="fas fa-train input-icon"></i>
-                        <input type="text" id="train-model-input" placeholder="Enter train name" autocomplete="off"
-                            value="{{ form_values.train_model if form_values else '' }}">
-                        <i class="fas fa-times clear-icon" id="train-model-clear"></i>
-                        <input type="hidden" id="train_model" name="train_model"
-                            value="{{ form_values.train_model if form_values else '' }}">
-                        <div class="dropdown-menu" id="train-model-menu" style="display: none;">
-                            <div class="dropdown-options" id="train-model-options">
-                                {% for train in trains_full %}
-                                <div class="dropdown-option" data-value="{{ train.train_name }}"
-                                    data-origin="{{ train.origin_city }}"
-                                    data-destination="{{ train.destination_city }}" data-zone="{{ train.zone }}">
-                                    <div class="train-info">
-                                        <div class="train-name">{{ train.train_name }}</div>
-                                        <div class="train-route-container">
-                                            <div class="train-route">{{ train.origin_city }} → {{ train.destination_city
-                                                }}</div>
-                                            <div class="train-zone">{{ train.zone }}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                    <span class="error-message" id="train_model-error">Train model is required</span>
-                </div>
-                <div class="form-group">
-                    <label for="date">Date of Journey</label>
-                    <div class="input-with-icon">
-                        <i class="fas fa-calendar-alt input-icon"></i>
-                        <input type="text" id="date" name="date" readonly placeholder="Select a date"
-                            value="{{ form_values.date if form_values else '' }}" data-min-date="{{ min_date }}"
-                            data-max-date="{{ max_date }}" data-bst-midnight-utc="{{ bst_midnight_utc }}" />
-                        <div class="calendar-dialog" id="materialCalendar" style="display: none;">
-                            <div class="calendar-header">
-                                <button type="button" class="calendar-nav prev" id="prevMonthBtn">❮</button>
-                                <div class="calendar-month-year" id="calendarTitle"></div>
-                                <button type="button" class="calendar-nav next" id="nextMonthBtn">❯</button>
-                            </div>
-                            <div class="calendar-grid">
-                                <div class="calendar-weekdays">
-                                    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
-                                </div>
-                                <div class="calendar-days" id="calendarDays"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <span class="error-message" id="date-error">Date of journey is required</span>
-                </div>
-            </div>
-            <div class="form-group submit-btn">
-                <button type="submit" class="btn-primary">
-                    <i class="fas fa-th-list"></i> View Seat Matrix
-                </button>
-            </div>
-        </form>
+        
         <footer class="new-footer">
             <p>This project is open source. Check it out on <a
                     href="https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application"
@@ -411,6 +240,7 @@
         sessionStorage.removeItem('queuePageVisited');
         sessionStorage.removeItem('queueRedirecting');
         sessionStorage.removeItem('lastStatusCheck');
+        sessionStorage.removeItem('android-redirect-attempted');
         window.bannerImageUrl = "{{ banner_image | safe }}";
     </script>
 </body>

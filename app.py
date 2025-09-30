@@ -18,6 +18,53 @@ logger = logging.getLogger(__name__)
 
 RESULT_CACHE = {}
 
+def is_android_device():
+    user_agent = request.headers.get('User-Agent', '').lower()
+    
+    android_patterns = ['android', 'mobile', 'tablet']
+    if any(pattern in user_agent for pattern in android_patterns):
+        logger.info(f"Android detected via User-Agent: {request.headers.get('User-Agent', '')}")
+        return True
+    
+    ua_platform = request.headers.get('Sec-CH-UA-Platform', '').lower()
+    ua_mobile = request.headers.get('Sec-CH-UA-Mobile', '').lower()
+    
+    if 'android' in ua_platform or ua_mobile == '?1':
+        logger.info(f"Android detected via Client Hints - Platform: {ua_platform}, Mobile: {ua_mobile}")
+        return True
+    
+    mobile_headers = [
+        'X-Requested-With',
+        'X-WAP-Profile',
+    ]
+    
+    for header in mobile_headers:
+        header_value = request.headers.get(header, '').lower()
+        if 'android' in header_value or 'mobile' in header_value:
+            logger.info(f"Android detected via {header} header: {header_value}")
+            return True
+    
+    accept_header = request.headers.get('Accept', '').lower()
+    if 'wap' in accept_header or 'mobile' in accept_header:
+        logger.info(f"Android detected via Accept header: {accept_header}")
+        return True
+    
+    client_detection = request.headers.get('X-Client-Android-Detection', '')
+    if client_detection == 'true':
+        touch_points = request.headers.get('X-Client-Touch-Points', '0')
+        screen_size = request.headers.get('X-Client-Screen-Size', 'unknown')
+        pixel_ratio = request.headers.get('X-Client-Pixel-Ratio', '1')
+        logger.info(f"Android detected via client-side JS - Touch: {touch_points}, Screen: {screen_size}, DPI: {pixel_ratio}")
+        return True
+    
+    if 'chrome' in user_agent and 'linux' in user_agent:
+        session_android_detected = session.get('confirmed_android_device', False)
+        if session_android_detected:
+            logger.info("Android detected via session memory (desktop mode bypass detected)")
+            return True
+    
+    return False
+
 def get_user_device_info():
     user_agent = request.headers.get('User-Agent', '')
     
@@ -98,6 +145,34 @@ def check_maintenance():
         )
     return None
 
+def block_android_from_route():
+    blocked_routes = ['/', '/matrix', '/queue_wait', '/show_results', '/matrix_result', '/search_trains']
+    
+    if request.endpoint and request.path in blocked_routes:
+        if is_android_device():
+            return True
+    return False
+
+@app.before_request
+def android_route_blocker():
+    if not CONFIG.get("android_blocking_enabled", True):
+        return None
+    
+    allowed_paths = ['/android-notice', '/ads.txt', '/queue_status', '/cancel_request', 
+                     '/cancel_request_beacon', '/queue_heartbeat', '/queue_cleanup', '/queue_stats',
+                     '/test-android-detection', '/toggle-android-blocking']
+    
+    path_allowed = any(request.path.startswith(path) for path in allowed_paths)
+    
+    if not path_allowed and block_android_from_route():
+        redirect_attempted = session.get('android_redirect_attempted', False)
+        if not redirect_attempted:
+            session['android_redirect_attempted'] = True
+            return redirect(url_for('android_notice'))
+        else:
+            logger.warning(f"Android device accessing {request.path} after redirect attempt - allowing to prevent infinite loop")
+            return None
+
 @app.before_request
 def block_cloudflare_noise():
     if request.path.startswith('/cdn-cgi/'):
@@ -121,6 +196,68 @@ def ads_txt():
         )
     except FileNotFoundError:
         abort(404)
+
+@app.route('/android-notice')
+def android_notice():
+    if not is_android_device():
+        return redirect(url_for('home'))
+    
+    session['confirmed_android_device'] = True
+    session.pop('android_redirect_attempted', None)
+    
+    app_version = CONFIG.get("version", "1.0.0")
+    config = CONFIG.copy()
+    
+    android_message = ("Sorry, this service is currently not available for Android devices. "
+                      "Please use a desktop or laptop computer to access our train seat matrix service. "
+                      "We apologize for any inconvenience.")
+    
+    return render_template(
+        'android_notice.html',
+        message=android_message,
+        app_version=app_version,
+        CONFIG=config,
+        styles_css=STYLES_CSS_CONTENT,
+        script_js=SCRIPT_JS_CONTENT
+    )
+
+@app.route('/test-android-detection')
+def test_android_detection():
+    android_detected = is_android_device()
+    user_agent = request.headers.get('User-Agent', '')
+    
+    detection_info = {
+        'android_detected': android_detected,
+        'user_agent': user_agent,
+        'headers': dict(request.headers),
+        'would_be_blocked': block_android_from_route() if request.path in ['/', '/matrix'] else False,
+        'blocking_enabled': CONFIG.get("android_blocking_enabled", True)
+    }
+    
+    return jsonify(detection_info)
+
+@app.route('/toggle-android-blocking')
+def toggle_android_blocking():
+    current_status = CONFIG.get("android_blocking_enabled", True)
+    CONFIG["android_blocking_enabled"] = not current_status
+    
+    with open('config.json', 'w', encoding='utf-8') as config_file:
+        json.dump(CONFIG, config_file, indent=4)
+    
+    return jsonify({
+        'android_blocking_enabled': CONFIG["android_blocking_enabled"],
+        'message': f"Android blocking {'enabled' if CONFIG['android_blocking_enabled'] else 'disabled'}"
+    })
+
+@app.route('/clear-android-session')
+def clear_android_session():
+    session.pop('android_redirect_attempted', None)
+    session.pop('confirmed_android_device', None)
+    
+    return jsonify({
+        'message': 'Android session flags cleared',
+        'cleared_flags': ['android_redirect_attempted', 'confirmed_android_device']
+    })
 
 @app.route('/')
 def home():
