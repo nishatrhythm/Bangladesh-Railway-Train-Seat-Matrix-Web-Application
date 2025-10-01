@@ -2,6 +2,8 @@
 
 A comprehensive web application to **visualize segmented seat availability and fare matrices** for Bangladesh Railway trains. This version focuses on **direct and segmented ticketing analysis, smart routing algorithms, and real-time availability tracking** — built using Flask + Vanilla JS + REST APIs.
 
+> 📱 **Android App Available**: To minimize web traffic and provide better performance, an **Android app version** is now available! Check the [**GitHub Gist**](https://gist.github.com/nishatrhythm/b462e53062f32017fcc0c7c218898cde) for latest updates, new features, and download links.
+
 ✨ **Key Features:**
 - 🧮 **Segmented Seat Matrix**: View seat availability across all route segments for any train
 - 🎯 **Smart Route Finding**: Direct, segmented, and mixed-class ticketing options
@@ -9,6 +11,8 @@ A comprehensive web application to **visualize segmented seat availability and f
 - 🗓️ **Date-Aware Journey Planning**: Handles overnight journeys with proper date segmentation
 - 🚄 **Complete Train Coverage**: All 120+ Bangladesh Railway trains supported
 - 📱 **Mobile-Optimized Interface**: Fully responsive design for all devices
+- 🛡️ **Admin Access Control**: Secure administrative features with environment-based authentication
+- 🤖 **Android Device Detection**: Smart traffic management with automatic app redirection
 - ⚡ **Zero Authentication Required**: No login needed for basic functionality
 - ⏳ **Queue System**: Intelligent request management to prevent API overload
 
@@ -70,6 +74,7 @@ A comprehensive web application to **visualize segmented seat availability and f
 ├── request_queue.py              # Advanced queue system for managing concurrent requests
 ├── stations_en.json              # Complete list of Bangladesh Railway stations
 ├── trains_en.json                # Complete list of 120+ Bangladesh Railway trains
+├── .env                          # Environment variables (not in repo - create locally)
 ├── LICENSE                       # Project license
 ├── Procfile                      # Heroku/Render deployment configuration
 ├── README.md                     # Project documentation (this file)
@@ -88,6 +93,8 @@ A comprehensive web application to **visualize segmented seat availability and f
 │       └── script.js             # Frontend logic, validations, dropdowns
 └── templates/
     ├── 404.html                  # Custom error page with auto-redirect
+    ├── admin.html                # Android restriction bypass page for admin
+    ├── android.html              # Android device redirection page
     ├── index.html                # Home form with train selection
     ├── matrix.html               # Seat matrix visualizer with route analysis
     ├── notice.html               # Maintenance mode page
@@ -117,6 +124,36 @@ A comprehensive web application to **visualize segmented seat availability and f
 | Cache-Control Headers                 | ✅        | Ensures fresh data on every request |
 | User Activity Logging                 | ✅        | Comprehensive logging of user interactions and system events |
 | JWT Authentication System             | ✅        | Automated Bearer token management and refresh |
+| **Android Device Detection**          | ✅        | **Smart traffic management with automatic app redirection** |
+| **Admin Access Control**              | ✅        | **Secure administrative interface with environment-based auth** |
+
+---
+
+## 📱 Android App & Traffic Management
+
+### Android Device Redirection
+To minimize web server traffic and provide optimal user experience, **Android users are automatically redirected to download the native app**:
+
+- **Automatic Detection**: Smart device detection using multiple methods (User-Agent, Client Hints, Touch Detection)
+- **Traffic Optimization**: Reduces server load by directing mobile users to the dedicated app
+- **Admin Bypass**: Administrators can access web interface from Android devices when authenticated
+- **Download Links**: Direct access to latest APK and updates via [GitHub Gist](https://gist.github.com/nishatrhythm/b462e53062f32017fcc0c7c218898cde)
+
+**Android Detection Methods:**
+```python
+def is_android_device():
+    # User-Agent analysis
+    # Client Hints detection  
+    # Touch device detection
+    # Session-based confirmation
+```
+
+### Admin Access from Android
+Administrators can bypass Android restrictions using environment-configured access codes:
+- **Route**: `/admin` - Administrative control panel
+- **Authentication**: Environment variable `ADMIN_ACCESS_CODE`
+- **Features**: System configuration, maintenance mode, banner management
+- **Session Management**: Persistent admin session across requests
 
 ---
 
@@ -359,6 +396,21 @@ Content-Type: application/json
 }
 ```
 
+#### 4. Admin Panel Access
+```http
+GET /admin                          # Admin login interface
+POST /admin/verify                  # Admin authentication
+GET /admin/status                   # Admin configuration status
+POST /admin/sync                    # System synchronization
+```
+
+#### 5. Android Device Management
+```http
+GET /android                        # Android redirection page
+GET /test-android-detection         # Device detection testing
+POST /clear-android-session         # Reset device detection
+```
+
 ### Error Handling
 - **Network Timeouts**: 30-second request timeout
 - **Rate Limiting**: Built-in cooldown mechanisms with 403 error detection
@@ -427,11 +479,20 @@ pip install -r requirements.txt
 ```
 
 ### 3. Configure Environment Variables
-Create a `.env` file or set environment variables for Bangladesh Railway API authentication:
+Create a `.env` file in the root directory for Bangladesh Railway API authentication and admin access:
 ```bash
+# Bangladesh Railway API Credentials
 FIXED_MOBILE_NUMBER=your_mobile_number
 FIXED_PASSWORD=your_password
+
+# Admin Access Control (Optional)
+ADMIN_ACCESS_CODE=your_admin_code
 ```
+
+**Security Notes:**
+- The `.env` file is already added to `.gitignore` and won't be committed
+- Never share your credentials publicly
+- Use environment variables in production deployments
 
 ### 4. Configure Application
 Edit `config.json` for customization:
@@ -471,17 +532,22 @@ Visit `http://localhost:5000` in your browser
 
 ## ⚙️ Configuration
 
-### Authentication Configuration
-Environment variables for Bangladesh Railway API access:
+### Environment Configuration
+Environment variables for Bangladesh Railway API access and admin functionality:
 ```bash
+# Bangladesh Railway API Credentials
 FIXED_MOBILE_NUMBER=your_mobile_number  # Required for JWT token authentication
 FIXED_PASSWORD=your_password            # Required for JWT token authentication
+
+# Admin Access Control
+ADMIN_ACCESS_CODE=your_admin_code       # Optional - Enables Android restriction bypass
 ```
 
 **Security Notes:**
 - Never commit credentials to version control
 - Use environment variables or secure secret management
 - Credentials are loaded from `/etc/secrets/.env` in production environments
+- Admin access code enables administrative features and Android bypass functionality
 
 ### Queue Settings
 - **max_concurrent**: Number of simultaneous API requests (default: 1)
@@ -584,6 +650,17 @@ logging.basicConfig(
 
 - [ ] Multi-language support (Bengali/English)
 - [ ] API caching layer for improved performance
+- [ ] Enhanced admin dashboard with analytics
+- [ ] Push notifications for Android app
+- [ ] Real-time seat booking integration
+
+---
+
+## 📱 App Updates & News
+
+For the latest updates, new features, and Android app releases, visit our **GitHub Gist**:
+
+👉 **[Updates & Downloads](https://gist.github.com/nishatrhythm/b462e53062f32017fcc0c7c218898cde)** - Stay updated with new features and app versions
 
 ---
 
@@ -629,6 +706,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Made with ❤️ for Bangladesh Railway passengers**
 
-[🌐 Live Demo](https://seat.onrender.com) | [📧 Feedback](https://forms.gle/NV72PC1z75sq77tg7) | [⭐ Star on GitHub](https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application)
+[🌐 Live Demo](https://seat.onrender.com) | [📱 Android App](https://gist.github.com/nishatrhythm/b462e53062f32017fcc0c7c218898cde) | [📧 Feedback](https://forms.gle/NV72PC1z75sq77tg7) | [⭐ Star on GitHub](https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application)
 
 </div>

@@ -160,17 +160,17 @@ def block_android_from_route():
     
     if request.endpoint and request.path in blocked_routes:
         if is_android_device():
-            return True
+            admin_bypass = session.get('isAdmin', False)
+            if not admin_bypass:
+                return True
     return False
 
 @app.before_request
 def android_route_blocker():
-    if not CONFIG.get("android_blocking_enabled", True):
-        return None
     
-    allowed_paths = ['/android-notice', '/ads.txt', '/queue_status', '/cancel_request', 
+    allowed_paths = ['/android', '/ads.txt', '/queue_status', '/cancel_request', 
                      '/cancel_request_beacon', '/queue_heartbeat', '/queue_cleanup', '/queue_stats',
-                     '/test-android-detection', '/toggle-android-blocking']
+                     '/test-android-detection', '/clear-android-session', '/admin']
     
     path_allowed = any(request.path.startswith(path) for path in allowed_paths)
     
@@ -178,7 +178,7 @@ def android_route_blocker():
         redirect_attempted = session.get('android_redirect_attempted', False)
         if not redirect_attempted:
             session['android_redirect_attempted'] = True
-            return redirect(url_for('android_notice'))
+            return redirect(url_for('android'))
         else:
             logger.warning(f"Android device accessing {request.path} after redirect attempt - allowing to prevent infinite loop")
             return None
@@ -207,9 +207,13 @@ def ads_txt():
     except FileNotFoundError:
         abort(404)
 
-@app.route('/android-notice')
-def android_notice():
+@app.route('/android')
+def android():
     if not is_android_device():
+        return redirect(url_for('home'))
+    
+    admin_bypass = session.get('isAdmin', False)
+    if admin_bypass:
         return redirect(url_for('home'))
     
     session['confirmed_android_device'] = True
@@ -223,7 +227,7 @@ def android_notice():
                       "We apologize for any inconvenience.")
     
     return render_template(
-        'android_notice.html',
+        'android.html',
         message=android_message,
         app_version=app_version,
         CONFIG=config,
@@ -241,23 +245,10 @@ def test_android_detection():
         'user_agent': user_agent,
         'headers': dict(request.headers),
         'would_be_blocked': block_android_from_route() if request.path in ['/', '/matrix'] else False,
-        'blocking_enabled': CONFIG.get("android_blocking_enabled", True)
+        'blocking_always_enabled': True
     }
     
     return jsonify(detection_info)
-
-@app.route('/toggle-android-blocking')
-def toggle_android_blocking():
-    current_status = CONFIG.get("android_blocking_enabled", True)
-    CONFIG["android_blocking_enabled"] = not current_status
-    
-    with open('config.json', 'w', encoding='utf-8') as config_file:
-        json.dump(CONFIG, config_file, indent=4)
-    
-    return jsonify({
-        'android_blocking_enabled': CONFIG["android_blocking_enabled"],
-        'message': f"Android blocking {'enabled' if CONFIG['android_blocking_enabled'] else 'disabled'}"
-    })
 
 @app.route('/clear-android-session')
 def clear_android_session():
@@ -268,6 +259,82 @@ def clear_android_session():
         'message': 'Android session flags cleared',
         'cleared_flags': ['android_redirect_attempted', 'confirmed_android_device']
     })
+
+@app.route('/admin')
+def admin():
+    if not is_android_device():
+        return redirect(url_for('home'))
+    
+    app_version = CONFIG.get("version", "1.0.0")
+    config = CONFIG.copy()
+    
+    return render_template(
+        'admin.html',
+        app_version=app_version,
+        CONFIG=config,
+        styles_css=STYLES_CSS_CONTENT,
+        script_js=SCRIPT_JS_CONTENT
+    )
+
+@app.route('/admin/verify', methods=['POST'])
+def admin_verify():
+    if not is_android_device():
+        return jsonify({'error': 'Access denied'}), 403
+    
+    data = request.get_json()
+    admin_code = data.get('code', '').strip()
+    
+    valid_admin_code = os.environ.get('ADMIN_ACCESS_CODE')
+    
+    if valid_admin_code and admin_code == valid_admin_code:
+        session['isAdmin'] = True
+        logger.info("Admin access granted successfully")
+        return jsonify({'success': True, 'message': 'Admin access granted'})
+    elif not valid_admin_code:
+        logger.warning("Admin access verification failed - Admin code not configured")
+        return jsonify({'error': 'Admin access is not configured'}), 400
+    else:
+        logger.warning("Admin access verification failed - Invalid admin code")
+        return jsonify({'error': 'Invalid admin code'}), 401
+
+@app.route('/admin/remove', methods=['POST'])
+def admin_remove():
+    if not is_android_device():
+        return jsonify({'error': 'Access denied'}), 403
+    
+    session.pop('isAdmin', None)
+    return jsonify({'success': True, 'message': 'Admin access removed'})
+
+@app.route('/admin/status')
+def admin_status():
+    if not is_android_device():
+        return jsonify({'error': 'Access denied'}), 403
+    
+    admin_active = session.get('isAdmin', False)
+    admin_configured = bool(os.environ.get('ADMIN_ACCESS_CODE'))
+    
+    return jsonify({
+        'admin_active': admin_active,
+        'admin_configured': admin_configured
+    })
+
+@app.route('/admin/sync', methods=['GET', 'POST'])
+def admin_sync():
+    if request.method == 'GET':
+        abort(404)
+    
+    if not is_android_device():
+        return jsonify({'error': 'Access denied'}), 403
+    
+    data = request.get_json()
+    client_admin_active = data.get('admin_active', False)
+    
+    if client_admin_active:
+        session['isAdmin'] = True
+    else:
+        session.pop('isAdmin', None)
+    
+    return jsonify({'success': True, 'synced': True})
 
 @app.route('/')
 def home():

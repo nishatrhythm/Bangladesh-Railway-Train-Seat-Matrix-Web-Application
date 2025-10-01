@@ -31,16 +31,26 @@ function detectAndroidDevice() {
 }
 
 function checkAndroidRedirect() {
-    if (window.location.pathname.includes('/android-notice')) {
+    if (window.location.pathname.includes('/android') || window.location.pathname.includes('/admin')) {
         return false;
     }
     
     if (detectAndroidDevice()) {
+        const adminBypass = localStorage.getItem('isAdmin');
+        if (adminBypass === 'true') {
+            syncAdminBypass().then(() => {
+                console.log('Admin bypass active, allowing Android access');
+            }).catch(() => {
+                console.log('Failed to sync admin bypass');
+            });
+            return false;
+        }
+        
         const redirectAttempted = sessionStorage.getItem('android-redirect-attempted');
         if (!redirectAttempted) {
             sessionStorage.setItem('android-redirect-attempted', 'true');
             
-            fetch('/android-notice', {
+            fetch('/android', {
                 method: 'HEAD',
                 headers: {
                     'X-Client-Android-Detection': 'true',
@@ -50,11 +60,269 @@ function checkAndroidRedirect() {
                 }
             }).catch(() => {});
             
-            window.location.href = '/android-notice';
+            window.location.href = '/android';
             return true;
         }
     }
     return false;
+}
+
+function syncAdminBypass() {
+    const adminBypass = localStorage.getItem('isAdmin') === 'true';
+    
+    return fetch('/admin/sync', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ admin_active: adminBypass })
+    })
+    .then(response => response.json())
+    .catch(error => {
+        console.error('Error syncing admin bypass:', error);
+        throw error;
+    });
+}
+
+let adminStatus = {
+    active: false,
+    configured: false
+};
+
+function checkAdminStatus() {
+    const localAdminActive = localStorage.getItem('isAdmin') === 'true';
+    
+    fetch('/admin/status')
+        .then(response => response.json())
+        .then(data => {
+            adminStatus = {
+                active: localAdminActive,
+                configured: data.admin_configured
+            };
+            
+            if (localAdminActive !== data.admin_active) {
+                syncAdminBypass().then(() => {
+                    console.log('Admin status synced with localStorage:', localAdminActive);
+                });
+            }
+            
+            updateAdminUI();
+        })
+        .catch(error => {
+            console.error('Error checking admin status:', error);
+            adminStatus = {
+                active: localAdminActive,
+                configured: true
+            };
+            updateAdminUI();
+            showFlyout('Error checking admin status', 'warning');
+        });
+}
+
+function updateAdminUI() {
+    const adminForm = document.getElementById('adminForm');
+    const adminActive = document.getElementById('adminActive');
+    const adminNotConfigured = document.getElementById('adminNotConfigured');
+
+    if (!adminStatus.configured) {
+        if (adminForm) adminForm.style.display = 'none';
+        if (adminActive) adminActive.style.display = 'none';
+        if (adminNotConfigured) adminNotConfigured.style.display = 'block';
+    } else if (adminStatus.active) {
+        if (adminForm) adminForm.style.display = 'none';
+        if (adminActive) adminActive.style.display = 'block';
+        if (adminNotConfigured) adminNotConfigured.style.display = 'none';
+    } else {
+        if (adminForm) adminForm.style.display = 'block';
+        if (adminActive) adminActive.style.display = 'none';
+        if (adminNotConfigured) adminNotConfigured.style.display = 'none';
+    }
+}
+
+function setupAdminEventListeners() {
+    const adminCodeInput = document.getElementById('admin-code-input');
+    const applyAdminBtn = document.getElementById('applyAdminBtn');
+    const removeAdminBtn = document.getElementById('removeAdminBtn');
+    const adminCodeClear = document.getElementById('admin-code-clear');
+
+    if (adminCodeInput && adminCodeClear) {
+        console.log('Setting up admin-code-clear button event listener');
+        adminCodeClear.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            adminCodeInput.value = '';
+            const hiddenInput = document.getElementById('admin_code');
+            if (hiddenInput) hiddenInput.value = '';
+            
+            const errorField = document.getElementById('admin_code-error');
+            if (errorField && errorField.classList.contains('show')) {
+                errorField.classList.remove('show');
+                errorField.classList.add('hide');
+                adminCodeInput.classList.remove('error-input');
+            }
+            
+            adminCodeInput.focus();
+            updateClearButtonVisibility(adminCodeInput, adminCodeClear);
+        });
+        
+        adminCodeInput.addEventListener('input', function() {
+            const errorField = document.getElementById('admin_code-error');
+            if (errorField && errorField.classList.contains('show')) {
+                errorField.classList.remove('show');
+                errorField.classList.add('hide');
+                adminCodeInput.classList.remove('error-input');
+            }
+            
+            updateClearButtonVisibility(adminCodeInput, adminCodeClear);
+        });
+        
+        updateClearButtonVisibility(adminCodeInput, adminCodeClear);
+    }
+
+    if (applyAdminBtn) {
+        applyAdminBtn.addEventListener('click', function() {
+            applyAdminAccess();
+        });
+    }
+
+    if (removeAdminBtn) {
+        removeAdminBtn.addEventListener('click', function() {
+            removeAdminAccess();
+        });
+    }
+
+    if (adminCodeInput) {
+        adminCodeInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                applyAdminAccess();
+            }
+        });
+    }
+}
+
+function applyAdminAccess() {
+    const adminCode = document.getElementById('admin-code-input').value.trim();
+    document.getElementById('admin_code').value = adminCode;
+    
+    if (!adminCode) {
+        showAdminError('admin_code', 'Admin code is required');
+        const adminInput = document.getElementById('admin-code-input');
+        if (adminInput) {
+            focusDueToValidation = true;
+            adminInput.focus();
+            const rect = adminInput.getBoundingClientRect();
+            if (rect.top < 0 || rect.bottom > window.innerHeight) {
+                setTimeout(() => {
+                    adminInput.scrollIntoView({ block: 'center' });
+                }, 150);
+            }
+        }
+        return;
+    }
+
+    clearAdminError('admin_code');
+    
+    const applyBtn = document.getElementById('applyAdminBtn');
+    if (applyBtn) {
+        applyBtn.disabled = true;
+        applyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+    }
+
+    fetch('/admin/verify', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code: adminCode })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            adminStatus.active = true;
+            localStorage.setItem('isAdmin', 'true');
+            updateAdminUI();
+            const adminCodeInput = document.getElementById('admin-code-input');
+            if (adminCodeInput) adminCodeInput.value = '';
+        } else {
+            showAdminError('admin_code', data.error || 'Invalid admin code');
+        }
+    })
+    .catch(error => {
+        console.error('Error applying admin access:', error);
+        showAdminError('admin_code', 'Error verifying admin code');
+    })
+    .finally(() => {
+        const applyBtn = document.getElementById('applyAdminBtn');
+        if (applyBtn) {
+            applyBtn.disabled = false;
+            applyBtn.innerHTML = '<i class="fas fa-unlock"></i> Apply Admin Access';
+        }
+    });
+}
+
+function removeAdminAccess() {
+    const removeBtn = document.getElementById('removeAdminBtn');
+    if (removeBtn) {
+        removeBtn.disabled = true;
+        removeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Removing...';
+    }
+
+    fetch('/admin/remove', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            adminStatus.active = false;
+            localStorage.removeItem('isAdmin');
+            updateAdminUI();
+        } else {
+            showFlyout('Error removing admin access', 'warning');
+        }
+    })
+    .catch(error => {
+        console.error('Error removing admin access:', error);
+        showFlyout('Error removing admin access', 'warning');
+    })
+    .finally(() => {
+        const removeBtn = document.getElementById('removeAdminBtn');
+        if (removeBtn) {
+            removeBtn.disabled = false;
+            removeBtn.innerHTML = '<i class="fas fa-lock"></i> Remove Admin Access';
+        }
+    });
+}
+
+function showAdminError(fieldId, message) {
+    const errorElement = document.getElementById(fieldId + '-error');
+    const inputElement = fieldId === 'admin_code' ? document.getElementById('admin-code-input') : document.getElementById(fieldId);
+    
+    if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.classList.remove('hide');
+        errorElement.classList.add('show');
+    }
+    
+    if (inputElement) {
+        inputElement.classList.add('error-input');
+    }
+}
+
+function clearAdminError(fieldId) {
+    const errorElement = document.getElementById(fieldId + '-error');
+    const inputElement = fieldId === 'admin_code' ? document.getElementById('admin-code-input') : document.getElementById(fieldId);
+    
+    if (errorElement) {
+        errorElement.classList.remove('show');
+        errorElement.classList.add('hide');
+    }
+    
+    if (inputElement) {
+        inputElement.classList.remove('error-input');
+    }
 }
 
 function loadTrains() {
@@ -687,6 +955,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
     
+    if (window.location.pathname === '/admin') {
+        checkAdminStatus();
+        setupAdminEventListeners();
+    }
+    
     await loadTrains();
     await loadStations();
     initMaterialCalendar();
@@ -694,6 +967,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupCalendarClickOutside();
     setupTrainDropdown();
     setupClearButton('train-model-input', 'train-model-clear');
+    
+    if (window.location.pathname === '/admin' || document.getElementById('admin-code-input')) {
+        console.log('Setting up admin code clear button');
+        setTimeout(() => {
+            setupClearButton('admin-code-input', 'admin-code-clear');
+        }, 100);
+    }
+    
     initializeTrainSearch();
     const matrixForm = document.getElementById("matrixForm");
     if (matrixForm) matrixForm.addEventListener("submit", validateForm);
@@ -703,10 +984,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         { id: 'date', errorId: 'date-error' }
     ];
 
+    if (window.location.pathname === '/admin') {
+        fields.push({ id: 'admin_code', errorId: 'admin_code-error' });
+    }
+
     fields.forEach(field => {
         const inputField = document.getElementById(field.id);
         const errorField = document.getElementById(field.errorId);
-        const textInput = field.id === 'train_model' ? document.getElementById('train-model-input') : null;
+        const textInput = field.id === 'train_model' ? document.getElementById('train-model-input') : 
+                         field.id === 'admin_code' ? document.getElementById('admin-code-input') : null;
         if (inputField && errorField) {
             const fieldElement = textInput || inputField;
             fieldElement.addEventListener('input', function () {
@@ -1499,15 +1785,24 @@ function setupClearButton(inputId, clearButtonId) {
     const input = document.getElementById(inputId);
     const clearButton = document.getElementById(clearButtonId);
 
-    if (!input || !clearButton) return;
+    if (!input || !clearButton) {
+        console.warn(`setupClearButton: Could not find input (${inputId}) or clear button (${clearButtonId})`);
+        return;
+    }
 
-    updateClearButtonVisibility(input, clearButton);
+    const newClearButton = clearButton.cloneNode(true);
+    clearButton.parentNode.replaceChild(newClearButton, clearButton);
+    
+    updateClearButtonVisibility(input, newClearButton);
 
     input.addEventListener('input', () => {
-        updateClearButtonVisibility(input, clearButton);
+        updateClearButtonVisibility(input, newClearButton);
     });
 
-    clearButton.addEventListener('click', () => {
+    newClearButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
         input.value = '';
         
         if (inputId === 'searchOrigin') {
@@ -1526,10 +1821,20 @@ function setupClearButton(inputId, clearButtonId) {
                 errorField.classList.add('hide');
                 input.classList.remove('error-input');
             }
+        } else if (inputId === 'admin-code-input') {
+            const hiddenInput = document.getElementById('admin_code');
+            if (hiddenInput) hiddenInput.value = '';
+            
+            const errorField = document.getElementById('admin_code-error');
+            if (errorField && errorField.classList.contains('show')) {
+                errorField.classList.remove('show');
+                errorField.classList.add('hide');
+                input.classList.remove('error-input');
+            }
         }
         
         input.focus();
-        updateClearButtonVisibility(input, clearButton);
+        updateClearButtonVisibility(input, newClearButton);
 
         const inputEvent = new Event('input', { bubbles: true });
         input.dispatchEvent(inputEvent);
@@ -1537,6 +1842,8 @@ function setupClearButton(inputId, clearButtonId) {
 }
 
 function updateClearButtonVisibility(input, clearButton) {
+    if (!input || !clearButton) return;
+    
     if (input.value.trim() !== '') {
         clearButton.style.display = 'flex';
     } else {

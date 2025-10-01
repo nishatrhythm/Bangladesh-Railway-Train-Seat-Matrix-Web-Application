@@ -130,6 +130,14 @@ h1 i {
     flex: 1;
 }
 
+#adminForm .form-group {
+    animation: fadeInUp 0.8s ease-in-out;
+}
+
+#adminForm .form-group.submit-btn {
+    animation: fadeInUp 1.0s ease-in-out;
+}
+
 .train-search-form .custom-dropdown {
     position: absolute;
     background-color: #fff;
@@ -400,6 +408,11 @@ button {
 
 .input-with-icon input:not(:placeholder-shown) + .clear-icon {
     display: flex;
+}
+
+.input-with-icon .admin-clear-icon {
+    z-index: 20;
+    pointer-events: auto !important;
 }
 
 .input-with-icon input::placeholder {
@@ -4693,3 +4706,31 @@ details[open] .route-body {
         animation-duration: 45s;
     }
 }
+/* reCAPTCHA Styles */
+.g-recaptcha {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0;
+    transform-origin: 0 0;
+}
+
+.g-recaptcha > div {
+    margin: 0 auto;
+}
+
+/* reCAPTCHA responsive adjustments */
+@media (max-width: 480px) {
+    .g-recaptcha {
+        transform: scale(0.85);
+        transform-origin: 0 0;
+        margin: 10px 0 5px -15px;
+    }
+}
+
+@media (max-width: 360px) {
+    .g-recaptcha {
+        transform: scale(0.75);
+        margin: 5px 0 0 -25px;
+    }
+}
+
