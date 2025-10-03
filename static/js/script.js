@@ -19,12 +19,16 @@ function detectAndroidDevice() {
     const isMobileScreen = window.screen.width <= 1024;
     const highDPI = window.devicePixelRatio > 1.5;
     
+    const isFirefoxMobileDesktopMode = ua.includes("firefox") && hasTouch && 
+                                       (isMobileScreen || (window.screen.width < 1200 && highDPI));
+    
     const androidHints = [
         ua.includes("mobile") && !ua.includes("safari"),
         ua.includes("wv"),
         platform.includes("arm") && !ua.includes("safari"),
         hasTouch && isMobileScreen && !ua.includes("safari"),
-        hasTouch && highDPI && window.screen.width < 1200 && !ua.includes("safari")
+        hasTouch && highDPI && window.screen.width < 1200 && !ua.includes("safari"),
+        isFirefoxMobileDesktopMode
     ];
     
     return isAndroidUA || androidHints.filter(Boolean).length >= 2;

@@ -67,6 +67,20 @@ def is_android_device():
         logger.info(f"Android detected via client-side JS - Touch: {touch_points}, Screen: {screen_size}, DPI: {pixel_ratio}")
         return True
     
+    if 'firefox' in user_agent:
+        touch_points = int(request.headers.get('X-Client-Touch-Points', '0'))
+        if touch_points > 0:
+            screen_size = request.headers.get('X-Client-Screen-Size', '')
+            if screen_size:
+                try:
+                    width = int(screen_size.split('x')[0])
+                    pixel_ratio = float(request.headers.get('X-Client-Pixel-Ratio', '1'))
+                    if width <= 1024 or (width < 1200 and pixel_ratio > 1.5):
+                        logger.info(f"Android detected via Firefox desktop mode - Touch: {touch_points}, Screen: {screen_size}, DPI: {pixel_ratio}")
+                        return True
+                except (ValueError, IndexError):
+                    pass
+    
     if 'chrome' in user_agent and 'linux' in user_agent:
         session_android_detected = session.get('confirmed_android_device', False)
         if session_android_detected:
