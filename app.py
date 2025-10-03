@@ -81,6 +81,10 @@ def is_android_device():
                 except (ValueError, IndexError):
                     pass
     
+    if session.get('confirmed_android_device', False):
+        logger.info("Android detected via session memory")
+        return True
+    
     if 'chrome' in user_agent and 'linux' in user_agent:
         session_android_detected = session.get('confirmed_android_device', False)
         if session_android_detected:
