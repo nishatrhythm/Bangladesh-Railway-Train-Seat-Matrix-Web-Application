@@ -19,27 +19,12 @@ function detectAndroidDevice() {
     const isMobileScreen = window.screen.width <= 1024;
     const highDPI = window.devicePixelRatio > 1.5;
     
-    const isFirefoxMobile = ua.includes("firefox") && hasTouch;
+    const isFirefox = ua.includes('firefox');
+    const isFirefoxMobileInDesktopMode = isFirefox && hasTouch && isMobileScreen && !ua.includes('android');
     
-    if (isFirefoxMobile) {
-        const screenWidth = window.screen.width;
-        const screenHeight = window.screen.height;
-        const orientation = window.screen.orientation || {};
-        
-        const hasMobileScreenSize = screenWidth <= 1024 || screenHeight <= 1024;
-        const hasHighDPITouch = highDPI && screenWidth < 1400;
-        const hasOrientation = orientation.type !== undefined;
-        
-        if (hasMobileScreenSize || hasHighDPITouch || hasOrientation) {
-            console.log('Firefox mobile detected (desktop mode): ', {
-                width: screenWidth, 
-                height: screenHeight, 
-                dpi: window.devicePixelRatio,
-                touch: navigator.maxTouchPoints,
-                orientation: hasOrientation
-            });
-            return true;
-        }
+    if (isFirefoxMobileInDesktopMode) {
+        console.log('Firefox mobile detected in desktop mode');
+        return true;
     }
     
     const androidHints = [
@@ -69,18 +54,23 @@ function checkAndroidRedirect() {
             return false;
         }
         
-        fetch('/android', {
-            method: 'HEAD',
-            headers: {
-                'X-Client-Android-Detection': 'true',
-                'X-Client-Touch-Points': navigator.maxTouchPoints || 0,
-                'X-Client-Screen-Size': `${window.screen.width}x${window.screen.height}`,
-                'X-Client-Pixel-Ratio': window.devicePixelRatio || 1
-            }
-        }).catch(() => {});
-        
-        window.location.replace('/android');
-        return true;
+        const redirectAttempted = sessionStorage.getItem('android-redirect-attempted');
+        if (!redirectAttempted) {
+            sessionStorage.setItem('android-redirect-attempted', 'true');
+            
+            fetch('/android', {
+                method: 'HEAD',
+                headers: {
+                    'X-Client-Android-Detection': 'true',
+                    'X-Client-Touch-Points': navigator.maxTouchPoints || 0,
+                    'X-Client-Screen-Size': `${window.screen.width}x${window.screen.height}`,
+                    'X-Client-Pixel-Ratio': window.devicePixelRatio || 1
+                }
+            }).catch(() => {});
+            
+            window.location.href = '/android';
+            return true;
+        }
     }
     return false;
 }

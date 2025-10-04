@@ -6,54 +6,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home | Train Seat Matrix</title>
-    
-    <!-- CRITICAL: Immediate Android/Firefox Mobile Detection - Runs before any other content -->
-    <script>
-        (function() {
-            // Skip if already on android or admin page
-            if (window.location.pathname.includes('/android') || window.location.pathname.includes('/admin')) {
-                return;
-            }
-            
-            // Check for admin bypass
-            if (localStorage.getItem('isAdmin') === 'true') {
-                return;
-            }
-            
-            var ua = navigator.userAgent.toLowerCase();
-            var isAndroid = false;
-            
-            // Direct Android UA detection
-            if (ua.includes('android')) {
-                isAndroid = true;
-            }
-            // iOS detection (exclude)
-            else if (ua.includes('iphone') || ua.includes('ipad') || ua.includes('ipod') || ua.includes('ios')) {
-                isAndroid = false;
-            }
-            // Firefox mobile in desktop mode detection
-            else if (ua.includes('firefox') && navigator.maxTouchPoints > 0) {
-                var width = window.screen.width;
-                var height = window.screen.height;
-                var dpi = window.devicePixelRatio || 1;
-                
-                // If Firefox with touch and mobile screen characteristics
-                if (width <= 1024 || height <= 1024 || (dpi > 1.5 && width < 1400)) {
-                    console.log('Firefox mobile detected in desktop mode - redirecting');
-                    isAndroid = true;
-                }
-            }
-            // Other mobile detection
-            else if ((ua.includes('mobile') || ua.includes('tablet')) && !ua.includes('safari')) {
-                isAndroid = true;
-            }
-            
-            if (isAndroid) {
-                window.location.replace('/android');
-            }
-        })();
-    </script>
-    
     <!-- SEO Meta Tags -->
     <meta name="description"
         content="View segmented seat availability and fare matrix for Bangladesh Railway trains. Quickly check available seats by route and class.">
