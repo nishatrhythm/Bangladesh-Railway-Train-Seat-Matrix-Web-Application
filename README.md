@@ -2,7 +2,7 @@
 
 A comprehensive web application to **visualize segmented seat availability and fare matrices** for Bangladesh Railway trains. This version focuses on **direct and segmented ticketing analysis, smart routing algorithms, and real-time availability tracking** — built using Flask + Vanilla JS + REST APIs.
 
-> 📱 **Android App Available**: To minimize web traffic and provide better performance, an **Android app version** is now available! Check the [**GitHub Gist**](https://gist.github.com/nishatrhythm/b462e53062f32017fcc0c7c218898cde) for latest updates, new features, and download links.
+> 📱 **Android App Available**: To minimize web traffic and provide better performance, an **Android app version** is now available! Check the [**GitHub Releases**](https://github.com/nishatrhythm/Train-Seat-App-Releases/blob/main/README.md) for latest updates, new features, and download links.
 
 ✨ **Key Features:**
 - 🧮 **Segmented Seat Matrix**: View seat availability across all route segments for any train
@@ -137,7 +137,7 @@ To minimize web server traffic and provide optimal user experience, **Android us
 - **Automatic Detection**: Smart device detection using multiple methods (User-Agent, Client Hints, Touch Detection)
 - **Traffic Optimization**: Reduces server load by directing mobile users to the dedicated app
 - **Admin Bypass**: Administrators can access web interface from Android devices when authenticated
-- **Download Links**: Direct access to latest APK and updates via [GitHub Gist](https://gist.github.com/nishatrhythm/b462e53062f32017fcc0c7c218898cde)
+- **Download Links**: Direct access to latest APK and updates via [GitHub Releases](https://github.com/nishatrhythm/Train-Seat-App-Releases/blob/main/README.md)
 
 **Android Detection Methods:**
 ```python
@@ -658,9 +658,9 @@ logging.basicConfig(
 
 ## 📱 App Updates & News
 
-For the latest updates, new features, and Android app releases, visit our **GitHub Gist**:
+For the latest updates, new features, and Android app releases, visit our **GitHub Releases**:
 
-👉 **[Updates & Downloads](https://gist.github.com/nishatrhythm/b462e53062f32017fcc0c7c218898cde)** - Stay updated with new features and app versions
+👉 **[Updates & Downloads](https://github.com/nishatrhythm/Train-Seat-App-Releases/blob/main/README.md)** - Stay updated with new features and app versions
 
 ---
 
@@ -706,6 +706,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Made with ❤️ for Bangladesh Railway passengers**
 
-[🌐 Live Demo](https://seat.onrender.com) | [📱 Android App](https://gist.github.com/nishatrhythm/b462e53062f32017fcc0c7c218898cde) | [📧 Feedback](https://forms.gle/NV72PC1z75sq77tg7) | [⭐ Star on GitHub](https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application)
+[🌐 Live Demo](https://seat.onrender.com) | [📱 Android App](https://github.com/nishatrhythm/Train-Seat-App-Releases/blob/main/README.md) | [📧 Feedback](https://forms.gle/NV72PC1z75sq77tg7) | [⭐ Star on GitHub](https://github.com/nishatrhythm/Bangladesh-Railway-Train-Seat-Matrix-Web-Application)
 
 </div>
