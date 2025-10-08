@@ -216,6 +216,10 @@ def ads_txt():
 
 @app.route('/android')
 def android():
+    maintenance_response = check_maintenance()
+    if maintenance_response:
+        return maintenance_response
+
     if not is_android_device():
         return redirect(url_for('home'))
     
@@ -269,6 +273,10 @@ def clear_android_session():
 
 @app.route('/admin')
 def admin():
+    maintenance_response = check_maintenance()
+    if maintenance_response:
+        return maintenance_response
+
     if not is_android_device():
         return redirect(url_for('home'))
     
