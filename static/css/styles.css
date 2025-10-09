@@ -63,6 +63,112 @@ h1 i {
     animation: fadeInUp 0.8s ease-in-out;
 }
 
+.auth-credentials-section {
+    margin: 20px 0;
+    text-align: center;
+    animation: fadeInUp 0.8s ease-in-out;
+}
+
+.auth-header {
+    color: #006747;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.auth-header i {
+    font-size: 20px;
+}
+
+.auth-info {
+    color: #555;
+    font-size: 13px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #fff9e6;
+    border-radius: 8px;
+    border-left: 3px solid #e0b000;
+    text-align: left;
+}
+
+.auth-info i {
+    margin-right: 5px;
+    color: #e0b000;
+}
+
+.auth-status {
+    margin-top: 15px;
+    padding: 12px;
+    background-color: #d1fae5;
+    color: #065f46;
+    border-radius: 8px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.auth-status i {
+    font-size: 18px;
+}
+
+.saved-credentials-section {
+    margin: 20px 0;
+    text-align: center;
+    animation: fadeInUp 0.8s ease-in-out;
+}
+
+.saved-credentials-section .cancel-btn {
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    margin-top: 0;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-danger:active {
+    transform: translateY(0);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .collapsible-toggle {
     background-color: #e0eddf;
     color: #006747;
@@ -320,6 +426,7 @@ label {
     background-color: #f1f8f3;
     padding: 10px;
     border-radius: 12px;
+    transition: all 0.3s ease;
 }
 
 .form-group.submit-btn {
@@ -367,7 +474,7 @@ button {
     height: 45px;
     box-sizing: border-box;
     padding-left: 45px;
-    padding-right: 12px;
+    padding-right: 45px;
 }
 
 .input-with-icon .input-icon {
@@ -1574,8 +1681,7 @@ button:hover {
 }
 
 .note {
-    /* margin-top: 30px; */
-    margin: 10px auto 0 auto; /* should be removed this line next time */
+    margin: 10px auto 0 auto;
     line-height: 1.6;
     color: rgb(0, 103, 71);
     background-color: #f1f8f3;
@@ -1583,7 +1689,6 @@ button:hover {
     border-radius: 8px;
     border: 1px solid rgb(0, 103, 71);
     font-size: 14px;
-    /* font-style: italic; */
     font-weight: 500;
     text-align: justify;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
@@ -4706,31 +4811,3 @@ details[open] .route-body {
         animation-duration: 45s;
     }
 }
-/* reCAPTCHA Styles */
-.g-recaptcha {
-    display: flex;
-    justify-content: center;
-    margin: 15px 0;
-    transform-origin: 0 0;
-}
-
-.g-recaptcha > div {
-    margin: 0 auto;
-}
-
-/* reCAPTCHA responsive adjustments */
-@media (max-width: 480px) {
-    .g-recaptcha {
-        transform: scale(0.85);
-        transform-origin: 0 0;
-        margin: 10px 0 5px -15px;
-    }
-}
-
-@media (max-width: 360px) {
-    .g-recaptcha {
-        transform: scale(0.75);
-        margin: 5px 0 0 -25px;
-    }
-}
-

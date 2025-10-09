@@ -198,7 +198,16 @@
                     sessionStorage.removeItem('lastStatusCheck');
                     document.getElementById('queueStatus').innerHTML = '<i class="fas fa-exclamation-circle"></i> Request failed!';
                     document.getElementById('queueStatus').style.color = '#e74c3c';
-                    document.getElementById('queueInfo').innerHTML = `<span>Error: <strong>${data.errorMessage || "There was a problem processing your request."}</strong></span>`;
+                    
+                    // Check for auth errors
+                    if (data.errorMessage === 'AUTH_TOKEN_EXPIRED' || data.errorMessage === 'AUTH_DEVICE_KEY_EXPIRED') {
+                        localStorage.removeItem('railway_auth_token');
+                        localStorage.removeItem('railway_device_key');
+                        document.getElementById('queueInfo').innerHTML = `<span>Error: <strong>Authentication expired. Please re-enter your credentials.</strong></span>`;
+                    } else {
+                        document.getElementById('queueInfo').innerHTML = `<span>Error: <strong>${data.errorMessage || "There was a problem processing your request."}</strong></span>`;
+                    }
+                    
                     document.getElementById('progressBar').style.width = '0%';
                     setTimeout(() => { window.location.href = '/'; }, 3000);
                     return;
@@ -222,7 +231,16 @@
                     sessionStorage.removeItem('lastStatusCheck');
                     document.getElementById('queueStatus').innerHTML = '<i class="fas fa-exclamation-circle"></i> Request failed!';
                     document.getElementById('queueStatus').style.color = '#e74c3c';
-                    document.getElementById('queueInfo').innerHTML = `<span>Error: <strong>${data.errorMessage || "There was a problem processing your request."}</strong></span>`;
+                    
+                    // Check for auth errors
+                    if (data.errorMessage === 'AUTH_TOKEN_EXPIRED' || data.errorMessage === 'AUTH_DEVICE_KEY_EXPIRED') {
+                        localStorage.removeItem('railway_auth_token');
+                        localStorage.removeItem('railway_device_key');
+                        document.getElementById('queueInfo').innerHTML = `<span>Error: <strong>Authentication expired. Please re-enter your credentials.</strong></span>`;
+                    } else {
+                        document.getElementById('queueInfo').innerHTML = `<span>Error: <strong>${data.errorMessage || "There was a problem processing your request."}</strong></span>`;
+                    }
+                    
                     document.getElementById('progressBar').style.width = '0%';
                     setTimeout(() => { window.location.href = '/'; }, 3000);
                 } else {

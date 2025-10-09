@@ -34,9 +34,13 @@
     <div class="container main-content">
         <h1><i class="fas fa-subway"></i> BR Train Seat Matrix</h1><br>
 
-        <p class="note adjustment">
+        <!-- <p class="note adjustment">
             Sorry! This website is no longer accessible from Android devices. <span class="note-bold">Try our new Android app</span> to get the same experience. <br><br> • Visit to download: <a href="https://github.com/nishatrhythm/Train-Seat-App-Releases/blob/main/README.md" target="_blank">GitHub Releases</a>
-        </p><br>
+        </p><br> -->
+
+        <p class="note adjustment">
+            Sorry! This website is currently not supported on Android devices.
+        </p>
         
         <footer class="new-footer">
             <p>This project is open source. Check it out on <a
@@ -80,7 +84,7 @@
                 <span class="legal-close" onclick="closeModal('termsModal')">&times;</span>
                 <div class="legal-modal-body">
                     <h2>Terms and Conditions</h2>
-                    <p><strong>Effective Date:</strong> May 13, 2025</p>
+                    <p><strong>Effective Date:</strong> October 09, 2025</p>
                     <hr>
 
                     <h3>1. Introduction</h3>
@@ -97,8 +101,7 @@
                             ticketing options</li>
                         <li><strong>Interactive Interface:</strong> User-friendly tools for journey planning and seat
                             selection</li>
-                        <li><strong>No Authentication Required:</strong> Open access to basic functionality without user
-                            registration</li>
+                        <li><strong>User-Provided Authentication:</strong> Users must provide their own API authentication credentials (Auth Token and Device Key) to access the service</li>
                     </ul>
 
                     <h3>3. Acceptable Use</h3>
@@ -107,7 +110,7 @@
                         <li>Personal travel planning and research</li>
                         <li>Educational purposes</li>
                         <li>Non-commercial information gathering</li>
-                        <li>Checking train seat availability and fares</li>
+                        <li>Checking train seat availability and fares using your own valid API credentials</li>
                     </ul>
 
                     <p><strong>Prohibited Uses:</strong></p>
@@ -118,16 +121,39 @@
                         <li>Impersonating the company, employees, or other users</li>
                         <li>Automated scraping or bulk data extraction</li>
                         <li>Commercial use of API data without explicit permission</li>
+                        <li>Sharing or distributing your authentication credentials with unauthorized parties</li>
+                        <li>Using invalid, expired, or unauthorized API credentials</li>
                     </ul>
 
-                    <h3>4. Data Sources and Third-Party Services</h3>
+                    <h3>4. User Responsibilities</h3>
+                    <p><strong>Authentication Credentials:</strong></p>
+                    <ul>
+                        <li>Users are responsible for obtaining their own valid Auth Token and Device Key from authorized sources</li>
+                        <li>Users must keep their authentication credentials secure and confidential</li>
+                        <li>Users are solely responsible for any activity conducted using their credentials</li>
+                        <li>The Service does not provide, distribute, or validate authentication credentials</li>
+                        <li>Users must ensure their credentials comply with the terms of the original API provider</li>
+                    </ul>
+
+                    <h3>4. User Responsibilities</h3>
+                    <p><strong>Authentication Credentials:</strong></p>
+                    <ul>
+                        <li>Users are responsible for obtaining their own valid Auth Token and Device Key from authorized sources</li>
+                        <li>Users must keep their authentication credentials secure and confidential</li>
+                        <li>Users are solely responsible for any activity conducted using their credentials</li>
+                        <li>The Service does not provide, distribute, or validate authentication credentials</li>
+                        <li>Users must ensure their credentials comply with the terms of the original API provider</li>
+                    </ul>
+
+                    <h3>5. Data Sources and Third-Party Services</h3>
                     <p>Our Service utilizes publicly accessible APIs provided by:</p>
                     <ul>
                         <li>Bangladesh Railway's official e-ticketing platform</li>
                         <li>Shohoz e-ticketing system (railspaapi.shohoz.com)</li>
                     </ul>
+                    <p><strong>Note:</strong> Users must provide their own authentication credentials to access these third-party APIs. We do not store, manage, or provide API credentials.</p>
 
-                    <h3>5. Disclaimer of Warranties</h3>
+                    <h3>6. Disclaimer of Warranties</h3>
                     <p>This Service is provided "as is" without any representations or warranties. We do not guarantee:
                     </p>
                     <ul>
@@ -135,12 +161,13 @@
                         <li>Uninterrupted or error-free operation</li>
                         <li>Compatibility with all devices or browsers</li>
                         <li>Availability of third-party API services</li>
+                        <li>Validity or functionality of user-provided authentication credentials</li>
                     </ul>
 
-                    <h3>6. Limitation of Liability</h3>
+                    <h3>7. Limitation of Liability</h3>
                     <p>We shall not be liable for any indirect, incidental, special, consequential, or punitive damages
                         resulting from your use of the Service.</p>
-                    <h3>7. Contact Information</h3>
+                    <h3>8. Contact Information</h3>
                     <p>For questions about these Terms, please contact us through our <a
                             href="https://forms.gle/NV72PC1z75sq77tg7" target="_blank">feedback form</a>.</p>
 
@@ -157,7 +184,7 @@
                 <span class="legal-close" onclick="closeModal('privacyModal')">&times;</span>
                 <div class="legal-modal-body">
                     <h2>Privacy Policy</h2>
-                    <p><strong>Effective Date:</strong> May 13, 2025</p>
+                    <p><strong>Effective Date:</strong> October 09, 2025</p>
                     <hr>
 
                     <h3>1. Introduction</h3>
@@ -173,6 +200,7 @@
                         <li>No payment or financial information processed</li>
                         <li>No location tracking or GPS data collected</li>
                         <li>No biometric or sensitive personal data gathered</li>
+                        <li>No server-side storage of user authentication credentials</li>
                     </ul>
 
                     <h3>3. Technical Information</h3>
@@ -203,8 +231,11 @@
                     <ul>
                         <li><strong>Session Storage:</strong> Temporary form data and search preferences</li>
                         <li><strong>Local Storage:</strong> User interface preferences and notification settings</li>
+                        <li><strong>Authentication Credentials:</strong> Your Auth Token and Device Key are stored locally in your browser's localStorage for convenience. These credentials never leave your device and are not transmitted to our servers</li>
+                        <li><strong>Cached Images:</strong> Instruction images and banners are cached as base64 data in localStorage to improve performance</li>
                         <li><strong>Cookies:</strong> Essential cookies only for basic functionality</li>
                     </ul>
+                    <p><strong>Important:</strong> You are responsible for the security of credentials stored in your browser. Clear your browser data if using a shared or public device.</p>
 
                     <h3>6. Data Security</h3>
                     <p><strong>Security Measures:</strong></p>

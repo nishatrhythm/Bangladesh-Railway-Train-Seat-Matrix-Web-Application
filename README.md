@@ -88,6 +88,7 @@ A comprehensive web application to **visualize segmented seat availability and f
 │   │   └── styles.css            # Responsive UI with matrix visualizations
 │   ├── images/
 │   │   ├── eid-al-adha-2025.png  # Event-specific banner image
+│   │   ├── instruction.png       # User authentication instruction image
 │   │   └── sample_banner.png     # Default banner image
 │   └── js/
 │       └── script.js             # Frontend logic, validations, dropdowns
@@ -148,6 +149,20 @@ def is_android_device():
     # Session-based confirmation
 ```
 
+### User Authentication Requirements
+**Important**: The web application now requires users to provide their own authentication credentials:
+
+- **Auth Token**: Obtain from Bangladesh Railway/Shohoz API
+- **Device Key**: Unique device identifier for API access
+- **Local Storage**: Credentials stored securely in browser only
+- **No Server Storage**: Credentials never transmitted to our servers
+
+**Getting Credentials:**
+1. Visit Bangladesh Railway/Shohoz official app or website
+2. Obtain valid Auth Token and Device Key
+3. Enter credentials in the web application
+4. Credentials are stored locally in your browser
+
 ### Admin Access from Android
 Administrators can bypass Android restrictions using environment-configured access codes:
 - **Route**: `/admin` - Administrative control panel
@@ -159,35 +174,22 @@ Administrators can bypass Android restrictions using environment-configured acce
 
 ## 🔐 Authentication System
 
-### Smart Authentication Management
+### User-Provided Authentication
 
-The application implements an intelligent JWT token system for accessing Bangladesh Railway APIs:
-
-```python
-def fetch_token() -> str
-def set_token(token: str)
-```
+The application now uses **user-provided authentication credentials** instead of server-side hardcoded credentials. Users must supply their own Auth Token and Device Key obtained from Bangladesh Railway/Shohoz API.
 
 **Features:**
-- **Automatic Token Refresh**: Detects expired tokens and refreshes automatically
+- **User-Supplied Credentials**: Auth Token and Device Key provided by users
+- **Local Storage**: Credentials stored securely in browser localStorage only
 - **Bearer Token Authentication**: Uses JWT tokens for all API requests
-- **Secure Credential Management**: Environment-based configuration
-- **Session Persistence**: Maintains authentication across requests
+- **Client-Side Management**: No server storage of user credentials
 - **Error Recovery**: Handles invalid credentials gracefully
 - **Rate Limit Handling**: Implements backoff strategies for API limits
 
-### Environment Configuration
-
-**Required Environment Variables:**
-```bash
-FIXED_MOBILE_NUMBER=your_mobile_number
-FIXED_PASSWORD=your_password
-```
-
 ### Token Lifecycle Management
-- **Global Token Store**: Maintains active JWT token in memory
-- **Timestamp Tracking**: Monitors token age and validity
-- **Automatic Refresh**: Seamlessly renews expired tokens
+- **User Input**: Credentials entered through web interface
+- **Browser Storage**: Persistent storage in localStorage
+- **Manual Refresh**: Users can update credentials as needed
 - **Error Handling**: Graceful fallback for authentication failures
 
 ---
@@ -479,20 +481,16 @@ pip install -r requirements.txt
 ```
 
 ### 3. Configure Environment Variables
-Create a `.env` file in the root directory for Bangladesh Railway API authentication and admin access:
+Create a `.env` file in the root directory for admin access (optional):
 ```bash
-# Bangladesh Railway API Credentials
-FIXED_MOBILE_NUMBER=your_mobile_number
-FIXED_PASSWORD=your_password
-
 # Admin Access Control (Optional)
 ADMIN_ACCESS_CODE=your_admin_code
 ```
 
 **Security Notes:**
 - The `.env` file is already added to `.gitignore` and won't be committed
-- Never share your credentials publicly
-- Use environment variables in production deployments
+- Admin access code enables administrative features and Android bypass functionality
+- No user credentials are stored server-side - users provide their own authentication
 
 ### 4. Configure Application
 Edit `config.json` for customization:
@@ -533,12 +531,8 @@ Visit `http://localhost:5000` in your browser
 ## ⚙️ Configuration
 
 ### Environment Configuration
-Environment variables for Bangladesh Railway API access and admin functionality:
+Environment variables for admin functionality (optional):
 ```bash
-# Bangladesh Railway API Credentials
-FIXED_MOBILE_NUMBER=your_mobile_number  # Required for JWT token authentication
-FIXED_PASSWORD=your_password            # Required for JWT token authentication
-
 # Admin Access Control
 ADMIN_ACCESS_CODE=your_admin_code       # Optional - Enables Android restriction bypass
 ```
@@ -548,6 +542,7 @@ ADMIN_ACCESS_CODE=your_admin_code       # Optional - Enables Android restriction
 - Use environment variables or secure secret management
 - Credentials are loaded from `/etc/secrets/.env` in production environments
 - Admin access code enables administrative features and Android bypass functionality
+- **No Bangladesh Railway API credentials required** - users provide their own authentication
 
 ### Queue Settings
 - **max_concurrent**: Number of simultaneous API requests (default: 1)

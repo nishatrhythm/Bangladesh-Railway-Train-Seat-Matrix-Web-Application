@@ -5,6 +5,280 @@ let suppressEvents = false;
 let trainData = [];
 let trainDataFull = [];
 
+function initAuthCredentials() {
+    const authToken = localStorage.getItem('railway_auth_token');
+    const deviceKey = localStorage.getItem('railway_device_key');
+    
+    const authSection = document.getElementById('authCredentialsSection');
+    const savedSection = document.getElementById('savedCredentialsSection');
+    const authTokenInput = document.getElementById('auth-token-input');
+    const deviceKeyInput = document.getElementById('device-key-input');
+    const saveAuthBtn = document.getElementById('saveAuthBtn');
+    const deleteAuthBtn = document.getElementById('deleteAuthBtn');
+    const authStatus = document.getElementById('authStatus');
+    
+    const trainSearchSection = document.querySelector('.collapsible-section');
+    const matrixForm = document.getElementById('matrixForm');
+    
+    if (!authSection) return;
+    
+    if (authToken && deviceKey) {
+        authSection.style.display = 'none';
+        if (savedSection) savedSection.style.display = 'block';
+        if (trainSearchSection) trainSearchSection.style.display = 'block';
+        if (matrixForm) matrixForm.style.display = 'flex';
+    } else {
+        authSection.style.display = 'block';
+        if (savedSection) savedSection.style.display = 'none';
+        if (trainSearchSection) trainSearchSection.style.display = 'none';
+        if (matrixForm) matrixForm.style.display = 'none';
+    }
+    
+    setupClearButton('auth-token-input', 'auth-token-clear');
+    setupClearButton('device-key-input', 'device-key-clear');
+    
+    if (saveAuthBtn) {
+        saveAuthBtn.addEventListener('click', saveAuthCredentials);
+    }
+    
+    if (deleteAuthBtn) {
+        deleteAuthBtn.addEventListener('click', deleteAuthCredentials);
+    }
+    
+    if (authTokenInput) {
+        authTokenInput.addEventListener('input', function() {
+            clearAuthError('auth-token');
+        });
+    }
+    
+    if (deviceKeyInput) {
+        deviceKeyInput.addEventListener('input', function() {
+            clearAuthError('device-key');
+        });
+    }
+}
+
+function deleteAuthCredentials() {
+    localStorage.removeItem('railway_auth_token');
+    localStorage.removeItem('railway_device_key');
+    
+    const authSection = document.getElementById('authCredentialsSection');
+    const savedSection = document.getElementById('savedCredentialsSection');
+    
+    if (authSection) authSection.style.display = 'block';
+    if (savedSection) savedSection.style.display = 'none';
+    
+    const trainSearchSection = document.querySelector('.collapsible-section');
+    const matrixForm = document.getElementById('matrixForm');
+    if (trainSearchSection) trainSearchSection.style.display = 'none';
+    if (matrixForm) matrixForm.style.display = 'none';
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function saveAuthCredentials() {
+    const authTokenInput = document.getElementById('auth-token-input');
+    const deviceKeyInput = document.getElementById('device-key-input');
+    const authStatus = document.getElementById('authStatus');
+    const saveAuthBtn = document.getElementById('saveAuthBtn');
+    
+    const authToken = authTokenInput.value.trim();
+    const deviceKey = deviceKeyInput.value.trim();
+    
+    let isValid = true;
+    let firstInvalidField = null;
+    
+    if (!authToken) {
+        showAuthError('auth-token', 'Auth Token is required');
+        isValid = false;
+        if (!firstInvalidField) firstInvalidField = authTokenInput;
+    }
+    
+    if (!deviceKey) {
+        showAuthError('device-key', 'Device Key is required');
+        isValid = false;
+        if (!firstInvalidField) firstInvalidField = deviceKeyInput;
+    }
+    
+    if (!isValid) {
+        if (firstInvalidField) {
+            firstInvalidField.focus();
+        }
+        return;
+    }
+    
+    const indexError = document.getElementById('indexError');
+    if (indexError) {
+        indexError.style.display = 'none';
+    }
+    
+    localStorage.setItem('railway_auth_token', authToken);
+    localStorage.setItem('railway_device_key', deviceKey);
+
+    const authSection = document.getElementById('authCredentialsSection');
+    const savedSection = document.getElementById('savedCredentialsSection');
+    const trainSearchSection = document.querySelector('.collapsible-section');
+    const matrixForm = document.getElementById('matrixForm');
+    
+    if (authSection) {
+        authSection.style.animation = 'fadeOutScale 0.5s ease-in-out forwards';
+        
+        setTimeout(() => {
+            authSection.style.display = 'none';
+            authSection.style.animation = '';
+            if (savedSection) savedSection.style.display = 'block';
+            if (trainSearchSection) trainSearchSection.style.display = 'block';
+            if (matrixForm) matrixForm.style.display = 'flex';
+        }, 500);
+    }
+    
+    authTokenInput.value = '';
+    deviceKeyInput.value = '';
+    
+    const authTokenClear = document.getElementById('auth-token-clear');
+    const deviceKeyClear = document.getElementById('device-key-clear');
+    if (authTokenClear) updateClearButtonVisibility(authTokenInput, authTokenClear);
+    if (deviceKeyClear) updateClearButtonVisibility(deviceKeyInput, deviceKeyClear);
+}
+
+function showAuthError(fieldId, message) {
+    const errorElement = document.getElementById(fieldId + '-error');
+    const inputElement = document.getElementById(fieldId + '-input');
+    
+    if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.classList.remove('hide');
+        errorElement.classList.add('show');
+        errorElement.style.display = 'block';
+    }
+    
+    if (inputElement) {
+        inputElement.classList.add('error-input');
+    }
+}
+
+function clearAuthError(fieldId) {
+    const errorElement = document.getElementById(fieldId + '-error');
+    const inputElement = document.getElementById(fieldId + '-input');
+    
+    if (errorElement) {
+        errorElement.classList.remove('show');
+        errorElement.classList.add('hide');
+        
+        setTimeout(() => {
+            if (errorElement.classList.contains('hide')) {
+                errorElement.style.display = 'none';
+                errorElement.classList.remove('hide');
+            }
+        }, 500);
+    }
+    
+    if (inputElement) {
+        inputElement.classList.remove('error-input');
+    }
+}
+
+function clearAuthCredentials() {
+    localStorage.removeItem('railway_auth_token');
+    localStorage.removeItem('railway_device_key');
+    
+    const authSection = document.getElementById('authCredentialsSection');
+    if (authSection) {
+        authSection.style.display = 'block';
+    }
+}
+
+function handleAuthError(errorType) {
+    localStorage.removeItem('railway_auth_token');
+    localStorage.removeItem('railway_device_key');
+    
+    const authSection = document.getElementById('authCredentialsSection');
+    const savedSection = document.getElementById('savedCredentialsSection');
+    if (authSection) {
+        authSection.style.display = 'block';
+    }
+    if (savedSection) {
+        savedSection.style.display = 'none';
+    }
+    
+    const trainSearchSection = document.querySelector('.collapsible-section');
+    const matrixForm = document.getElementById('matrixForm');
+    if (trainSearchSection) trainSearchSection.style.display = 'none';
+    if (matrixForm) matrixForm.style.display = 'none';
+    
+    let errorMessage = 'Authentication failed. Please enter your credentials again.';
+    if (errorType === 'AUTH_TOKEN_EXPIRED') {
+        errorMessage = 'Your Auth Token has expired. Please enter new credentials.';
+    } else if (errorType === 'AUTH_DEVICE_KEY_EXPIRED') {
+        errorMessage = 'Your Device Key has expired. Please enter new credentials.';
+    } else if (errorType === 'AUTH_CREDENTIALS_REQUIRED') {
+        errorMessage = 'Authentication credentials are required. Please enter your Auth Token and Device Key.';
+    }
+    
+    const errorSection = document.getElementById('indexError');
+    if (errorSection) {
+        errorSection.style.display = 'block';
+        errorSection.innerHTML = `<i class="fas fa-exclamation-circle error-icon"></i> ${errorMessage}`;
+        errorSection.classList.add('shake');
+    }
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function getAuthCredentials() {
+    return {
+        authToken: localStorage.getItem('railway_auth_token') || '',
+        deviceKey: localStorage.getItem('railway_device_key') || ''
+    };
+}
+
+function setupInstructionImageLink() {
+    const instructionLink = document.getElementById('instructionImageLink');
+    if (!instructionLink) return;
+    
+    const configData = JSON.parse(document.getElementById('app-config').textContent);
+    const appVersion = configData.version || "1.0.0";
+    const currentImageUrl = window.instructionImageUrl;
+    
+    if (!currentImageUrl) return;
+    
+    // Load from cache or use current URL
+    const cachedImageData = localStorage.getItem('instructionImageData');
+    let imageUrl = currentImageUrl;
+    
+    if (cachedImageData) {
+        const parsedCache = JSON.parse(cachedImageData);
+        if (parsedCache.version === appVersion) {
+            imageUrl = parsedCache.base64;
+        }
+    } else {
+        // Cache the image
+        localStorage.setItem('instructionImageData', JSON.stringify({
+            base64: currentImageUrl,
+            version: appVersion
+        }));
+    }
+    
+    instructionLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const base64Data = imageUrl.split(',')[1];
+        const mimeType = imageUrl.split(',')[0].split(':')[1].split(';')[0];
+        const byteCharacters = atob(base64Data);
+        const byteNumbers = new Array(byteCharacters.length);
+        
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: mimeType });
+        const blobUrl = URL.createObjectURL(blob);
+        
+        window.open(blobUrl, '_blank');
+    });
+}
+
 function detectAndroidDevice() {
     const ua = navigator.userAgent.toLowerCase();
     const platform = navigator.platform.toLowerCase();
@@ -393,6 +667,16 @@ function loadTrains() {
 function validateForm(event) {
     const text = document.getElementById('train-model-input').value.trim();
     document.getElementById('train_model').value = text;
+
+    const credentials = getAuthCredentials();
+    document.getElementById('auth_token').value = credentials.authToken;
+    document.getElementById('device_key').value = credentials.deviceKey;
+    
+    if (!credentials.authToken || !credentials.deviceKey) {
+        event.preventDefault();
+        handleAuthError('AUTH_CREDENTIALS_REQUIRED');
+        return;
+    }
 
     let isValid = true;
     let firstEmptyField = null;
@@ -978,10 +1262,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
     
+    const errorSection = document.getElementById('indexError');
+    if (errorSection && errorSection.textContent) {
+        const errorText = errorSection.textContent;
+        if (errorText.includes('AUTH_TOKEN_EXPIRED') || errorText.includes('AUTH_DEVICE_KEY_EXPIRED')) {
+            localStorage.removeItem('railway_auth_token');
+            localStorage.removeItem('railway_device_key');
+        }
+    }
+    
     if (window.location.pathname === '/admin') {
         checkAdminStatus();
         setupAdminEventListeners();
     }
+    
+    initAuthCredentials();
+    setupInstructionImageLink();
     
     await loadTrains();
     await loadStations();
@@ -1585,6 +1881,13 @@ async function searchTrainsBetweenStations() {
         }
         return;
     }
+    
+    const credentials = getAuthCredentials();
+    if (!credentials.authToken || !credentials.deviceKey) {
+        showTrainSearchNetworkError('Authentication credentials required. Please enter your Auth Token and Device Key first.');
+        return;
+    }
+    
     button.disabled = true;
     button.style.opacity = '0.6';
     button.style.cursor = 'not-allowed';
@@ -1611,13 +1914,19 @@ async function searchTrainsBetweenStations() {
             },
             body: JSON.stringify({
                 origin: origin,
-                destination: destination
+                destination: destination,
+                auth_token: credentials.authToken,
+                device_key: credentials.deviceKey
             })
         });
 
         const data = await response.json();
 
         if (!response.ok) {
+            if (data.error === 'AUTH_TOKEN_EXPIRED' || data.error === 'AUTH_DEVICE_KEY_EXPIRED') {
+                handleAuthError(data.error);
+                return;
+            }
             const errorMessage = data.error || `Server error (${response.status})`;
             showTrainSearchNetworkError(errorMessage);
             return;
@@ -1849,6 +2158,14 @@ function setupClearButton(inputId, clearButtonId) {
             if (hiddenInput) hiddenInput.value = '';
             
             const errorField = document.getElementById('admin_code-error');
+            if (errorField && errorField.classList.contains('show')) {
+                errorField.classList.remove('show');
+                errorField.classList.add('hide');
+                input.classList.remove('error-input');
+            }
+        } else if (inputId === 'auth-token-input' || inputId === 'device-key-input') {
+            const errorId = inputId.replace('-input', '-error');
+            const errorField = document.getElementById(errorId);
             if (errorField && errorField.classList.contains('show')) {
                 errorField.classList.remove('show');
                 errorField.classList.add('hide');
