@@ -22,7 +22,7 @@ def fetch_train_data(model: str, api_date: str) -> dict:
         try:
             response = requests.post(url, json=payload, headers=headers)
             if response.status_code == 403:
-                raise Exception("Rate limit exceeded. Please try again later.")
+                raise Exception("Currently we are experiencing high traffic. Please try again after some time.")
                 
             if response.status_code >= 500:
                 retry_count += 1
@@ -34,7 +34,7 @@ def fetch_train_data(model: str, api_date: str) -> dict:
             return response.json().get("data")
         except requests.RequestException as e:
             if hasattr(e, 'response') and e.response and e.response.status_code == 403:
-                raise Exception("Rate limit exceeded. Please try again later.")
+                raise Exception("Currently we are experiencing high traffic. Please try again after some time.")
             raise
 
 def get_seat_availability(train_model: str, journey_date: str, from_city: str, to_city: str, auth_token: str, device_key: str) -> tuple:
@@ -73,7 +73,7 @@ def get_seat_availability(train_model: str, journey_date: str, from_city: str, t
                     raise Exception("AUTH_TOKEN_EXPIRED")
             
             if response.status_code == 403:
-                raise Exception("Rate limit exceeded. Please try again later.")
+                raise Exception("Currently we are experiencing high traffic. Please try again after some time.")
                 
             if response.status_code >= 500:
                 retry_count += 1
@@ -121,7 +121,7 @@ def get_seat_availability(train_model: str, journey_date: str, from_city: str, t
                     raise Exception("AUTH_TOKEN_EXPIRED")
                     
             if hasattr(e, 'response') and e.response and e.response.status_code == 403:
-                raise Exception("Rate limit exceeded. Please try again later.")
+                raise Exception("Currently we are experiencing high traffic. Please try again after some time.")
             return (from_city, to_city, None)
 
 def clean_halt_times(routes):

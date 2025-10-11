@@ -87,14 +87,22 @@
             <span class="note-bold highlight">Notice: </span> The hosting site will undergo scheduled maintenance on <strong>June 15, 2025</strong>, from <strong>9:00 PM</strong> to <strong>10:00 PM BST</strong>. During this time, you may experience interruptions while using this website. Apologies for the inconvenience.
         </p><br> -->
 
-        {% if error %}
-        <div class="error shake" id="indexError">
+        <!-- Main Error Section (for both server-side and client-side errors) -->
+        <div class="error shake" id="indexError" style="{% if not error %}display: none;{% endif %}">
+            {% if error %}
             <i class="fas fa-exclamation-circle error-icon"></i> {{ error }}
+            {% endif %}
         </div>
+        {% if error %}
         <script>
             // Check if error is auth-related and clear credentials
             const errorText = "{{ error }}";
-            if (errorText.includes('AUTH_TOKEN_EXPIRED') || errorText.includes('AUTH_DEVICE_KEY_EXPIRED')) {
+            if (errorText.includes('AUTH_TOKEN_EXPIRED')) {
+                document.getElementById('indexError').innerHTML = '<i class="fas fa-exclamation-circle error-icon"></i> Auth token is expired (valid for 24 hrs). Please enter a new valid auth token and device key.';
+                localStorage.removeItem('railway_auth_token');
+                localStorage.removeItem('railway_device_key');
+            } else if (errorText.includes('AUTH_DEVICE_KEY_EXPIRED')) {
+                document.getElementById('indexError').innerHTML = '<i class="fas fa-exclamation-circle error-icon"></i> Device key is expired. Please enter a new valid auth token and device key.';
                 localStorage.removeItem('railway_auth_token');
                 localStorage.removeItem('railway_device_key');
             }
@@ -104,7 +112,7 @@
         <!-- Authentication Credentials Section -->
         <div class="auth-credentials-section" id="authCredentialsSection">
             <p class="note">
-                <i class="fas fa-info-circle"></i> Please enter your <span class="note-bold">Auth Token</span> and <span class="note-bold">Device Key</span> to use this service. These will be stored securely in your browser. <span class="note-bold">The Auth Token is valid for 24 hours.</span> After that, you’ll need to get a new Auth Token and Device Key from the e-ticket website. <br><br> <span class="highlight">• How to get these: </span><a href="#" id="instructionImageLink">See this image</a><br> <span class="highlight">• For Mobile Devices: </span><a href="#" id="mobileInstructionImageLink">Follow this instruction</a> <br> <span class="highlight">• Android App now available again: </span><a href="https://github.com/nishatrhythm/Train-Seat-App-Releases" id="mobileInstructionImageLink" target="_blank">Download here</a>
+                <i class="fas fa-info-circle"></i> Please enter your <span class="note-bold">Auth Token</span> and <span class="note-bold">Device Key</span> to use this service. These will be stored securely in your browser. <span class="note-bold">The Auth Token is valid for 24 hours.</span> After that, you'll need to get a new Auth Token and Device Key from the e-ticket website. <br><br> <span class="highlight">• How to get these: </span><a href="#" id="instructionImageLink">See this image</a><br> <span class="highlight">• For Mobile Devices: </span><a href="#" id="mobileInstructionImageLink">Follow this instruction</a> <br> <span class="highlight">• Android App now available again: </span><a href="https://github.com/nishatrhythm/Train-Seat-App-Releases" id="mobileInstructionImageLink" target="_blank">Download here</a>
             </p><br>
             <div class="form-row">
                 <div class="form-group">

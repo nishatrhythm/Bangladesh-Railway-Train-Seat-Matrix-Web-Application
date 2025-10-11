@@ -764,7 +764,7 @@ def fetch_trains_for_date(origin, destination, date_str, auth_token, device_key)
                     raise Exception("AUTH_TOKEN_EXPIRED")
             
             if response.status_code == 403:
-                raise Exception("Rate limit exceeded. Please try again later.")
+                raise Exception("Currently we are experiencing high traffic. Please try again after some time.")
                 
             if response.status_code >= 500:
                 retry_count += 1
@@ -796,7 +796,7 @@ def fetch_trains_for_date(origin, destination, date_str, auth_token, device_key)
                     raise Exception("AUTH_TOKEN_EXPIRED")
                     
             if hasattr(e, 'response') and e.response and e.response.status_code == 403:
-                raise Exception("Rate limit exceeded. Please try again later.")
+                raise Exception("Currently we are experiencing high traffic. Please try again after some time.")
             retry_count += 1
             if retry_count == max_retries:
                 return []

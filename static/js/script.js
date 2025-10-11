@@ -208,9 +208,9 @@ function handleAuthError(errorType) {
     
     let errorMessage = 'Authentication failed. Please enter your credentials again.';
     if (errorType === 'AUTH_TOKEN_EXPIRED') {
-        errorMessage = 'Your Auth Token has expired. Please enter new credentials.';
+        errorMessage = 'Auth token is expired (valid for 24 hrs). Please enter a new valid auth token and device key.';
     } else if (errorType === 'AUTH_DEVICE_KEY_EXPIRED') {
-        errorMessage = 'Your Device Key has expired. Please enter new credentials.';
+        errorMessage = 'Device key is expired. Please enter a new valid auth token and device key.';
     } else if (errorType === 'AUTH_CREDENTIALS_REQUIRED') {
         errorMessage = 'Authentication credentials are required. Please enter your Auth Token and Device Key.';
     }
@@ -220,6 +220,9 @@ function handleAuthError(errorType) {
         errorSection.style.display = 'block';
         errorSection.innerHTML = `<i class="fas fa-exclamation-circle error-icon"></i> ${errorMessage}`;
         errorSection.classList.add('shake');
+        setTimeout(() => {
+            errorSection.classList.remove('shake');
+        }, 500);
     }
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -242,7 +245,6 @@ function setupInstructionImageLink() {
     
     if (!currentImageUrl) return;
     
-    // Load from cache or use current URL
     const cachedImageData = localStorage.getItem('instructionImageData');
     let imageUrl = currentImageUrl;
     
@@ -252,7 +254,6 @@ function setupInstructionImageLink() {
             imageUrl = parsedCache.base64;
         }
     } else {
-        // Cache the image
         localStorage.setItem('instructionImageData', JSON.stringify({
             base64: currentImageUrl,
             version: appVersion
@@ -1971,6 +1972,7 @@ async function searchTrainsBetweenStations() {
         if (!response.ok) {
             if (data.error === 'AUTH_TOKEN_EXPIRED' || data.error === 'AUTH_DEVICE_KEY_EXPIRED') {
                 handleAuthError(data.error);
+                hideTrainSearchNetworkError();
                 return;
             }
             const errorMessage = data.error || `Server error (${response.status})`;
@@ -1988,6 +1990,11 @@ async function searchTrainsBetweenStations() {
                 }
             }, 100);
         } else if (data.error) {
+            if (data.error === 'AUTH_TOKEN_EXPIRED' || data.error === 'AUTH_DEVICE_KEY_EXPIRED') {
+                handleAuthError(data.error);
+                hideTrainSearchNetworkError();
+                return;
+            }
             showTrainSearchNetworkError(data.error);
         } else {
             showTrainSearchNetworkError('No trains found for this route');
