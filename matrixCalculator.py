@@ -21,6 +21,17 @@ def fetch_train_data(model: str, api_date: str) -> dict:
     while retry_count < max_retries:
         try:
             response = requests.post(url, json=payload, headers=headers)
+            
+            if response.status_code == 429:
+                try:
+                    error_data = response.json()
+                    error_messages = error_data.get("error", {}).get("messages", [])
+                    if isinstance(error_messages, list) and error_messages:
+                        raise Exception(error_messages[0])
+                    raise Exception("Too many requests. Please slow down.")
+                except ValueError:
+                    raise Exception("Too many requests. Please slow down.")
+            
             if response.status_code == 403:
                 raise Exception("Currently we are experiencing high traffic. Please try again after some time.")
                 
@@ -33,8 +44,18 @@ def fetch_train_data(model: str, api_date: str) -> dict:
             response.raise_for_status()
             return response.json().get("data")
         except requests.RequestException as e:
-            if hasattr(e, 'response') and e.response and e.response.status_code == 403:
-                raise Exception("Currently we are experiencing high traffic. Please try again after some time.")
+            if hasattr(e, 'response') and e.response:
+                if e.response.status_code == 429:
+                    try:
+                        error_data = e.response.json()
+                        error_messages = error_data.get("error", {}).get("messages", [])
+                        if isinstance(error_messages, list) and error_messages:
+                            raise Exception(error_messages[0])
+                        raise Exception("Too many requests. Please slow down.")
+                    except ValueError:
+                        raise Exception("Too many requests. Please slow down.")
+                if e.response.status_code == 403:
+                    raise Exception("Currently we are experiencing high traffic. Please try again after some time.")
             raise
 
 def get_seat_availability(train_model: str, journey_date: str, from_city: str, to_city: str, auth_token: str, device_key: str) -> tuple:
@@ -57,7 +78,16 @@ def get_seat_availability(train_model: str, journey_date: str, from_city: str, t
         try:
             response = requests.get(url, headers=headers, params=params)
             
-            # Check for authentication errors
+            if response.status_code == 429:
+                try:
+                    error_data = response.json()
+                    error_messages = error_data.get("error", {}).get("messages", [])
+                    if isinstance(error_messages, list) and error_messages:
+                        raise Exception(error_messages[0])
+                    raise Exception("Too many requests. Please slow down.")
+                except ValueError:
+                    raise Exception("Too many requests. Please slow down.")
+            
             if response.status_code == 401:
                 try:
                     error_data = response.json()
@@ -106,6 +136,17 @@ def get_seat_availability(train_model: str, journey_date: str, from_city: str, t
 
         except requests.RequestException as e:
             status_code = e.response.status_code if e.response is not None else None
+            
+            if status_code == 429:
+                try:
+                    error_data = e.response.json()
+                    error_messages = error_data.get("error", {}).get("messages", [])
+                    if isinstance(error_messages, list) and error_messages:
+                        raise Exception(error_messages[0])
+                    raise Exception("Too many requests. Please slow down.")
+                except ValueError:
+                    raise Exception("Too many requests. Please slow down.")
+            
             if status_code == 401:
                 try:
                     error_data = e.response.json()

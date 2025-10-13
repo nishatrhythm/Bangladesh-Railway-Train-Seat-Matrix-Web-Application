@@ -749,6 +749,16 @@ def fetch_trains_for_date(origin, destination, date_str, auth_token, device_key)
         try:
             response = requests.get(url, headers=headers, params=params, timeout=10)
             
+            if response.status_code == 429:
+                try:
+                    error_data = response.json()
+                    error_messages = error_data.get("error", {}).get("messages", [])
+                    if isinstance(error_messages, list) and error_messages:
+                        raise Exception(error_messages[0])
+                    raise Exception("Too many requests. Please slow down.")
+                except ValueError:
+                    raise Exception("Too many requests. Please slow down.")
+            
             if response.status_code == 401:
                 try:
                     error_data = response.json()
@@ -781,6 +791,17 @@ def fetch_trains_for_date(origin, destination, date_str, auth_token, device_key)
             
         except requests.RequestException as e:
             status_code = e.response.status_code if e.response is not None else None
+            
+            if status_code == 429:
+                try:
+                    error_data = e.response.json()
+                    error_messages = error_data.get("error", {}).get("messages", [])
+                    if isinstance(error_messages, list) and error_messages:
+                        raise Exception(error_messages[0])
+                    raise Exception("Too many requests. Please slow down.")
+                except ValueError:
+                    raise Exception("Too many requests. Please slow down.")
+            
             if status_code == 401:
                 try:
                     error_data = e.response.json()
