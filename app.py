@@ -19,6 +19,10 @@ logger = logging.getLogger(__name__)
 
 RESULT_CACHE = {}
 
+@app.before_request
+def redirect_to_new_site():
+    return redirect('https://trainseat.onrender.com/sunset', code=302)
+
 def is_android_device():
     # user_agent = request.headers.get('User-Agent', '').lower()
     

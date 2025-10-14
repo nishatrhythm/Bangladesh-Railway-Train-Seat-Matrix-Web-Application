@@ -1,4 +1,11 @@
 # 🚆 Bangladesh Railway Train Seat Matrix Web Application
+<br><br>
+
+| 🚨 PROJECT DISCONTINUATION NOTICE 🚨 |
+|-------------------------------------|
+| Starting **October 14, 2025**, this project is **discontinued** and **no longer maintained**. All resources are archived now.<br><br>Thank you for your support over the long journey. Visit [trainseat.onrender.com/sunset](https://trainseat.onrender.com/sunset) to learn more about why this project was discontinued. |
+
+<br><br>
 
 A comprehensive web application to **visualize segmented seat availability and fare matrices** for Bangladesh Railway trains. This version focuses on **direct and segmented ticketing analysis, smart routing algorithms, and real-time availability tracking** — built using Flask + Vanilla JS + REST APIs.
 
